@@ -196,17 +196,14 @@ class StandardPSController(PSController):
     def _set_sofb(self, pvname, value, devname, field, priority_pvs):
         _ = field
 
-        # set actual SOFBCurrent-SP
+        # NOTE: this command sets SOFBCurrent-SP.
+        # It sends setpoint to bsmp device
+        # followed by immediate readout, and updating of
+        # status information in PRUController.
         self._writers[pvname].execute(value)
 
-        # add readback SOFBCurrent PVs (same device)
-        for suffix in ('-RB', 'Ref-Mon', '-Mon'):
-            pvn = pvname.replace('-SP', suffix)
-            reader = self._readers[pvn]
-            priority_pvs[pvn] = reader.read()
-
-        # add priority SOFBCurrent-SP for other
-        # devices in the same UDC.
+        # add priority SOFBCurrent-SP
+        # for other devices in the same UDC.
         for udc_devnames in self._udc2dev.values():
             if devname in udc_devnames:
                 # loop over other UDC devices
@@ -214,6 +211,41 @@ class StandardPSController(PSController):
                     if devname_ != devname:
                         pvn = devname_ + ':SOFBCurrent-SP'
                         priority_pvs[pvn] = value
+
+        # add priority PVs for same and other devs using readers
+        self._set_sofb_readers(pvname, devname, priority_pvs)
+
+    def _set_sofb_readers(self, pvname, devname, priority_pvs):
+        # NOTE: this can be further optimized by
+        # putting all readers in a dict at init method
+        # the dict could have devnames as keys and
+        # corresponding readers as values
+
+        # add readback SOFBCurrent PVs (same device)
+        for suffix in ('-RB', 'Ref-Mon', '-Mon'):
+            pvn = pvname.replace('-SP', suffix)
+            reader = self._readers[pvn]
+            priority_pvs[pvn] = reader.read()
+
+        # add status PVs (same device)
+        for propty in ('OpMode-Sts', 'PwrState-Sts',
+                       'IntlkSoft-Mon', 'IntlkHard-Mon'):
+            pvn = pvname.replace('SOFBCurrent-SP', propty)
+            reader = self._readers[pvn]
+            priority_pvs[pvn] = reader.read()
+
+        # add status PVs (same device)
+        # (other devices in the same UDC.)
+        for udc_devnames in self._udc2dev.values():
+            if devname in udc_devnames:
+                # loop over other UDC devices
+                for devname_ in udc_devnames:
+                    if devname_ != devname:
+                        for propty in ('OpMode-Sts', 'PwrState-Sts',
+                                       'IntlkSoft-Mon', 'IntlkHard-Mon'):
+                            pvn = devname_ + ':' + propty
+                            reader = self._readers[pvn]
+                            priority_pvs[pvn] = reader.read()
 
     def _get_siggen_arg_values(self, devname):
         """Get cfg_siggen args."""
