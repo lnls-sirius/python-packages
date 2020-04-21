@@ -28,22 +28,24 @@ def get_dict():
 # in the configuration. The second numeric parameter in the pair is the
 # delay [s] the client should wait before setting the next PV.
 
+
 _pvs_li_egunmod = [
     ['LI-01:EG-BiasPS:switch', 0, 0],
-    ['LI-01:EG-BiasPS:voltoutsoft', -60.0, 0.0],   # Volt
+    ['LI-01:EG-BiasPS:voltoutsoft', -60.0, 0.0],  # [V]
     ['LI-01:EG-FilaPS:switch', 0, 0],
-    ['LI-01:EG-HVPS:currentoutsoft', 0.003, 0.0],  # mA
+    ['LI-01:EG-HVPS:currentoutsoft', 0.003, 0.0],  # [mA]
     ['LI-01:EG-HVPS:enable', 0, 0.0],
     ['LI-01:EG-PulsePS:multiselect', 0, 0.0],
     ['LI-01:EG-PulsePS:multiswitch', 0, 0.0],
     ['LI-01:EG-PulsePS:singleselect', 0, 0.0],
     ['LI-01:EG-PulsePS:singleswitch', 0, 0.0],
-    ['LI-01:EG-PulsePS:poweroutsoft', 0.0, 0.0],  # Volt
-    ['LI-01:PU-Modltr-1:WRITE_I', 100.0, 0.0],        # mA
-    ['LI-01:PU-Modltr-2:WRITE_I', 100.0, 0.0],     # mA
-    ['LI-01:PU-Modltr-1:WRITE_V', 0.0, 0.0],          # kV
-    ['LI-01:PU-Modltr-2:WRITE_V', 0.0, 0.0],       # kV
+    ['LI-01:EG-PulsePS:poweroutsoft', 0.0, 0.0],  # [V]
+    ['LI-01:PU-Modltr-1:WRITE_I', 100.0, 0.0],  # [mA]
+    ['LI-01:PU-Modltr-2:WRITE_I', 100.0, 0.0],  # [mA]
+    ['LI-01:PU-Modltr-1:WRITE_V', 0.0, 0.0],  # [kV]
+    ['LI-01:PU-Modltr-2:WRITE_V', 0.0, 0.0],  # [kV]
     ]
+
 
 _pvs_li_llrf = [
     ['LA-RF:LLRF:BUN1:SET_STREAM', 0, 0.0],
@@ -52,8 +54,8 @@ _pvs_li_llrf = [
     ['LA-RF:LLRF:BUN1:SET_CH7_DELAY', 0, 0.0],
     ['LA-RF:LLRF:BUN1:SET_CH8_DELAY', 0, 0.0],
     ['LA-RF:LLRF:BUN1:SET_TRIGGER_DELAY', 0, 0.0],
-    ['LA-RF:LLRF:BUN1:SET_AMP', 0.0, 0.0],  # %
-    ['LA-RF:LLRF:BUN1:SET_PHASE', 0.0, 0.0],  # Degree
+    ['LA-RF:LLRF:BUN1:SET_AMP', 0.0, 0.0],  # [%]
+    ['LA-RF:LLRF:BUN1:SET_PHASE', 0.0, 0.0],  # [deg]
     ['LA-RF:LLRF:BUN1:SET_KP', 0, 0.0],
     ['LA-RF:LLRF:BUN1:SET_KI', 0, 0.0],
     ['LA-RF:LLRF:BUN1:SET_CH1_PHASE_CORR', 0.0, 0.0],
@@ -84,8 +86,8 @@ _pvs_li_llrf = [
     ['LA-RF:LLRF:KLY1:SET_CH8_DELAY', 0, 0.0],
     ['LA-RF:LLRF:KLY1:SET_CH9_DELAY', 0, 0.0],
     ['LA-RF:LLRF:KLY1:SET_TRIGGER_DELAY', 0, 0.0],
-    ['LA-RF:LLRF:KLY1:SET_AMP', 0.0, 0.0],  # %
-    ['LA-RF:LLRF:KLY1:SET_PHASE', 0.0, 0.0],  # Degree
+    ['LA-RF:LLRF:KLY1:SET_AMP', 0.0, 0.0],  # [%]
+    ['LA-RF:LLRF:KLY1:SET_PHASE', 0.0, 0.0],  # [deg]
     ['LA-RF:LLRF:KLY1:SET_REFL_POWER_LIMIT', 0.0, 0.0],
     ['LA-RF:LLRF:KLY1:SET_KP', 0, 0.0],
     ['LA-RF:LLRF:KLY1:SET_KI', 0, 0.0],
@@ -130,8 +132,8 @@ _pvs_li_llrf = [
     ['LA-RF:LLRF:KLY2:SET_CH8_DELAY', 0, 0.0],
     ['LA-RF:LLRF:KLY2:SET_CH9_DELAY', 0, 0.0],
     ['LA-RF:LLRF:KLY2:SET_TRIGGER_DELAY', 0, 0.0],
-    ['LA-RF:LLRF:KLY2:SET_AMP', 0.0, 0.0],  # %
-    ['LA-RF:LLRF:KLY2:SET_PHASE', 0.0, 0.0],  # Degree
+    ['LA-RF:LLRF:KLY2:SET_AMP', 0.0, 0.0],  # [%]
+    ['LA-RF:LLRF:KLY2:SET_PHASE', 0.0, 0.0],  # [deg]
     ['LA-RF:LLRF:KLY2:SET_REFL_POWER_LIMIT', 0.0, 0.0],
     ['LA-RF:LLRF:KLY2:SET_KP', 0, 0.0],
     ['LA-RF:LLRF:KLY2:SET_KI', 0, 0.0],
@@ -165,7 +167,8 @@ _pvs_li_llrf = [
     ['LA-RF:LLRF:KLY2:SET_CH9_ATT', 0.0, 0.0],
     ]
 
-_pvs_timing = [
+
+_pvs_as_ti = [
     # Clocks
     ['AS-RaMO:TI-EVG:Clk0MuxDiv-SP', 0, 0.0],
     ['AS-RaMO:TI-EVG:Clk0MuxEnbl-Sel', 0, 0.0],
@@ -251,7 +254,7 @@ _pvs_timing = [
 
     # Triggers
     ['AS-Fam:TI-Scrn-TBBO:DelayRaw-SP', 0, 0],
-    ['AS-Fam:TI-Scrn-TBBO:Duration-SP', 0, 0.0],  # us
+    ['AS-Fam:TI-Scrn-TBBO:Duration-SP', 0, 0.0],  # [us]
     ['AS-Fam:TI-Scrn-TBBO:NrPulses-SP', 0, 0.0],
     ['AS-Fam:TI-Scrn-TBBO:Polarity-Sel', 0, 0.0],
     ['AS-Fam:TI-Scrn-TBBO:RFDelayType-Sel', 0, 0.0],
@@ -261,7 +264,7 @@ _pvs_timing = [
     ['AS-Fam:TI-Scrn-TBBO:LowLvlLock-Sel', 0, 0.0],
 
     ['AS-Glob:TI-FCT:DelayRaw-SP', 0, 0],
-    ['AS-Glob:TI-FCT:Duration-SP', 0, 0.0],  # us
+    ['AS-Glob:TI-FCT:Duration-SP', 0, 0.0],  # [us]
     ['AS-Glob:TI-FCT:NrPulses-SP', 0, 0.0],
     ['AS-Glob:TI-FCT:Polarity-Sel', 0, 0.0],
     ['AS-Glob:TI-FCT:RFDelayType-Sel', 0, 0.0],
@@ -271,7 +274,7 @@ _pvs_timing = [
     ['AS-Glob:TI-FCT:LowLvlLock-Sel', 0, 0.0],
 
     ['AS-Glob:TI-FillPtrnMon:DelayRaw-SP', 0, 0],
-    ['AS-Glob:TI-FillPtrnMon:Duration-SP', 0, 0.0],  # us
+    ['AS-Glob:TI-FillPtrnMon:Duration-SP', 0, 0.0],  # [us]
     ['AS-Glob:TI-FillPtrnMon:NrPulses-SP', 0, 0.0],
     ['AS-Glob:TI-FillPtrnMon:Polarity-Sel', 0, 0.0],
     ['AS-Glob:TI-FillPtrnMon:RFDelayType-Sel', 0, 0.0],
@@ -281,7 +284,7 @@ _pvs_timing = [
     ['AS-Glob:TI-FillPtrnMon:LowLvlLock-Sel', 0, 0.0],
 
     ['AS-Glob:TI-Osc-EjeBO:DelayRaw-SP', 0, 0],
-    ['AS-Glob:TI-Osc-EjeBO:Duration-SP', 0, 0.0],  # us
+    ['AS-Glob:TI-Osc-EjeBO:Duration-SP', 0, 0.0],  # [us]
     ['AS-Glob:TI-Osc-EjeBO:NrPulses-SP', 0, 0.0],
     ['AS-Glob:TI-Osc-EjeBO:Polarity-Sel', 0, 0.0],
     ['AS-Glob:TI-Osc-EjeBO:RFDelayType-Sel', 0, 0.0],
@@ -291,7 +294,7 @@ _pvs_timing = [
     ['AS-Glob:TI-Osc-EjeBO:LowLvlLock-Sel', 0, 0.0],
 
     ['AS-Glob:TI-Osc-InjBO:DelayRaw-SP', 0, 0],
-    ['AS-Glob:TI-Osc-InjBO:Duration-SP', 0, 0.0],  # us
+    ['AS-Glob:TI-Osc-InjBO:Duration-SP', 0, 0.0],  # [us]
     ['AS-Glob:TI-Osc-InjBO:NrPulses-SP', 0, 0.0],
     ['AS-Glob:TI-Osc-InjBO:Polarity-Sel', 0, 0.0],
     ['AS-Glob:TI-Osc-InjBO:Src-Sel', 0, 0.0],
@@ -300,7 +303,7 @@ _pvs_timing = [
     ['AS-Glob:TI-Osc-InjBO:LowLvlLock-Sel', 0, 0.0],
 
     ['AS-Glob:TI-Osc-InjSI:DelayRaw-SP', 0, 0],
-    ['AS-Glob:TI-Osc-InjSI:Duration-SP', 0, 0.0],  # us
+    ['AS-Glob:TI-Osc-InjSI:Duration-SP', 0, 0.0],  # [us]
     ['AS-Glob:TI-Osc-InjSI:NrPulses-SP', 0, 0.0],
     ['AS-Glob:TI-Osc-InjSI:Polarity-Sel', 0, 0.0],
     ['AS-Glob:TI-Osc-InjSI:Src-Sel', 0, 0.0],
@@ -309,7 +312,7 @@ _pvs_timing = [
     ['AS-Glob:TI-Osc-InjSI:LowLvlLock-Sel', 0, 0.0],
 
     ['BO-01D:TI-InjKckr:DelayRaw-SP', 0, 0],
-    ['BO-01D:TI-InjKckr:Duration-SP', 0, 0.0],  # us
+    ['BO-01D:TI-InjKckr:Duration-SP', 0, 0.0],  # [us]
     ['BO-01D:TI-InjKckr:NrPulses-SP', 0, 0.0],
     ['BO-01D:TI-InjKckr:Polarity-Sel', 0, 0.0],
     ['BO-01D:TI-InjKckr:Src-Sel', 0, 0.0],
@@ -318,7 +321,7 @@ _pvs_timing = [
     ['BO-01D:TI-InjKckr:LowLvlLock-Sel', 0, 0.0],
 
     ['BO-35D:TI-DCCT:DelayRaw-SP', 0, 0],
-    ['BO-35D:TI-DCCT:Duration-SP', 0, 0.0],  # us
+    ['BO-35D:TI-DCCT:Duration-SP', 0, 0.0],  # [us]
     ['BO-35D:TI-DCCT:NrPulses-SP', 0, 0.0],
     ['BO-35D:TI-DCCT:Polarity-Sel', 0, 0.0],
     ['BO-35D:TI-DCCT:RFDelayType-Sel', 0, 0.0],
@@ -328,7 +331,7 @@ _pvs_timing = [
     ['BO-35D:TI-DCCT:LowLvlLock-Sel', 0, 0.0],
 
     ['BO-48D:TI-EjeKckr:DelayRaw-SP', 0, 0],
-    ['BO-48D:TI-EjeKckr:Duration-SP', 0, 0.0],  # us
+    ['BO-48D:TI-EjeKckr:Duration-SP', 0, 0.0],  # [us]
     ['BO-48D:TI-EjeKckr:NrPulses-SP', 0, 0.0],
     ['BO-48D:TI-EjeKckr:Polarity-Sel', 0, 0.0],
     ['BO-48D:TI-EjeKckr:RFDelayType-Sel', 0, 0.0],
@@ -338,7 +341,7 @@ _pvs_timing = [
     ['BO-48D:TI-EjeKckr:LowLvlLock-Sel', 0, 0.0],
 
     ['BO-50U:TI-VLightCam:DelayRaw-SP', 0, 0],
-    ['BO-50U:TI-VLightCam:Duration-SP', 0, 0.0],  # us
+    ['BO-50U:TI-VLightCam:Duration-SP', 0, 0.0],  # [us]
     ['BO-50U:TI-VLightCam:NrPulses-SP', 0, 0.0],
     ['BO-50U:TI-VLightCam:Polarity-Sel', 0, 0.0],
     ['BO-50U:TI-VLightCam:RFDelayType-Sel', 0, 0.0],
@@ -348,7 +351,7 @@ _pvs_timing = [
     ['BO-50U:TI-VLightCam:LowLvlLock-Sel', 0, 0.0],
 
     ['BO-Fam:TI-BPM:DelayRaw-SP', 0, 0],
-    ['BO-Fam:TI-BPM:Duration-SP', 0, 0.0],  # us
+    ['BO-Fam:TI-BPM:Duration-SP', 0, 0.0],  # [us]
     ['BO-Fam:TI-BPM:NrPulses-SP', 0, 0.0],
     ['BO-Fam:TI-BPM:Polarity-Sel', 0, 0.0],
     ['BO-Fam:TI-BPM:Src-Sel', 0, 0.0],
@@ -357,7 +360,7 @@ _pvs_timing = [
     ['BO-Fam:TI-BPM:LowLvlLock-Sel', 0, 0.0],
 
     ['BO-Glob:TI-LLRF-PsMtn:DelayRaw-SP', 0, 0],
-    ['BO-Glob:TI-LLRF-PsMtn:Duration-SP', 0, 0.0],  # us
+    ['BO-Glob:TI-LLRF-PsMtn:Duration-SP', 0, 0.0],  # [us]
     ['BO-Glob:TI-LLRF-PsMtn:NrPulses-SP', 0, 0.0],
     ['BO-Glob:TI-LLRF-PsMtn:Polarity-Sel', 0, 0.0],
     ['BO-Glob:TI-LLRF-PsMtn:Src-Sel', 0, 0.0],
@@ -366,7 +369,7 @@ _pvs_timing = [
     ['BO-Glob:TI-LLRF-PsMtn:LowLvlLock-Sel', 0, 0.0],
 
     ['BO-Glob:TI-LLRF-Rmp:DelayRaw-SP', 0, 0],
-    ['BO-Glob:TI-LLRF-Rmp:Duration-SP', 0, 0.0],  # us
+    ['BO-Glob:TI-LLRF-Rmp:Duration-SP', 0, 0.0],  # [us]
     ['BO-Glob:TI-LLRF-Rmp:NrPulses-SP', 0, 0.0],
     ['BO-Glob:TI-LLRF-Rmp:Polarity-Sel', 0, 0.0],
     ['BO-Glob:TI-LLRF-Rmp:Src-Sel', 0, 0.0],
@@ -375,7 +378,7 @@ _pvs_timing = [
     ['BO-Glob:TI-LLRF-Rmp:LowLvlLock-Sel', 0, 0.0],
 
     ['BO-Glob:TI-Mags-Corrs:DelayRaw-SP', 0, 0],
-    ['BO-Glob:TI-Mags-Corrs:Duration-SP', 0, 0.0],  # us
+    ['BO-Glob:TI-Mags-Corrs:Duration-SP', 0, 0.0],  # [us]
     ['BO-Glob:TI-Mags-Corrs:NrPulses-SP', 0, 0.0],
     ['BO-Glob:TI-Mags-Corrs:Polarity-Sel', 0, 0.0],
     ['BO-Glob:TI-Mags-Corrs:Src-Sel', 0, 0.0],
@@ -384,7 +387,7 @@ _pvs_timing = [
     ['BO-Glob:TI-Mags-Corrs:LowLvlLock-Sel', 0, 0.0],
 
     ['BO-Glob:TI-Mags-Fams:DelayRaw-SP', 0, 0],
-    ['BO-Glob:TI-Mags-Fams:Duration-SP', 0, 0.0],  # us
+    ['BO-Glob:TI-Mags-Fams:Duration-SP', 0, 0.0],  # [us]
     ['BO-Glob:TI-Mags-Fams:NrPulses-SP', 0, 0.0],
     ['BO-Glob:TI-Mags-Fams:Polarity-Sel', 0, 0.0],
     ['BO-Glob:TI-Mags-Fams:Src-Sel', 0, 0.0],
@@ -393,7 +396,7 @@ _pvs_timing = [
     ['BO-Glob:TI-Mags-Fams:LowLvlLock-Sel', 0, 0.0],
 
     ['BO-Glob:TI-TuneProc:DelayRaw-SP', 0, 0],
-    ['BO-Glob:TI-TuneProc:Duration-SP', 0, 0.0],  # us
+    ['BO-Glob:TI-TuneProc:Duration-SP', 0, 0.0],  # [us]
     ['BO-Glob:TI-TuneProc:NrPulses-SP', 0, 0.0],
     ['BO-Glob:TI-TuneProc:Polarity-Sel', 0, 0.0],
     ['BO-Glob:TI-TuneProc:RFDelayType-Sel', 0, 0.0],
@@ -403,7 +406,7 @@ _pvs_timing = [
     ['BO-Glob:TI-TuneProc:LowLvlLock-Sel', 0, 0.0],
 
     ['LI-01:TI-Osc-Modltr:DelayRaw-SP', 0, 0],
-    ['LI-01:TI-Osc-Modltr:Duration-SP', 0, 0.0],  # us
+    ['LI-01:TI-Osc-Modltr:Duration-SP', 0, 0.0],  # [us]
     ['LI-01:TI-Osc-Modltr:NrPulses-SP', 0, 0.0],
     ['LI-01:TI-Osc-Modltr:Polarity-Sel', 0, 0.0],
     ['LI-01:TI-Osc-Modltr:Src-Sel', 0, 0.0],
@@ -412,7 +415,7 @@ _pvs_timing = [
     ['LI-01:TI-Osc-Modltr:LowLvlLock-Sel', 0, 0.0],
 
     ['LI-01:TI-EGun-MultBun:DelayRaw-SP', 0, 0],
-    ['LI-01:TI-EGun-MultBun:Duration-SP', 0, 0.0],  # us
+    ['LI-01:TI-EGun-MultBun:Duration-SP', 0, 0.0],  # [us]
     ['LI-01:TI-EGun-MultBun:NrPulses-SP', 0, 0.0],
     ['LI-01:TI-EGun-MultBun:Polarity-Sel', 0, 0.0],
     ['LI-01:TI-EGun-MultBun:RFDelayType-Sel', 0, 0.0],
@@ -422,7 +425,7 @@ _pvs_timing = [
     ['LI-01:TI-EGun-MultBun:LowLvlLock-Sel', 0, 0.0],
 
     ['LI-01:TI-EGun-SglBun:DelayRaw-SP', 0, 0],
-    ['LI-01:TI-EGun-SglBun:Duration-SP', 0, 0.0],  # us
+    ['LI-01:TI-EGun-SglBun:Duration-SP', 0, 0.0],  # [us]
     ['LI-01:TI-EGun-SglBun:NrPulses-SP', 0, 0.0],
     ['LI-01:TI-EGun-SglBun:Polarity-Sel', 0, 0.0],
     ['LI-01:TI-EGun-SglBun:RFDelayType-Sel', 0, 0.0],
@@ -432,7 +435,7 @@ _pvs_timing = [
     ['LI-01:TI-EGun-SglBun:LowLvlLock-Sel', 0, 0.0],
 
     ['LI-01:TI-Modltr-1:DelayRaw-SP', 0, 0],
-    ['LI-01:TI-Modltr-1:Duration-SP', 0, 0.0],  # us
+    ['LI-01:TI-Modltr-1:Duration-SP', 0, 0.0],  # [us]
     ['LI-01:TI-Modltr-1:NrPulses-SP', 0, 0.0],
     ['LI-01:TI-Modltr-1:Polarity-Sel', 0, 0.0],
     ['LI-01:TI-Modltr-1:Src-Sel', 0, 0.0],
@@ -441,7 +444,7 @@ _pvs_timing = [
     ['LI-01:TI-Modltr-1:LowLvlLock-Sel', 0, 0.0],
 
     ['LI-01:TI-Modltr-2:DelayRaw-SP', 0, 0],
-    ['LI-01:TI-Modltr-2:Duration-SP', 0, 0.0],  # us
+    ['LI-01:TI-Modltr-2:Duration-SP', 0, 0.0],  # [us]
     ['LI-01:TI-Modltr-2:NrPulses-SP', 0, 0.0],
     ['LI-01:TI-Modltr-2:Polarity-Sel', 0, 0.0],
     ['LI-01:TI-Modltr-2:Src-Sel', 0, 0.0],
@@ -450,7 +453,7 @@ _pvs_timing = [
     ['LI-01:TI-Modltr-2:LowLvlLock-Sel', 0, 0.0],
 
     ['LI-Fam:TI-BPM:DelayRaw-SP', 0, 0],
-    ['LI-Fam:TI-BPM:Duration-SP', 0, 0.0],  # us
+    ['LI-Fam:TI-BPM:Duration-SP', 0, 0.0],  # [us]
     ['LI-Fam:TI-BPM:NrPulses-SP', 0, 0.0],
     ['LI-Fam:TI-BPM:Polarity-Sel', 0, 0.0],
     ['LI-Fam:TI-BPM:RFDelayType-Sel', 0, 0.0],
@@ -460,7 +463,7 @@ _pvs_timing = [
     ['LI-Fam:TI-BPM:LowLvlLock-Sel', 0, 0.0],
 
     ['LI-Fam:TI-ICT:DelayRaw-SP', 0, 0],
-    ['LI-Fam:TI-ICT:Duration-SP', 0, 0.0],  # us
+    ['LI-Fam:TI-ICT:Duration-SP', 0, 0.0],  # [us]
     ['LI-Fam:TI-ICT:NrPulses-SP', 0, 0.0],
     ['LI-Fam:TI-ICT:Polarity-Sel', 0, 0.0],
     ['LI-Fam:TI-ICT:RFDelayType-Sel', 0, 0.0],
@@ -470,7 +473,7 @@ _pvs_timing = [
     ['LI-Fam:TI-ICT:LowLvlLock-Sel', 0, 0.0],
 
     ['LI-Fam:TI-Scrn:DelayRaw-SP', 0, 0],
-    ['LI-Fam:TI-Scrn:Duration-SP', 0, 0.0],  # us
+    ['LI-Fam:TI-Scrn:Duration-SP', 0, 0.0],  # [us]
     ['LI-Fam:TI-Scrn:NrPulses-SP', 0, 0.0],
     ['LI-Fam:TI-Scrn:Polarity-Sel', 0, 0.0],
     ['LI-Fam:TI-Scrn:RFDelayType-Sel', 0, 0.0],
@@ -480,7 +483,7 @@ _pvs_timing = [
     ['LI-Fam:TI-Scrn:LowLvlLock-Sel', 0, 0.0],
 
     ['LI-Glob:TI-LLRF-Kly1:DelayRaw-SP', 0, 0],
-    ['LI-Glob:TI-LLRF-Kly1:Duration-SP', 0, 0.0],  # us
+    ['LI-Glob:TI-LLRF-Kly1:Duration-SP', 0, 0.0],  # [us]
     ['LI-Glob:TI-LLRF-Kly1:NrPulses-SP', 0, 0.0],
     ['LI-Glob:TI-LLRF-Kly1:Polarity-Sel', 0, 0.0],
     ['LI-Glob:TI-LLRF-Kly1:Src-Sel', 0, 0.0],
@@ -489,7 +492,7 @@ _pvs_timing = [
     ['LI-Glob:TI-LLRF-Kly1:LowLvlLock-Sel', 0, 0.0],
 
     ['LI-Glob:TI-LLRF-Kly2:DelayRaw-SP', 0, 0],
-    ['LI-Glob:TI-LLRF-Kly2:Duration-SP', 0, 0.0],  # us
+    ['LI-Glob:TI-LLRF-Kly2:Duration-SP', 0, 0.0],  # [us]
     ['LI-Glob:TI-LLRF-Kly2:NrPulses-SP', 0, 0.0],
     ['LI-Glob:TI-LLRF-Kly2:Polarity-Sel', 0, 0.0],
     ['LI-Glob:TI-LLRF-Kly2:Src-Sel', 0, 0.0],
@@ -498,7 +501,7 @@ _pvs_timing = [
     ['LI-Glob:TI-LLRF-Kly2:LowLvlLock-Sel', 0, 0.0],
 
     ['LI-Glob:TI-LLRF-SHB:DelayRaw-SP', 0, 0],
-    ['LI-Glob:TI-LLRF-SHB:Duration-SP', 0, 0.0],  # us
+    ['LI-Glob:TI-LLRF-SHB:Duration-SP', 0, 0.0],  # [us]
     ['LI-Glob:TI-LLRF-SHB:NrPulses-SP', 0, 0.0],
     ['LI-Glob:TI-LLRF-SHB:Polarity-Sel', 0, 0.0],
     ['LI-Glob:TI-LLRF-SHB:Src-Sel', 0, 0.0],
@@ -507,7 +510,7 @@ _pvs_timing = [
     ['LI-Glob:TI-LLRF-SHB:LowLvlLock-Sel', 0, 0.0],
 
     ['LI-Glob:TI-SSAmp-Kly1:DelayRaw-SP', 0, 0],
-    ['LI-Glob:TI-SSAmp-Kly1:Duration-SP', 0, 0.0],  # us
+    ['LI-Glob:TI-SSAmp-Kly1:Duration-SP', 0, 0.0],  # [us]
     ['LI-Glob:TI-SSAmp-Kly1:NrPulses-SP', 0, 0.0],
     ['LI-Glob:TI-SSAmp-Kly1:Polarity-Sel', 0, 0.0],
     ['LI-Glob:TI-SSAmp-Kly1:Src-Sel', 0, 0.0],
@@ -516,7 +519,7 @@ _pvs_timing = [
     ['LI-Glob:TI-SSAmp-Kly1:LowLvlLock-Sel', 0, 0.0],
 
     ['LI-Glob:TI-SSAmp-Kly2:DelayRaw-SP', 0, 0],
-    ['LI-Glob:TI-SSAmp-Kly2:Duration-SP', 0, 0.0],  # us
+    ['LI-Glob:TI-SSAmp-Kly2:Duration-SP', 0, 0.0],  # [us]
     ['LI-Glob:TI-SSAmp-Kly2:NrPulses-SP', 0, 0.0],
     ['LI-Glob:TI-SSAmp-Kly2:Polarity-Sel', 0, 0.0],
     ['LI-Glob:TI-SSAmp-Kly2:Src-Sel', 0, 0.0],
@@ -525,7 +528,7 @@ _pvs_timing = [
     ['LI-Glob:TI-SSAmp-Kly2:LowLvlLock-Sel', 0, 0.0],
 
     ['LI-Glob:TI-SSAmp-SHB:DelayRaw-SP', 0, 0],
-    ['LI-Glob:TI-SSAmp-SHB:Duration-SP', 0, 0.0],  # us
+    ['LI-Glob:TI-SSAmp-SHB:Duration-SP', 0, 0.0],  # [us]
     ['LI-Glob:TI-SSAmp-SHB:NrPulses-SP', 0, 0.0],
     ['LI-Glob:TI-SSAmp-SHB:Polarity-Sel', 0, 0.0],
     ['LI-Glob:TI-SSAmp-SHB:Src-Sel', 0, 0.0],
@@ -534,7 +537,7 @@ _pvs_timing = [
     ['LI-Glob:TI-SSAmp-SHB:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-01SA:TI-InjDpKckr:DelayRaw-SP', 0, 0],
-    ['SI-01SA:TI-InjDpKckr:Duration-SP', 0, 0.0],  # us
+    ['SI-01SA:TI-InjDpKckr:Duration-SP', 0, 0.0],  # [us]
     ['SI-01SA:TI-InjDpKckr:NrPulses-SP', 0, 0.0],
     ['SI-01SA:TI-InjDpKckr:Polarity-Sel', 0, 0.0],
     ['SI-01SA:TI-InjDpKckr:Src-Sel', 0, 0.0],
@@ -543,7 +546,7 @@ _pvs_timing = [
     ['SI-01SA:TI-InjDpKckr:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-01SA:TI-InjNLKckr:DelayRaw-SP', 0, 0],
-    ['SI-01SA:TI-InjNLKckr:Duration-SP', 0, 0.0],  # us
+    ['SI-01SA:TI-InjNLKckr:Duration-SP', 0, 0.0],  # [us]
     ['SI-01SA:TI-InjNLKckr:NrPulses-SP', 0, 0.0],
     ['SI-01SA:TI-InjNLKckr:Polarity-Sel', 0, 0.0],
     ['SI-01SA:TI-InjNLKckr:Src-Sel', 0, 0.0],
@@ -552,7 +555,7 @@ _pvs_timing = [
     ['SI-01SA:TI-InjNLKckr:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-01SA:TI-PingH:DelayRaw-SP', 0, 0],
-    ['SI-01SA:TI-PingH:Duration-SP', 0, 0.0],  # us
+    ['SI-01SA:TI-PingH:Duration-SP', 0, 0.0],  # [us]
     ['SI-01SA:TI-PingH:NrPulses-SP', 0, 0.0],
     ['SI-01SA:TI-PingH:Polarity-Sel', 0, 0.0],
     ['SI-01SA:TI-PingH:Src-Sel', 0, 0.0],
@@ -561,7 +564,7 @@ _pvs_timing = [
     ['SI-01SA:TI-PingH:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-13C4:TI-DCCT:DelayRaw-SP', 0, 0],
-    ['SI-13C4:TI-DCCT:Duration-SP', 0, 0.0],  # us
+    ['SI-13C4:TI-DCCT:Duration-SP', 0, 0.0],  # [us]
     ['SI-13C4:TI-DCCT:NrPulses-SP', 0, 0.0],
     ['SI-13C4:TI-DCCT:Polarity-Sel', 0, 0.0],
     ['SI-13C4:TI-DCCT:RFDelayType-Sel', 0, 0.0],
@@ -571,7 +574,7 @@ _pvs_timing = [
     ['SI-13C4:TI-DCCT:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-14C4:TI-DCCT:DelayRaw-SP', 0, 0],
-    ['SI-14C4:TI-DCCT:Duration-SP', 0, 0.0],  # us
+    ['SI-14C4:TI-DCCT:Duration-SP', 0, 0.0],  # [us]
     ['SI-14C4:TI-DCCT:NrPulses-SP', 0, 0.0],
     ['SI-14C4:TI-DCCT:Polarity-Sel', 0, 0.0],
     ['SI-14C4:TI-DCCT:RFDelayType-Sel', 0, 0.0],
@@ -581,7 +584,7 @@ _pvs_timing = [
     ['SI-14C4:TI-DCCT:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-19C4:TI-PingV:DelayRaw-SP', 0, 0],
-    ['SI-19C4:TI-PingV:Duration-SP', 0, 0.0],  # us
+    ['SI-19C4:TI-PingV:Duration-SP', 0, 0.0],  # [us]
     ['SI-19C4:TI-PingV:NrPulses-SP', 0, 0.0],
     ['SI-19C4:TI-PingV:Polarity-Sel', 0, 0.0],
     ['SI-19C4:TI-PingV:RFDelayType-Sel', 0, 0.0],
@@ -591,7 +594,7 @@ _pvs_timing = [
     ['SI-19C4:TI-PingV:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Fam:TI-BPM:DelayRaw-SP', 0, 0],
-    ['SI-Fam:TI-BPM:Duration-SP', 0, 0.0],  # us
+    ['SI-Fam:TI-BPM:Duration-SP', 0, 0.0],  # [us]
     ['SI-Fam:TI-BPM:NrPulses-SP', 0, 0.0],
     ['SI-Fam:TI-BPM:Polarity-Sel', 0, 0.0],
     ['SI-Fam:TI-BPM:Src-Sel', 0, 0.0],
@@ -600,7 +603,7 @@ _pvs_timing = [
     ['SI-Fam:TI-BPM:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Glob:TI-BbBProcH-Fid:DelayRaw-SP', 0, 0],
-    ['SI-Glob:TI-BbBProcH-Fid:Duration-SP', 0, 0.0],  # us
+    ['SI-Glob:TI-BbBProcH-Fid:Duration-SP', 0, 0.0],  # [us]
     ['SI-Glob:TI-BbBProcH-Fid:NrPulses-SP', 0, 0.0],
     ['SI-Glob:TI-BbBProcH-Fid:Polarity-Sel', 0, 0.0],
     ['SI-Glob:TI-BbBProcH-Fid:RFDelayType-Sel', 0, 0.0],
@@ -610,7 +613,7 @@ _pvs_timing = [
     ['SI-Glob:TI-BbBProcH-Fid:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Glob:TI-BbBProcH-Trig1:DelayRaw-SP', 0, 0],
-    ['SI-Glob:TI-BbBProcH-Trig1:Duration-SP', 0, 0.0],  # us
+    ['SI-Glob:TI-BbBProcH-Trig1:Duration-SP', 0, 0.0],  # [us]
     ['SI-Glob:TI-BbBProcH-Trig1:NrPulses-SP', 0, 0.0],
     ['SI-Glob:TI-BbBProcH-Trig1:Polarity-Sel', 0, 0.0],
     ['SI-Glob:TI-BbBProcH-Trig1:Src-Sel', 0, 0.0],
@@ -619,7 +622,7 @@ _pvs_timing = [
     ['SI-Glob:TI-BbBProcH-Trig1:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Glob:TI-BbBProcH-Trig2:DelayRaw-SP', 0, 0],
-    ['SI-Glob:TI-BbBProcH-Trig2:Duration-SP', 0, 0.0],  # us
+    ['SI-Glob:TI-BbBProcH-Trig2:Duration-SP', 0, 0.0],  # [us]
     ['SI-Glob:TI-BbBProcH-Trig2:NrPulses-SP', 0, 0.0],
     ['SI-Glob:TI-BbBProcH-Trig2:Polarity-Sel', 0, 0.0],
     ['SI-Glob:TI-BbBProcH-Trig2:Src-Sel', 0, 0.0],
@@ -628,7 +631,7 @@ _pvs_timing = [
     ['SI-Glob:TI-BbBProcH-Trig2:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Glob:TI-BbBProcL-Fid:DelayRaw-SP', 0, 0],
-    ['SI-Glob:TI-BbBProcL-Fid:Duration-SP', 0, 0.0],  # us
+    ['SI-Glob:TI-BbBProcL-Fid:Duration-SP', 0, 0.0],  # [us]
     ['SI-Glob:TI-BbBProcL-Fid:NrPulses-SP', 0, 0.0],
     ['SI-Glob:TI-BbBProcL-Fid:Polarity-Sel', 0, 0.0],
     ['SI-Glob:TI-BbBProcL-Fid:RFDelayType-Sel', 0, 0.0],
@@ -638,7 +641,7 @@ _pvs_timing = [
     ['SI-Glob:TI-BbBProcL-Fid:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Glob:TI-BbBProcL-Trig1:DelayRaw-SP', 0, 0],
-    ['SI-Glob:TI-BbBProcL-Trig1:Duration-SP', 0, 0.0],  # us
+    ['SI-Glob:TI-BbBProcL-Trig1:Duration-SP', 0, 0.0],  # [us]
     ['SI-Glob:TI-BbBProcL-Trig1:NrPulses-SP', 0, 0.0],
     ['SI-Glob:TI-BbBProcL-Trig1:Polarity-Sel', 0, 0.0],
     ['SI-Glob:TI-BbBProcL-Trig1:Src-Sel', 0, 0.0],
@@ -647,7 +650,7 @@ _pvs_timing = [
     ['SI-Glob:TI-BbBProcL-Trig1:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Glob:TI-BbBProcL-Trig2:DelayRaw-SP', 0, 0],
-    ['SI-Glob:TI-BbBProcL-Trig2:Duration-SP', 0, 0.0],  # us
+    ['SI-Glob:TI-BbBProcL-Trig2:Duration-SP', 0, 0.0],  # [us]
     ['SI-Glob:TI-BbBProcL-Trig2:NrPulses-SP', 0, 0.0],
     ['SI-Glob:TI-BbBProcL-Trig2:Polarity-Sel', 0, 0.0],
     ['SI-Glob:TI-BbBProcL-Trig2:Src-Sel', 0, 0.0],
@@ -656,7 +659,7 @@ _pvs_timing = [
     ['SI-Glob:TI-BbBProcL-Trig2:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Glob:TI-BbBProcV-Fid:DelayRaw-SP', 0, 0],
-    ['SI-Glob:TI-BbBProcV-Fid:Duration-SP', 0, 0.0],  # us
+    ['SI-Glob:TI-BbBProcV-Fid:Duration-SP', 0, 0.0],  # [us]
     ['SI-Glob:TI-BbBProcV-Fid:NrPulses-SP', 0, 0.0],
     ['SI-Glob:TI-BbBProcV-Fid:Polarity-Sel', 0, 0.0],
     ['SI-Glob:TI-BbBProcV-Fid:RFDelayType-Sel', 0, 0.0],
@@ -666,7 +669,7 @@ _pvs_timing = [
     ['SI-Glob:TI-BbBProcV-Fid:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Glob:TI-BbBProcV-Trig1:DelayRaw-SP', 0, 0],
-    ['SI-Glob:TI-BbBProcV-Trig1:Duration-SP', 0, 0.0],  # us
+    ['SI-Glob:TI-BbBProcV-Trig1:Duration-SP', 0, 0.0],  # [us]
     ['SI-Glob:TI-BbBProcV-Trig1:NrPulses-SP', 0, 0.0],
     ['SI-Glob:TI-BbBProcV-Trig1:Polarity-Sel', 0, 0.0],
     ['SI-Glob:TI-BbBProcV-Trig1:Src-Sel', 0, 0.0],
@@ -675,7 +678,7 @@ _pvs_timing = [
     ['SI-Glob:TI-BbBProcV-Trig1:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Glob:TI-BbBProcV-Trig2:DelayRaw-SP', 0, 0],
-    ['SI-Glob:TI-BbBProcV-Trig2:Duration-SP', 0, 0.0],  # us
+    ['SI-Glob:TI-BbBProcV-Trig2:Duration-SP', 0, 0.0],  # [us]
     ['SI-Glob:TI-BbBProcV-Trig2:NrPulses-SP', 0, 0.0],
     ['SI-Glob:TI-BbBProcV-Trig2:Polarity-Sel', 0, 0.0],
     ['SI-Glob:TI-BbBProcV-Trig2:Src-Sel', 0, 0.0],
@@ -684,7 +687,7 @@ _pvs_timing = [
     ['SI-Glob:TI-BbBProcV-Trig2:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Glob:TI-LLRF-PsMtn:DelayRaw-SP', 0, 0],
-    ['SI-Glob:TI-LLRF-PsMtn:Duration-SP', 0, 0.0],  # us
+    ['SI-Glob:TI-LLRF-PsMtn:Duration-SP', 0, 0.0],  # [us]
     ['SI-Glob:TI-LLRF-PsMtn:NrPulses-SP', 0, 0.0],
     ['SI-Glob:TI-LLRF-PsMtn:Polarity-Sel', 0, 0.0],
     ['SI-Glob:TI-LLRF-PsMtn:Src-Sel', 0, 0.0],
@@ -693,7 +696,7 @@ _pvs_timing = [
     ['SI-Glob:TI-LLRF-PsMtn:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Glob:TI-LLRF-Rmp:DelayRaw-SP', 0, 0],
-    ['SI-Glob:TI-LLRF-Rmp:Duration-SP', 0, 0.0],  # us
+    ['SI-Glob:TI-LLRF-Rmp:Duration-SP', 0, 0.0],  # [us]
     ['SI-Glob:TI-LLRF-Rmp:NrPulses-SP', 0, 0.0],
     ['SI-Glob:TI-LLRF-Rmp:Polarity-Sel', 0, 0.0],
     ['SI-Glob:TI-LLRF-Rmp:Src-Sel', 0, 0.0],
@@ -702,7 +705,7 @@ _pvs_timing = [
     ['SI-Glob:TI-LLRF-Rmp:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Glob:TI-Mags-Bends:DelayRaw-SP', 0, 0],
-    ['SI-Glob:TI-Mags-Bends:Duration-SP', 0, 0.0],  # us
+    ['SI-Glob:TI-Mags-Bends:Duration-SP', 0, 0.0],  # [us]
     ['SI-Glob:TI-Mags-Bends:NrPulses-SP', 0, 0.0],
     ['SI-Glob:TI-Mags-Bends:Polarity-Sel', 0, 0.0],
     ['SI-Glob:TI-Mags-Bends:Src-Sel', 0, 0.0],
@@ -711,7 +714,7 @@ _pvs_timing = [
     ['SI-Glob:TI-Mags-Bends:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Glob:TI-Mags-Corrs:DelayRaw-SP', 0, 0],
-    ['SI-Glob:TI-Mags-Corrs:Duration-SP', 0, 0.0],  # us
+    ['SI-Glob:TI-Mags-Corrs:Duration-SP', 0, 0.0],  # [us]
     ['SI-Glob:TI-Mags-Corrs:NrPulses-SP', 0, 0.0],
     ['SI-Glob:TI-Mags-Corrs:Polarity-Sel', 0, 0.0],
     ['SI-Glob:TI-Mags-Corrs:Src-Sel', 0, 0.0],
@@ -720,7 +723,7 @@ _pvs_timing = [
     ['SI-Glob:TI-Mags-Corrs:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Glob:TI-Mags-Quads:DelayRaw-SP', 0, 0],
-    ['SI-Glob:TI-Mags-Quads:Duration-SP', 0, 0.0],  # us
+    ['SI-Glob:TI-Mags-Quads:Duration-SP', 0, 0.0],  # [us]
     ['SI-Glob:TI-Mags-Quads:NrPulses-SP', 0, 0.0],
     ['SI-Glob:TI-Mags-Quads:Polarity-Sel', 0, 0.0],
     ['SI-Glob:TI-Mags-Quads:Src-Sel', 0, 0.0],
@@ -729,7 +732,7 @@ _pvs_timing = [
     ['SI-Glob:TI-Mags-Quads:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Glob:TI-Mags-QTrims:DelayRaw-SP', 0, 0],
-    ['SI-Glob:TI-Mags-QTrims:Duration-SP', 0, 0.0],  # us
+    ['SI-Glob:TI-Mags-QTrims:Duration-SP', 0, 0.0],  # [us]
     ['SI-Glob:TI-Mags-QTrims:NrPulses-SP', 0, 0.0],
     ['SI-Glob:TI-Mags-QTrims:Polarity-Sel', 0, 0.0],
     ['SI-Glob:TI-Mags-QTrims:Src-Sel', 0, 0.0],
@@ -738,7 +741,7 @@ _pvs_timing = [
     ['SI-Glob:TI-Mags-QTrims:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Glob:TI-Mags-Sexts:DelayRaw-SP', 0, 0],
-    ['SI-Glob:TI-Mags-Sexts:Duration-SP', 0, 0.0],  # us
+    ['SI-Glob:TI-Mags-Sexts:Duration-SP', 0, 0.0],  # [us]
     ['SI-Glob:TI-Mags-Sexts:NrPulses-SP', 0, 0.0],
     ['SI-Glob:TI-Mags-Sexts:Polarity-Sel', 0, 0.0],
     ['SI-Glob:TI-Mags-Sexts:Src-Sel', 0, 0.0],
@@ -747,7 +750,7 @@ _pvs_timing = [
     ['SI-Glob:TI-Mags-Sexts:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Glob:TI-Mags-Skews:DelayRaw-SP', 0, 0],
-    ['SI-Glob:TI-Mags-Skews:Duration-SP', 0, 0.0],  # us
+    ['SI-Glob:TI-Mags-Skews:Duration-SP', 0, 0.0],  # [us]
     ['SI-Glob:TI-Mags-Skews:NrPulses-SP', 0, 0.0],
     ['SI-Glob:TI-Mags-Skews:Polarity-Sel', 0, 0.0],
     ['SI-Glob:TI-Mags-Skews:Src-Sel', 0, 0.0],
@@ -756,7 +759,7 @@ _pvs_timing = [
     ['SI-Glob:TI-Mags-Skews:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Glob:TI-StrkCam-Trig1:DelayRaw-SP', 0, 0],
-    ['SI-Glob:TI-StrkCam-Trig1:Duration-SP', 0, 0.0],  # us
+    ['SI-Glob:TI-StrkCam-Trig1:Duration-SP', 0, 0.0],  # [us]
     ['SI-Glob:TI-StrkCam-Trig1:NrPulses-SP', 0, 0.0],
     ['SI-Glob:TI-StrkCam-Trig1:Polarity-Sel', 0, 0.0],
     ['SI-Glob:TI-StrkCam-Trig1:RFDelayType-Sel', 0, 0.0],
@@ -766,7 +769,7 @@ _pvs_timing = [
     ['SI-Glob:TI-StrkCam-Trig1:LowLvlLock-Sel', 0, 0.0],
 
     ['SI-Glob:TI-StrkCam-Trig2:DelayRaw-SP', 0, 0],
-    ['SI-Glob:TI-StrkCam-Trig2:Duration-SP', 0, 0.0],  # us
+    ['SI-Glob:TI-StrkCam-Trig2:Duration-SP', 0, 0.0],  # [us]
     ['SI-Glob:TI-StrkCam-Trig2:NrPulses-SP', 0, 0.0],
     ['SI-Glob:TI-StrkCam-Trig2:Polarity-Sel', 0, 0.0],
     ['SI-Glob:TI-StrkCam-Trig2:RFDelayType-Sel', 0, 0.0],
@@ -776,7 +779,7 @@ _pvs_timing = [
     ['SI-Glob:TI-StrkCam-Trig2:LowLvlLock-Sel', 0, 0.0],
 
     ['TB-04:TI-InjSept:DelayRaw-SP', 0, 0],
-    ['TB-04:TI-InjSept:Duration-SP', 0, 0.0],  # us
+    ['TB-04:TI-InjSept:Duration-SP', 0, 0.0],  # [us]
     ['TB-04:TI-InjSept:NrPulses-SP', 0, 0.0],
     ['TB-04:TI-InjSept:Polarity-Sel', 0, 0.0],
     ['TB-04:TI-InjSept:Src-Sel', 0, 0.0],
@@ -785,7 +788,7 @@ _pvs_timing = [
     ['TB-04:TI-InjSept:LowLvlLock-Sel', 0, 0.0],
 
     ['TB-Fam:TI-BPM:DelayRaw-SP', 0, 0],
-    ['TB-Fam:TI-BPM:Duration-SP', 0, 0.0],  # us
+    ['TB-Fam:TI-BPM:Duration-SP', 0, 0.0],  # [us]
     ['TB-Fam:TI-BPM:NrPulses-SP', 0, 0.0],
     ['TB-Fam:TI-BPM:Polarity-Sel', 0, 0.0],
     ['TB-Fam:TI-BPM:Src-Sel', 0, 0.0],
@@ -794,7 +797,7 @@ _pvs_timing = [
     ['TB-Fam:TI-BPM:LowLvlLock-Sel', 0, 0.0],
 
     ['TB-Fam:TI-ICT-Digit:DelayRaw-SP', 0, 0],
-    ['TB-Fam:TI-ICT-Digit:Duration-SP', 0, 0.0],  # us
+    ['TB-Fam:TI-ICT-Digit:Duration-SP', 0, 0.0],  # [us]
     ['TB-Fam:TI-ICT-Digit:NrPulses-SP', 0, 0.0],
     ['TB-Fam:TI-ICT-Digit:Polarity-Sel', 0, 0.0],
     ['TB-Fam:TI-ICT-Digit:Src-Sel', 0, 0.0],
@@ -803,7 +806,7 @@ _pvs_timing = [
     ['TB-Fam:TI-ICT-Digit:LowLvlLock-Sel', 0, 0.0],
 
     ['TB-Fam:TI-ICT-Integ:DelayRaw-SP', 0, 0],
-    ['TB-Fam:TI-ICT-Integ:Duration-SP', 0, 0.0],  # us
+    ['TB-Fam:TI-ICT-Integ:Duration-SP', 0, 0.0],  # [us]
     ['TB-Fam:TI-ICT-Integ:NrPulses-SP', 0, 0.0],
     ['TB-Fam:TI-ICT-Integ:Polarity-Sel', 0, 0.0],
     ['TB-Fam:TI-ICT-Integ:Src-Sel', 0, 0.0],
@@ -812,7 +815,7 @@ _pvs_timing = [
     ['TB-Fam:TI-ICT-Integ:LowLvlLock-Sel', 0, 0.0],
 
     ['TB-Glob:TI-Mags:DelayRaw-SP', 0, 0],
-    ['TB-Glob:TI-Mags:Duration-SP', 0, 0.0],  # us
+    ['TB-Glob:TI-Mags:Duration-SP', 0, 0.0],  # [us]
     ['TB-Glob:TI-Mags:NrPulses-SP', 0, 0.0],
     ['TB-Glob:TI-Mags:Polarity-Sel', 0, 0.0],
     ['TB-Glob:TI-Mags:Src-Sel', 0, 0.0],
@@ -821,7 +824,7 @@ _pvs_timing = [
     ['TB-Glob:TI-Mags:LowLvlLock-Sel', 0, 0.0],
 
     ['TS-01:TI-EjeSeptF:DelayRaw-SP', 0, 0],
-    ['TS-01:TI-EjeSeptF:Duration-SP', 0, 0.0],  # us
+    ['TS-01:TI-EjeSeptF:Duration-SP', 0, 0.0],  # [us]
     ['TS-01:TI-EjeSeptF:NrPulses-SP', 0, 0.0],
     ['TS-01:TI-EjeSeptF:Polarity-Sel', 0, 0.0],
     ['TS-01:TI-EjeSeptF:RFDelayType-Sel', 0, 0.0],
@@ -831,7 +834,7 @@ _pvs_timing = [
     ['TS-01:TI-EjeSeptF:LowLvlLock-Sel', 0, 0.0],
 
     ['TS-01:TI-EjeSeptG:DelayRaw-SP', 0, 0],
-    ['TS-01:TI-EjeSeptG:Duration-SP', 0, 0.0],  # us
+    ['TS-01:TI-EjeSeptG:Duration-SP', 0, 0.0],  # [us]
     ['TS-01:TI-EjeSeptG:NrPulses-SP', 0, 0.0],
     ['TS-01:TI-EjeSeptG:Polarity-Sel', 0, 0.0],
     ['TS-01:TI-EjeSeptG:RFDelayType-Sel', 0, 0.0],
@@ -841,7 +844,7 @@ _pvs_timing = [
     ['TS-01:TI-EjeSeptG:LowLvlLock-Sel', 0, 0.0],
 
     ['TS-04:TI-InjSeptF:DelayRaw-SP', 0, 0],
-    ['TS-04:TI-InjSeptF:Duration-SP', 0, 0.0],  # us
+    ['TS-04:TI-InjSeptF:Duration-SP', 0, 0.0],  # [us]
     ['TS-04:TI-InjSeptF:NrPulses-SP', 0, 0.0],
     ['TS-04:TI-InjSeptF:Polarity-Sel', 0, 0.0],
     ['TS-04:TI-InjSeptF:Src-Sel', 0, 0.0],
@@ -850,7 +853,7 @@ _pvs_timing = [
     ['TS-04:TI-InjSeptF:LowLvlLock-Sel', 0, 0.0],
 
     ['TS-04:TI-InjSeptG-1:DelayRaw-SP', 0, 0],
-    ['TS-04:TI-InjSeptG-1:Duration-SP', 0, 0.0],  # us
+    ['TS-04:TI-InjSeptG-1:Duration-SP', 0, 0.0],  # [us]
     ['TS-04:TI-InjSeptG-1:NrPulses-SP', 0, 0.0],
     ['TS-04:TI-InjSeptG-1:Polarity-Sel', 0, 0.0],
     ['TS-04:TI-InjSeptG-1:Src-Sel', 0, 0.0],
@@ -859,7 +862,7 @@ _pvs_timing = [
     ['TS-04:TI-InjSeptG-1:LowLvlLock-Sel', 0, 0.0],
 
     ['TS-04:TI-InjSeptG-2:DelayRaw-SP', 0, 0],
-    ['TS-04:TI-InjSeptG-2:Duration-SP', 0, 0.0],  # us
+    ['TS-04:TI-InjSeptG-2:Duration-SP', 0, 0.0],  # [us]
     ['TS-04:TI-InjSeptG-2:NrPulses-SP', 0, 0.0],
     ['TS-04:TI-InjSeptG-2:Polarity-Sel', 0, 0.0],
     ['TS-04:TI-InjSeptG-2:Src-Sel', 0, 0.0],
@@ -868,7 +871,7 @@ _pvs_timing = [
     ['TS-04:TI-InjSeptG-2:LowLvlLock-Sel', 0, 0.0],
 
     ['TS-Fam:TI-BPM:DelayRaw-SP', 0, 0],
-    ['TS-Fam:TI-BPM:Duration-SP', 0, 0.0],  # us
+    ['TS-Fam:TI-BPM:Duration-SP', 0, 0.0],  # [us]
     ['TS-Fam:TI-BPM:NrPulses-SP', 0, 0.0],
     ['TS-Fam:TI-BPM:Polarity-Sel', 0, 0.0],
     ['TS-Fam:TI-BPM:Src-Sel', 0, 0.0],
@@ -877,7 +880,7 @@ _pvs_timing = [
     ['TS-Fam:TI-BPM:LowLvlLock-Sel', 0, 0.0],
 
     ['TS-Fam:TI-ICT-Digit:DelayRaw-SP', 0, 0],
-    ['TS-Fam:TI-ICT-Digit:Duration-SP', 0, 0.0],  # us
+    ['TS-Fam:TI-ICT-Digit:Duration-SP', 0, 0.0],  # [us]
     ['TS-Fam:TI-ICT-Digit:NrPulses-SP', 0, 0.0],
     ['TS-Fam:TI-ICT-Digit:Polarity-Sel', 0, 0.0],
     ['TS-Fam:TI-ICT-Digit:Src-Sel', 0, 0.0],
@@ -886,7 +889,7 @@ _pvs_timing = [
     ['TS-Fam:TI-ICT-Digit:LowLvlLock-Sel', 0, 0.0],
 
     ['TS-Fam:TI-ICT-Integ:DelayRaw-SP', 0, 0],
-    ['TS-Fam:TI-ICT-Integ:Duration-SP', 0, 0.0],  # us
+    ['TS-Fam:TI-ICT-Integ:Duration-SP', 0, 0.0],  # [us]
     ['TS-Fam:TI-ICT-Integ:NrPulses-SP', 0, 0.0],
     ['TS-Fam:TI-ICT-Integ:Polarity-Sel', 0, 0.0],
     ['TS-Fam:TI-ICT-Integ:Src-Sel', 0, 0.0],
@@ -895,7 +898,7 @@ _pvs_timing = [
     ['TS-Fam:TI-ICT-Integ:LowLvlLock-Sel', 0, 0.0],
 
     ['TS-Fam:TI-Scrn:DelayRaw-SP', 0, 0],
-    ['TS-Fam:TI-Scrn:Duration-SP', 0, 0.0],  # us
+    ['TS-Fam:TI-Scrn:Duration-SP', 0, 0.0],  # [us]
     ['TS-Fam:TI-Scrn:NrPulses-SP', 0, 0.0],
     ['TS-Fam:TI-Scrn:Polarity-Sel', 0, 0.0],
     ['TS-Fam:TI-Scrn:RFDelayType-Sel', 0, 0.0],
@@ -905,7 +908,7 @@ _pvs_timing = [
     ['TS-Fam:TI-Scrn:LowLvlLock-Sel', 0, 0.0],
 
     ['TS-Glob:TI-Mags:DelayRaw-SP', 0, 0],
-    ['TS-Glob:TI-Mags:Duration-SP', 0, 0.0],  # us
+    ['TS-Glob:TI-Mags:Duration-SP', 0, 0.0],  # [us]
     ['TS-Glob:TI-Mags:NrPulses-SP', 0, 0.0],
     ['TS-Glob:TI-Mags:Polarity-Sel', 0, 0.0],
     ['TS-Glob:TI-Mags:Src-Sel', 0, 0.0],
@@ -915,56 +918,58 @@ _pvs_timing = [
 
     ]
 
+
 _pvs_li_ps = [
-    ['LI-01:PS-LensRev:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-Lens-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-Lens-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-Lens-3:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-Lens-4:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-Slnd-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-Slnd-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-Slnd-3:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-Slnd-4:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-Slnd-5:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-Slnd-6:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-Slnd-7:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-Slnd-8:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-Slnd-9:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-Slnd-10:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-Slnd-11:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-Slnd-12:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-Slnd-13:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-Fam:PS-Slnd-14:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-Fam:PS-Slnd-15:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-Fam:PS-Slnd-16:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-Fam:PS-Slnd-17:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-Fam:PS-Slnd-18:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-Fam:PS-Slnd-19:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-Fam:PS-Slnd-20:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-Fam:PS-Slnd-21:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-CH-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-CH-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-CV-3:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-CH-3:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-CV-4:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-CH-4:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-CV-5:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-CH-5:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-CV-6:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-CH-6:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-CV-7:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-CH-7:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-Fam:PS-QF1:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-Fam:PS-QF2:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-QF3:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-QD1:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-QD2:Current-SP', 0.0, 0.0],  # unit: A
-    ['LI-01:PS-Spect:Current-SP', 0.0, 0.0],  # unit: A
+    ['LI-01:PS-LensRev:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-Lens-1:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-Lens-2:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-Lens-3:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-Lens-4:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-Slnd-1:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-Slnd-2:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-Slnd-3:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-Slnd-4:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-Slnd-5:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-Slnd-6:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-Slnd-7:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-Slnd-8:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-Slnd-9:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-Slnd-10:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-Slnd-11:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-Slnd-12:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-Slnd-13:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-Fam:PS-Slnd-14:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-Fam:PS-Slnd-15:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-Fam:PS-Slnd-16:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-Fam:PS-Slnd-17:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-Fam:PS-Slnd-18:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-Fam:PS-Slnd-19:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-Fam:PS-Slnd-20:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-Fam:PS-Slnd-21:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-CH-1:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-CH-2:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-CV-3:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-CH-3:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-CV-4:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-CH-4:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-CV-5:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-CH-5:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-CV-6:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-CH-6:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-CV-7:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-CH-7:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-Fam:PS-QF1:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-Fam:PS-QF2:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-QF3:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-QD1:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-QD2:Current-SP', 0.0, 0.0],  # [A]
+    ['LI-01:PS-Spect:Current-SP', 0.0, 0.0],  # [A]
     ]
 
-_pvs_pu = [
+
+_pvs_as_pu = [
     ['TB-04:PU-InjSept:PwrState-Sel', _OFF, 0.0],
     ['BO-01D:PU-InjKckr:PwrState-Sel', _OFF, 0.0],
     ['BO-48D:PU-EjeKckr:PwrState-Sel', _OFF, 0.0],
@@ -985,19 +990,26 @@ _pvs_pu = [
     ['TS-04:PU-InjSeptF:Pulse-Sel', 0, 0.0],
     ['TS-01:PU-EjeSeptG:Pulse-Sel', 0, 0.0],
     ['TS-01:PU-EjeSeptF:Pulse-Sel', 0, 0.0],
-    ['TB-04:PU-InjSept:Voltage-SP', 0.0, 0.0],   # [Volt]
-    ['BO-01D:PU-InjKckr:Voltage-SP', 0.0, 0.0],  # [Volt]
-    ['BO-48D:PU-EjeKckr:Voltage-SP', 0.0, 0.0],  # [Volt]
-    ['SI-01SA:PU-InjDpKckr:Voltage-SP', 0.0, 0.0],  # [Volt]
-    ['SI-01SA:PU-InjNLKckr:Voltage-SP', 0.0, 0.0],  # [Volt]
-    ['TS-04:PU-InjSeptG-1:Voltage-SP', 0.0, 0.0],  # [Volt]
-    ['TS-04:PU-InjSeptG-2:Voltage-SP', 0.0, 0.0],  # [Volt]
-    ['TS-04:PU-InjSeptF:Voltage-SP', 0.0, 0.0],  # [Volt]
-    ['TS-01:PU-EjeSeptG:Voltage-SP', 0.0, 0.0],  # [Volt]
-    ['TS-01:PU-EjeSeptF:Voltage-SP', 0.0, 0.0],  # [Volt]
+    ['TB-04:PU-InjSept:Voltage-SP', 0.0, 0.0],   # [V]
+    ['BO-01D:PU-InjKckr:Voltage-SP', 0.0, 0.0],  # [V]
+    ['BO-48D:PU-EjeKckr:Voltage-SP', 0.0, 0.0],  # [V]
+    ['SI-01SA:PU-InjDpKckr:Voltage-SP', 0.0, 0.0],  # [V]
+    ['SI-01SA:PU-InjNLKckr:Voltage-SP', 0.0, 0.0],  # [V]
+    ['TS-04:PU-InjSeptG-1:Voltage-SP', 0.0, 0.0],  # [V]
+    ['TS-04:PU-InjSeptG-2:Voltage-SP', 0.0, 0.0],  # [V]
+    ['TS-04:PU-InjSeptF:Voltage-SP', 0.0, 0.0],  # [V]
+    ['TS-01:PU-EjeSeptG:Voltage-SP', 0.0, 0.0],  # [V]
+    ['TS-01:PU-EjeSeptF:Voltage-SP', 0.0, 0.0],  # [V]
     ]
 
-_rf_bo_pvs = [
+
+_pvs_as_rf = [
+    ['RF-Gen:FreqPhsCont-Sel', 0, 0.0],
+    ['RF-Gen:GeneralFreq-SP', 0.0, 0.0],  # [Hz]
+    ]
+
+
+_pvs_bo_rf = [
     ['BR-RF-DLLRF-01:LIMIT:REVSSA1:S', 0.0, 0.0],
     ['BR-RF-DLLRF-01:LIMIT:REVSSA2:S', 0.0, 0.0],
     ['BR-RF-DLLRF-01:LIMIT:REVSSA3:S', 0.0, 0.0],
@@ -1218,9 +1230,11 @@ _rf_bo_pvs = [
     ['BR-RF-DLLRF-01:FF:POS:S', 0.0, 0.0],
     ['BR-RF-DLLRF-01:FF:DEADBAND:S', 0.0, 0.0],
     ['BR-RF-DLLRF-01:FF:GAIN:CELL2:S', 0.0, 0.0],
-    ['BR-RF-DLLRF-01:FF:GAIN:CELL4:S', 0.0, 0.0]]
+    ['BR-RF-DLLRF-01:FF:GAIN:CELL4:S', 0.0, 0.0],
+    ]
 
-_rf_si_pvs = [
+
+_pvs_si_rf = [
     ['SR-RF-DLLRF-01:LIMIT:REVSSA1:S', 0.0, 0.0],
     ['SR-RF-DLLRF-01:LIMIT:REVSSA2:S', 0.0, 0.0],
     ['SR-RF-DLLRF-01:LIMIT:REVSSA3:S', 0.0, 0.0],
@@ -1449,6 +1463,7 @@ _rf_si_pvs = [
     ['SR-RF-DLLRF-01:FF:GAIN:CELL4:S', 0.0, 0.0],
     ]
 
+
 _pvs_tb_ps = [
     ['TB-Fam:PS-B:OpMode-Sel', _SLOWREF, 0.0],
     ['TB-01:PS-QD1:OpMode-Sel', _SLOWREF, 0.0],
@@ -1474,30 +1489,31 @@ _pvs_tb_ps = [
     ['TB-04:PS-CV-1:OpMode-Sel', _SLOWREF, 0.0],
     ['TB-04:PS-CV-2:OpMode-Sel', _SLOWREF, 0.05],
 
-    ['TB-Fam:PS-B:Current-SP', 0.0, 0.0],    # unit: A
-    ['TB-01:PS-QD1:Current-SP', 0.0, 0.0],   # unit: A
-    ['TB-01:PS-QF1:Current-SP', 0.0, 0.0],   # unit: A
-    ['TB-02:PS-QD2A:Current-SP', 0.0, 0.0],  # unit: A
-    ['TB-02:PS-QF2A:Current-SP', 0.0, 0.0],  # unit: A
-    ['TB-02:PS-QF2B:Current-SP', 0.0, 0.0],  # unit: A
-    ['TB-02:PS-QD2B:Current-SP', 0.0, 0.0],  # unit: A
-    ['TB-03:PS-QF3:Current-SP', 0.0, 0.0],   # unit: A
-    ['TB-03:PS-QD3:Current-SP', 0.0, 0.0],   # unit: A
-    ['TB-04:PS-QF4:Current-SP', 0.0, 0.0],   # unit: A
-    ['TB-04:PS-QD4:Current-SP', 0.0, 0.0],   # unit: A
-    ['TB-01:PS-CH-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['TB-01:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['TB-01:PS-CH-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['TB-01:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['TB-02:PS-CH-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['TB-02:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['TB-02:PS-CH-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['TB-02:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['TB-04:PS-CH-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['TB-04:PS-CH-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['TB-04:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['TB-04:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
+    ['TB-Fam:PS-B:Current-SP', 0.0, 0.0],    # [A]
+    ['TB-01:PS-QD1:Current-SP', 0.0, 0.0],   # [A]
+    ['TB-01:PS-QF1:Current-SP', 0.0, 0.0],   # [A]
+    ['TB-02:PS-QD2A:Current-SP', 0.0, 0.0],  # [A]
+    ['TB-02:PS-QF2A:Current-SP', 0.0, 0.0],  # [A]
+    ['TB-02:PS-QF2B:Current-SP', 0.0, 0.0],  # [A]
+    ['TB-02:PS-QD2B:Current-SP', 0.0, 0.0],  # [A]
+    ['TB-03:PS-QF3:Current-SP', 0.0, 0.0],   # [A]
+    ['TB-03:PS-QD3:Current-SP', 0.0, 0.0],   # [A]
+    ['TB-04:PS-QF4:Current-SP', 0.0, 0.0],   # [A]
+    ['TB-04:PS-QD4:Current-SP', 0.0, 0.0],   # [A]
+    ['TB-01:PS-CH-1:Current-SP', 0.0, 0.0],  # [A]
+    ['TB-01:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['TB-01:PS-CH-2:Current-SP', 0.0, 0.0],  # [A]
+    ['TB-01:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['TB-02:PS-CH-1:Current-SP', 0.0, 0.0],  # [A]
+    ['TB-02:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['TB-02:PS-CH-2:Current-SP', 0.0, 0.0],  # [A]
+    ['TB-02:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['TB-04:PS-CH-1:Current-SP', 0.0, 0.0],  # [A]
+    ['TB-04:PS-CH-2:Current-SP', 0.0, 0.0],  # [A]
+    ['TB-04:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['TB-04:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
     ]
+
 
 _pvs_bo_ps = [
     ['BO-Fam:PS-B-1:OpMode-Sel', _SLOWREF, 0.0],
@@ -1558,121 +1574,123 @@ _pvs_bo_ps = [
     ['BO-47U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
     ['BO-49U:PS-CV:OpMode-Sel', _SLOWREF, 0.05],
 
-    ['BO-Fam:PS-B-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['BO-Fam:PS-B-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['BO-Fam:PS-QD:Current-SP', 0.0, 0.0],   # unit: A
-    ['BO-Fam:PS-QF:Current-SP', 0.0, 0.0],   # unit: A
-    ['BO-02D:PS-QS:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-Fam:PS-SD:Current-SP', 0.0, 0.0],   # unit: A
-    ['BO-Fam:PS-SF:Current-SP', 0.0, 0.0],   # unit: A
-    ['BO-01U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-03U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-05U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-07U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-09U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-11U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-13U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-15U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-17U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-19U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-21U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-23U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-25U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-27U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-29U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-31U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-33U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-35U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-37U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-39U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-41U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-43U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-45U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-47U:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-49D:PS-CH:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-01U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-03U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-05U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-07U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-09U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-11U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-13U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-15U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-17U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-19U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-21U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-23U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-25U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-27U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-29U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-31U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-33U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-35U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-37U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-39U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-41U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-43U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-45U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-47U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
-    ['BO-49U:PS-CV:Current-SP', +0.0, 0.0],  # unit: A
+    ['BO-Fam:PS-B-1:Current-SP', 0.0, 0.0],  # [A]
+    ['BO-Fam:PS-B-2:Current-SP', 0.0, 0.0],  # [A]
+    ['BO-Fam:PS-QD:Current-SP', 0.0, 0.0],   # [A]
+    ['BO-Fam:PS-QF:Current-SP', 0.0, 0.0],   # [A]
+    ['BO-02D:PS-QS:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-Fam:PS-SD:Current-SP', 0.0, 0.0],   # [A]
+    ['BO-Fam:PS-SF:Current-SP', 0.0, 0.0],   # [A]
+    ['BO-01U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-03U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-05U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-07U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-09U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-11U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-13U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-15U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-17U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-19U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-21U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-23U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-25U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-27U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-29U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-31U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-33U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-35U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-37U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-39U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-41U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-43U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-45U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-47U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-49D:PS-CH:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-01U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-03U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-05U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-07U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-09U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-11U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-13U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-15U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-17U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-19U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-21U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-23U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-25U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-27U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-29U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-31U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-33U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-35U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-37U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-39U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-41U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-43U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-45U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-47U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
+    ['BO-49U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
 
-    ['BO-Fam:PS-B-1:Wfm-SP', _DEFAULT_WFM_OTHERS, 0.0],
-    ['BO-Fam:PS-B-2:Wfm-SP', _DEFAULT_WFM_OTHERS, 0.0],
-    ['BO-Fam:PS-QD:Wfm-SP', _DEFAULT_WFM_OTHERS, 0.0],
-    ['BO-Fam:PS-QF:Wfm-SP', _DEFAULT_WFM_OTHERS, 0.0],
-    ['BO-Fam:PS-SD:Wfm-SP', _DEFAULT_WFM_OTHERS, 0.0],
-    ['BO-Fam:PS-SF:Wfm-SP', _DEFAULT_WFM_OTHERS, 0.0],
-    ['BO-02D:PS-QS:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-01U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-03U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-05U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-07U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-09U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-11U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-13U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-15U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-17U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-19U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-21U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-23U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-25U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-27U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-29U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-31U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-33U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-35U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-37U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-39U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-41U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-43U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-45U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-47U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-49D:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-01U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-03U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-05U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-07U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-09U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-11U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-13U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-15U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-17U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-19U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-21U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-23U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-25U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-27U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-29U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-31U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-33U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-35U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-37U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-39U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-41U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-43U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-45U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-47U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],
-    ['BO-49U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0]]
+    ['BO-Fam:PS-B-1:Wfm-SP', _DEFAULT_WFM_OTHERS, 0.0],  # [A]
+    ['BO-Fam:PS-B-2:Wfm-SP', _DEFAULT_WFM_OTHERS, 0.0],  # [A]
+    ['BO-Fam:PS-QD:Wfm-SP', _DEFAULT_WFM_OTHERS, 0.0],  # [A]
+    ['BO-Fam:PS-QF:Wfm-SP', _DEFAULT_WFM_OTHERS, 0.0],  # [A]
+    ['BO-Fam:PS-SD:Wfm-SP', _DEFAULT_WFM_OTHERS, 0.0],  # [A]
+    ['BO-Fam:PS-SF:Wfm-SP', _DEFAULT_WFM_OTHERS, 0.0],  # [A]
+    ['BO-02D:PS-QS:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-01U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-03U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-05U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-07U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-09U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-11U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-13U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-15U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-17U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-19U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-21U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-23U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-25U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-27U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-29U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-31U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-33U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-35U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-37U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-39U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-41U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-43U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-45U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-47U:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-49D:PS-CH:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-01U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-03U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-05U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-07U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-09U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-11U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-13U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-15U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-17U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-19U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-21U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-23U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-25U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-27U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-29U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-31U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-33U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-35U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-37U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-39U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-41U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-43U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-45U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-47U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ['BO-49U:PS-CV:Wfm-SP', _DEFAULT_WFM_FBP, 0.0],  # [A]
+    ]
+
 
 _pvs_ts_ps = [
     ['TS-Fam:PS-B:OpMode-Sel', _SLOWREF, 0.0],
@@ -1699,32 +1717,33 @@ _pvs_ts_ps = [
     ['TS-04:PS-CV-1E2:OpMode-Sel', _SLOWREF, 0.0],
     ['TS-04:PS-CV-2:OpMode-Sel', _SLOWREF, 0.05],
 
-    ['TS-Fam:PS-B:Current-SP', 0.0, 0.0],    # unit: A
-    ['TS-01:PS-QF1A:Current-SP', 0.0, 0.0],   # unit: A
-    ['TS-01:PS-QF1B:Current-SP', 0.0, 0.0],   # unit: A
-    ['TS-02:PS-QF2:Current-SP', 0.0, 0.0],  # unit: A
-    ['TS-03:PS-QF3:Current-SP', 0.0, 0.0],  # unit: A
-    ['TS-04:PS-QF4:Current-SP', 0.0, 0.0],  # unit: A
-    ['TS-02:PS-QD2:Current-SP', 0.0, 0.0],  # unit: A
-    ['TS-04:PS-QD4A:Current-SP', 0.0, 0.0],   # unit: A
-    ['TS-04:PS-QD4B:Current-SP', 0.0, 0.0],   # unit: A
-    ['TS-01:PS-CH:Current-SP', 0.0, 0.0],   # unit: A
-    ['TS-02:PS-CH:Current-SP', 0.0, 0.0],   # unit: A
-    ['TS-03:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['TS-04:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['TS-01:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['TS-01:PS-CV-1E2:Current-SP', 0.0, 0.0],  # unit: A
-    ['TS-01:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['TS-02:PS-CV-0:Current-SP', 0.0, 0.0],  # unit: A
-    ['TS-02:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['TS-03:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['TS-04:PS-CV-0:Current-SP', 0.0, 0.0],  # unit: A
-    ['TS-04:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['TS-04:PS-CV-1E2:Current-SP', 0.0, 0.0],  # unit: A
-    ['TS-04:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
+    ['TS-Fam:PS-B:Current-SP', 0.0, 0.0],    # [A]
+    ['TS-01:PS-QF1A:Current-SP', 0.0, 0.0],   # [A]
+    ['TS-01:PS-QF1B:Current-SP', 0.0, 0.0],   # [A]
+    ['TS-02:PS-QF2:Current-SP', 0.0, 0.0],  # [A]
+    ['TS-03:PS-QF3:Current-SP', 0.0, 0.0],  # [A]
+    ['TS-04:PS-QF4:Current-SP', 0.0, 0.0],  # [A]
+    ['TS-02:PS-QD2:Current-SP', 0.0, 0.0],  # [A]
+    ['TS-04:PS-QD4A:Current-SP', 0.0, 0.0],   # [A]
+    ['TS-04:PS-QD4B:Current-SP', 0.0, 0.0],   # [A]
+    ['TS-01:PS-CH:Current-SP', 0.0, 0.0],   # [A]
+    ['TS-02:PS-CH:Current-SP', 0.0, 0.0],   # [A]
+    ['TS-03:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['TS-04:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['TS-01:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['TS-01:PS-CV-1E2:Current-SP', 0.0, 0.0],  # [A]
+    ['TS-01:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['TS-02:PS-CV-0:Current-SP', 0.0, 0.0],  # [A]
+    ['TS-02:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['TS-03:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['TS-04:PS-CV-0:Current-SP', 0.0, 0.0],  # [A]
+    ['TS-04:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['TS-04:PS-CV-1E2:Current-SP', 0.0, 0.0],  # [A]
+    ['TS-04:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
     ]
 
-_pvs_si_fam_ps = [
+
+_pvs_si_ps_fam = [
     ['SI-Fam:PS-B1B2-1:OpMode-Sel', _SLOWREF, 0.0],
     ['SI-Fam:PS-B1B2-2:OpMode-Sel', _SLOWREF, 0.0],
     ['SI-Fam:PS-QFA:OpMode-Sel', _SLOWREF, 0.0],
@@ -1761,44 +1780,45 @@ _pvs_si_fam_ps = [
     ['SI-Fam:PS-SDP2:OpMode-Sel', _SLOWREF, 0.0],
     ['SI-Fam:PS-SDP3:OpMode-Sel', _SLOWREF, 0.05],
 
-    ['SI-Fam:PS-B1B2-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-B1B2-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-QFA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-QFP:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-QDA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-QDP1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-QDP2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SFA0:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SFA1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SFA2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SFB0:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SFB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SFB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SFP0:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SFP1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SFP2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SDA0:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SDA1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SDA2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SDA3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SDB0:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SDB3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SDP0:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SDP1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SDP2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-Fam:PS-SDP3:Current-SP', 0.0, 0.0],  # unit: A
+    ['SI-Fam:PS-B1B2-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-B1B2-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-QFA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-QFP:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-QDA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-QDP1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-QDP2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SFA0:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SFA1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SFA2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SFB0:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SFB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SFB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SFP0:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SFP1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SFP2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SDA0:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SDA1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SDA2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SDA3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SDB0:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SDB3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SDP0:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SDP1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SDP2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-Fam:PS-SDP3:Current-SP', 0.0, 0.0],  # [A]
     ]
 
-_pvs_si_ch_ps = [
+
+_pvs_si_ps_ch = [
     ['SI-01M2:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
     ['SI-01C1:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
     ['SI-01C2:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
@@ -1920,129 +1940,130 @@ _pvs_si_ch_ps = [
     ['SI-20C4:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
     ['SI-01M1:PS-CH:OpMode-Sel', _SLOWREF, 0.05],
 
-    ['SI-01M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20M2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C2:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C3:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C4:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01M1:PS-CH:Current-SP', 0.0, 0.0],  # unit: A
+    ['SI-01M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20M2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C2:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C3:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C4:PS-CH:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01M1:PS-CH:Current-SP', 0.0, 0.0],  # [A]
     ]
 
-_pvs_si_cv_ps = [
+
+_pvs_si_ps_cv = [
     ['SI-01M2:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
     ['SI-01C1:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
     ['SI-01C2:PS-CV-1:OpMode-Sel', _SLOWREF, 0.0],
@@ -2204,169 +2225,170 @@ _pvs_si_cv_ps = [
     ['SI-20C4:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
     ['SI-01M1:PS-CV:OpMode-Sel', _SLOWREF, 0.05],
 
-    ['SI-01M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20M2:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C2:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C2:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C3:PS-CV-1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C3:PS-CV-2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C4:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01M1:PS-CV:Current-SP', 0.0, 0.0],  # unit: A
+    ['SI-01M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20M2:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C2:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C2:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C3:PS-CV-1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C3:PS-CV-2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C4:PS-CV:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01M1:PS-CV:Current-SP', 0.0, 0.0],  # [A]
     ]
 
-_pvs_si_qs_ps = [
+
+_pvs_si_ps_qs = [
     ['SI-01M2:PS-QS:OpMode-Sel', _SLOWREF, 0.0],
     ['SI-01C1:PS-QS:OpMode-Sel', _SLOWREF, 0.0],
     ['SI-01C2:PS-QS:OpMode-Sel', _SLOWREF, 0.0],
@@ -2468,109 +2490,110 @@ _pvs_si_qs_ps = [
     ['SI-20C3:PS-QS:OpMode-Sel', _SLOWREF, 0.0],
     ['SI-01M1:PS-QS:OpMode-Sel', _SLOWREF, 0.05],
 
-    ['SI-01M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20M2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C2:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C3:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01M1:PS-QS:Current-SP', 0.0, 0.0],  # unit: A
+    ['SI-01M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20M2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C2:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C3:PS-QS:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01M1:PS-QS:Current-SP', 0.0, 0.0],  # [A]
     ]
 
-_pvs_si_qn_ps = [
+
+_pvs_si_ps_qn = [
     ['SI-01M2:PS-QDA:OpMode-Sel', _SLOWREF, 0.0],
     ['SI-01M2:PS-QFA:OpMode-Sel', _SLOWREF, 0.0],
     ['SI-01C1:PS-Q1:OpMode-Sel', _SLOWREF, 0.0],
@@ -2842,286 +2865,287 @@ _pvs_si_qn_ps = [
     ['SI-01M1:PS-QDA:OpMode-Sel', _SLOWREF, 0.0],
     ['SI-01M1:PS-QFA:OpMode-Sel', _SLOWREF, 0.05],
 
-    ['SI-01M2:PS-QDA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01M2:PS-QFA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02M1:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02M1:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02M1:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02M2:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02M2:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02M2:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-02C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03M1:PS-QDP1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03M1:PS-QDP2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03M1:PS-QFP:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03M2:PS-QDP1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03M2:PS-QDP2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03M2:PS-QFP:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-03C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04M1:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04M1:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04M1:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04M2:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04M2:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04M2:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-04C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05M1:PS-QDA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05M1:PS-QFA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05M2:PS-QDA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05M2:PS-QFA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-05C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06M1:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06M1:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06M1:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06M2:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06M2:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06M2:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-06C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07M1:PS-QDP1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07M1:PS-QDP2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07M1:PS-QFP:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07M2:PS-QDP1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07M2:PS-QDP2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07M2:PS-QFP:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-07C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08M1:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08M1:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08M1:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08M2:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08M2:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08M2:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-08C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09M1:PS-QDA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09M1:PS-QFA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09M2:PS-QDA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09M2:PS-QFA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-09C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10M1:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10M1:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10M1:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10M2:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10M2:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10M2:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-10C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11M1:PS-QDP1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11M1:PS-QDP2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11M1:PS-QFP:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11M2:PS-QDP1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11M2:PS-QDP2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11M2:PS-QFP:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-11C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12M1:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12M1:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12M1:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12M2:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12M2:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12M2:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-12C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13M1:PS-QDA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13M1:PS-QFA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13M2:PS-QDA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13M2:PS-QFA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-13C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14M1:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14M1:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14M1:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14M2:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14M2:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14M2:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-14C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15M1:PS-QDP1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15M1:PS-QDP2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15M1:PS-QFP:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15M2:PS-QDP1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15M2:PS-QDP2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15M2:PS-QFP:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-15C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16M1:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16M1:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16M1:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16M2:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16M2:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16M2:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-16C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17M1:PS-QDA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17M1:PS-QFA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17M2:PS-QDA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17M2:PS-QFA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-17C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18M1:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18M1:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18M1:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18M2:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18M2:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18M2:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-18C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19M1:PS-QDP1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19M1:PS-QDP2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19M1:PS-QFP:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19M2:PS-QDP1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19M2:PS-QDP2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19M2:PS-QFP:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-19C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20M1:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20M1:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20M1:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20M2:PS-QDB1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20M2:PS-QDB2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20M2:PS-QFB:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C1:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C1:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C2:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C2:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C3:PS-Q3:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C3:PS-Q4:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C4:PS-Q1:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-20C4:PS-Q2:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01M1:PS-QDA:Current-SP', 0.0, 0.0],  # unit: A
-    ['SI-01M1:PS-QFA:Current-SP', 0.0, 0.0],  # unit: A
+    ['SI-01M2:PS-QDA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01M2:PS-QFA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02M1:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02M1:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02M1:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02M2:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02M2:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02M2:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-02C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03M1:PS-QDP1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03M1:PS-QDP2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03M1:PS-QFP:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03M2:PS-QDP1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03M2:PS-QDP2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03M2:PS-QFP:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-03C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04M1:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04M1:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04M1:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04M2:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04M2:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04M2:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-04C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05M1:PS-QDA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05M1:PS-QFA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05M2:PS-QDA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05M2:PS-QFA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-05C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06M1:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06M1:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06M1:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06M2:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06M2:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06M2:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-06C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07M1:PS-QDP1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07M1:PS-QDP2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07M1:PS-QFP:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07M2:PS-QDP1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07M2:PS-QDP2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07M2:PS-QFP:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-07C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08M1:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08M1:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08M1:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08M2:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08M2:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08M2:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-08C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09M1:PS-QDA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09M1:PS-QFA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09M2:PS-QDA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09M2:PS-QFA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-09C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10M1:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10M1:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10M1:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10M2:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10M2:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10M2:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-10C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11M1:PS-QDP1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11M1:PS-QDP2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11M1:PS-QFP:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11M2:PS-QDP1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11M2:PS-QDP2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11M2:PS-QFP:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-11C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12M1:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12M1:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12M1:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12M2:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12M2:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12M2:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-12C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13M1:PS-QDA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13M1:PS-QFA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13M2:PS-QDA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13M2:PS-QFA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-13C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14M1:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14M1:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14M1:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14M2:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14M2:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14M2:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-14C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15M1:PS-QDP1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15M1:PS-QDP2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15M1:PS-QFP:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15M2:PS-QDP1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15M2:PS-QDP2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15M2:PS-QFP:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-15C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16M1:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16M1:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16M1:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16M2:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16M2:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16M2:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-16C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17M1:PS-QDA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17M1:PS-QFA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17M2:PS-QDA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17M2:PS-QFA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-17C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18M1:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18M1:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18M1:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18M2:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18M2:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18M2:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-18C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19M1:PS-QDP1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19M1:PS-QDP2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19M1:PS-QFP:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19M2:PS-QDP1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19M2:PS-QDP2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19M2:PS-QFP:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-19C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20M1:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20M1:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20M1:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20M2:PS-QDB1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20M2:PS-QDB2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20M2:PS-QFB:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C1:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C1:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C2:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C2:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C3:PS-Q3:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C3:PS-Q4:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C4:PS-Q1:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-20C4:PS-Q2:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01M1:PS-QDA:Current-SP', 0.0, 0.0],  # [A]
+    ['SI-01M1:PS-QFA:Current-SP', 0.0, 0.0],  # [A]
     ]
+
 
 _template_dict = {
     'pvs':
-        _pvs_timing +
-        _pvs_li_egunmod + _pvs_li_llrf + _pvs_li_ps +
-        _pvs_pu +
-        _rf_bo_pvs + _rf_si_pvs +
-        _pvs_tb_ps + _pvs_bo_ps + _pvs_ts_ps +
-        _pvs_si_fam_ps +
-        _pvs_si_ch_ps + _pvs_si_cv_ps +
-        _pvs_si_qs_ps + _pvs_si_qn_ps
+    _pvs_as_ti +
+    _pvs_li_egunmod + _pvs_li_llrf + _pvs_li_ps +
+    _pvs_as_pu +
+    _pvs_as_rf + _pvs_bo_rf + _pvs_si_rf +
+    _pvs_tb_ps + _pvs_bo_ps + _pvs_ts_ps +
+    _pvs_si_ps_fam +
+    _pvs_si_ps_ch + _pvs_si_ps_cv +
+    _pvs_si_ps_qs + _pvs_si_ps_qn
     }
