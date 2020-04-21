@@ -270,6 +270,12 @@ class PSDevState:
             ValueError('Could not reset groups of variables!')
         return True
 
+    def sofb_update(self, status, softintlk, hardintlk):
+        """Update PSDev state of bsmp variables read in SOFB commands."""
+        self._variables[self.psbsmp.CONST.V_PS_STATUS] = status
+        self._variables[self.psbsmp.CONST.V_PS_SOFT_INTERLOCKS] = softintlk
+        self._variables[self.psbsmp.CONST.V_PS_HARD_INTERLOCKS] = hardintlk
+
     # --- private methods ---
 
     @staticmethod

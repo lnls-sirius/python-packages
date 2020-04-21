@@ -57,7 +57,8 @@ class PRUCParmsFBP:
         CONST_PSBSMP.V_V_LOAD,
         CONST_PSBSMP.V_V_DCLINK,
         CONST_PSBSMP.V_TEMP_SWITCHES,
-        CONST_PSBSMP.V_DUTY_CYCLE,)
+        CONST_PSBSMP.V_DUTY_CYCLE,
+        )
     groups[_const.G_SCAN] = (
         # --- common variables
         CONST_PSBSMP.V_PS_STATUS,
@@ -90,7 +91,8 @@ class PRUCParmsFBP:
         CONST_PSBSMP.V_I_LOAD,
         CONST_PSBSMP.V_V_LOAD,
         CONST_PSBSMP.V_V_DCLINK,
-        CONST_PSBSMP.V_TEMP_SWITCHES,)
+        CONST_PSBSMP.V_TEMP_SWITCHES,
+        )
     groups[_const.G_SOFB] = (
         CONST_PSBSMP.V_PS_SETPOINT1,
         CONST_PSBSMP.V_PS_SETPOINT2,
@@ -103,7 +105,20 @@ class PRUCParmsFBP:
         CONST_PSBSMP.V_I_LOAD1,
         CONST_PSBSMP.V_I_LOAD2,
         CONST_PSBSMP.V_I_LOAD3,
-        CONST_PSBSMP.V_I_LOAD4,)
+        CONST_PSBSMP.V_I_LOAD4,
+        CONST_PSBSMP.V_PS_STATUS1,
+        CONST_PSBSMP.V_PS_STATUS2,
+        CONST_PSBSMP.V_PS_STATUS3,
+        CONST_PSBSMP.V_PS_STATUS4,
+        CONST_PSBSMP.V_PS_SOFT_INTERLOCK1,
+        CONST_PSBSMP.V_PS_SOFT_INTERLOCK2,
+        CONST_PSBSMP.V_PS_SOFT_INTERLOCK3,
+        CONST_PSBSMP.V_PS_SOFT_INTERLOCK4,
+        CONST_PSBSMP.V_PS_SOFT_INTERLOCK1,
+        CONST_PSBSMP.V_PS_HARD_INTERLOCK2,
+        CONST_PSBSMP.V_PS_HARD_INTERLOCK3,
+        CONST_PSBSMP.V_PS_HARD_INTERLOCK4,
+        )
 
 
 class PRUCParmsFBP_DCLink:
@@ -146,7 +161,8 @@ class PRUCParmsFBP_DCLink:
         CONST_PSBSMP.V_V_OUT_1,
         CONST_PSBSMP.V_V_OUT_2,
         CONST_PSBSMP.V_V_OUT_3,
-        CONST_PSBSMP.V_DIG_POT_TAP,)
+        CONST_PSBSMP.V_DIG_POT_TAP,
+        )
     groups[_const.G_SCAN] = (
         # --- common variables
         CONST_PSBSMP.V_PS_STATUS,
@@ -170,7 +186,8 @@ class PRUCParmsFBP_DCLink:
         CONST_PSBSMP.V_V_OUT_1,
         CONST_PSBSMP.V_V_OUT_2,
         CONST_PSBSMP.V_V_OUT_3,
-        CONST_PSBSMP.V_DIG_POT_TAP,)
+        CONST_PSBSMP.V_DIG_POT_TAP,
+        )
 
 
 class PRUCParmsFAC_2S_DCDC:
@@ -247,7 +264,8 @@ class PRUCParmsFAC_2S_DCDC:
         CONST_PSBSMP.V_DRIVER_ERROR_1_IIB_2,
         CONST_PSBSMP.V_DRIVER_ERROR_2_IIB_2,
         CONST_PSBSMP.V_IIB_INTERLOCKS_1,
-        CONST_PSBSMP.V_IIB_INTERLOCKS_2)
+        CONST_PSBSMP.V_IIB_INTERLOCKS_2,
+        )
     groups[_const.G_SCAN] = (
         # --- common variables
         CONST_PSBSMP.V_PS_STATUS,
@@ -303,7 +321,8 @@ class PRUCParmsFAC_2S_DCDC:
         CONST_PSBSMP.V_DRIVER_ERROR_1_IIB_2,
         CONST_PSBSMP.V_DRIVER_ERROR_2_IIB_2,
         CONST_PSBSMP.V_IIB_INTERLOCKS_1,
-        CONST_PSBSMP.V_IIB_INTERLOCKS_2)
+        CONST_PSBSMP.V_IIB_INTERLOCKS_2,
+        )
 
 
 class PRUCParmsFAC_2P4S_DCDC:
@@ -569,7 +588,8 @@ class PRUCParmsFAC_2P4S_DCDC:
         CONST_PSBSMP.V_IIB_INTERLOCKS_5,
         CONST_PSBSMP.V_IIB_INTERLOCKS_6,
         CONST_PSBSMP.V_IIB_INTERLOCKS_7,
-        CONST_PSBSMP.V_IIB_INTERLOCKS_8,)
+        CONST_PSBSMP.V_IIB_INTERLOCKS_8,
+        )
 
 
 class PRUCParmsFAC_DCDC:
@@ -627,7 +647,8 @@ class PRUCParmsFAC_DCDC:
         CONST_PSBSMP.V_V_CAPBANK,
         CONST_PSBSMP.V_TEMP_INDUCTORS,
         CONST_PSBSMP.V_TEMP_IGBTS,
-        CONST_PSBSMP.V_DUTY_CYCLE,)
+        CONST_PSBSMP.V_DUTY_CYCLE,
+        )
     groups[_const.G_SCAN] = (
         # --- common variables
         CONST_PSBSMP.V_PS_STATUS,
@@ -663,7 +684,8 @@ class PRUCParmsFAC_DCDC:
         CONST_PSBSMP.V_V_CAPBANK,
         CONST_PSBSMP.V_TEMP_INDUCTORS,
         CONST_PSBSMP.V_TEMP_IGBTS,
-        CONST_PSBSMP.V_DUTY_CYCLE,)
+        CONST_PSBSMP.V_DUTY_CYCLE,
+        )
 
 
 class PRUCParmsFAC_2S_ACDC:
@@ -750,7 +772,8 @@ class PRUCParmsFAC_2S_ACDC:
         CONST_PSBSMP.V_I_OUT_RECTIFIER,
         CONST_PSBSMP.V_TEMP_HEATSINK,
         CONST_PSBSMP.V_TEMP_INDUCTORS,
-        CONST_PSBSMP.V_DUTY_CYCLE,)
+        CONST_PSBSMP.V_DUTY_CYCLE,
+        )
 
 
 class PRUCParmsFAC_2P4S_ACDC:
@@ -804,7 +827,8 @@ class PRUCParmsFAC_2P4S_ACDC:
         CONST_PSBSMP.V_TEMP_HEATSINK_CMD_IIB,
         CONST_PSBSMP.V_I_LEAKAGE_CMD_IIB,
         CONST_PSBSMP.V_IIB_INTERLOCKS_IS,
-        CONST_PSBSMP.V_IIB_INTERLOCKS_CMD,)
+        CONST_PSBSMP.V_IIB_INTERLOCKS_CMD,
+        )
     groups[_const.G_SCAN] = (
         # --- common variables
         CONST_PSBSMP.V_PS_STATUS,
@@ -839,7 +863,8 @@ class PRUCParmsFAC_2P4S_ACDC:
         CONST_PSBSMP.V_TEMP_HEATSINK_CMD_IIB,
         CONST_PSBSMP.V_I_LEAKAGE_CMD_IIB,
         CONST_PSBSMP.V_IIB_INTERLOCKS_IS,
-        CONST_PSBSMP.V_IIB_INTERLOCKS_CMD,)
+        CONST_PSBSMP.V_IIB_INTERLOCKS_CMD,
+        )
 
 
 class PRUCParmsFAP:
@@ -911,7 +936,8 @@ class PRUCParmsFAP:
         CONST_PSBSMP.V_TEMP_INDUCTOR_IIB,
         CONST_PSBSMP.V_TEMP_HEATSINK_IIB,
         CONST_PSBSMP.V_I_LEAKAGE_IIB,
-        CONST_PSBSMP.V_IIB_INTERLOCKS,)
+        CONST_PSBSMP.V_IIB_INTERLOCKS,
+        )
     groups[_const.G_SCAN] = (
         # --- common variables
         CONST_PSBSMP.V_PS_STATUS,
@@ -961,7 +987,8 @@ class PRUCParmsFAP:
         CONST_PSBSMP.V_TEMP_INDUCTOR_IIB,
         CONST_PSBSMP.V_TEMP_HEATSINK_IIB,
         CONST_PSBSMP.V_I_LEAKAGE_IIB,
-        CONST_PSBSMP.V_IIB_INTERLOCKS,)
+        CONST_PSBSMP.V_IIB_INTERLOCKS,
+        )
 
 
 class PRUCParmsFAP_4P:
@@ -1091,7 +1118,8 @@ class PRUCParmsFAP_4P:
         CONST_PSBSMP.V_I_MOD_1,
         CONST_PSBSMP.V_I_MOD_2,
         CONST_PSBSMP.V_I_MOD_3,
-        CONST_PSBSMP.V_I_MOD_4)
+        CONST_PSBSMP.V_I_MOD_4,
+        )
     groups[_const.G_SCAN] = (
         CONST_PSBSMP.V_PS_STATUS,
         CONST_PSBSMP.V_PS_SETPOINT,
@@ -1200,7 +1228,8 @@ class PRUCParmsFAP_4P:
         CONST_PSBSMP.V_I_MOD_1,
         CONST_PSBSMP.V_I_MOD_2,
         CONST_PSBSMP.V_I_MOD_3,
-        CONST_PSBSMP.V_I_MOD_4)
+        CONST_PSBSMP.V_I_MOD_4,
+        )
 
 
 class PRUCParmsFAP_2P2S:
@@ -1329,7 +1358,8 @@ class PRUCParmsFAP_2P2S:
         CONST_PSBSMP.V_I_MOD_1,
         CONST_PSBSMP.V_I_MOD_2,
         CONST_PSBSMP.V_I_MOD_3,
-        CONST_PSBSMP.V_I_MOD_4)
+        CONST_PSBSMP.V_I_MOD_4,
+        )
     groups[_const.G_SCAN] = (
         # --- common variables
         CONST_PSBSMP.V_PS_STATUS,
@@ -1437,4 +1467,5 @@ class PRUCParmsFAP_2P2S:
         CONST_PSBSMP.V_I_MOD_1,
         CONST_PSBSMP.V_I_MOD_2,
         CONST_PSBSMP.V_I_MOD_3,
-        CONST_PSBSMP.V_I_MOD_4)
+        CONST_PSBSMP.V_I_MOD_4,
+        )

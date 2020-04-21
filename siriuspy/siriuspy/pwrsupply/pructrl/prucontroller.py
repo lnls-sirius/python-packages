@@ -12,6 +12,7 @@ from threading import Lock as _Lock
 
 from ...bsmp import SerialError as _SerialError
 
+from ..csdev import UDC_MAX_NR_DEV as _UDC_MAX_NR_DEV
 from ..bsmp.constants import _const_bsmp
 from ..bsmp.constants import __version__ as _firmware_version_siriuspy
 
@@ -350,7 +351,6 @@ class PRUController:
         # execute SOFB setpoint
         self._bsmp_update_sofb_setpoint(value)
 
-
         return True
 
     @property
@@ -626,6 +626,9 @@ class PRUController:
         # update sofb state
         self._udc.sofb_update()
 
+        # update psdevstate objects with sofb bsmp variables
+        self._sofb_update_psdevstate()
+
         # # update all other device parameters
         # self._bsmp_update()
 
@@ -771,3 +774,21 @@ class PRUController:
         # create list of variable ids
         groups_list = [groups_dict[gid] for gid in group_ids]
         return groups_list
+
+    def _sofb_update_psdevstate(self):
+        # update psdevstate with SOFB bsmp variables
+
+        # get SOFB bsmp variables from UDC
+        status1, status2 = self._udc.sofb_status()
+        soft1, soft2 = self._udc.sofb_softintlk()
+        hard1, hard2 = self._udc.sofb_hardintlk()
+
+        for dev_id in self._device_ids:
+            # select variables of first or second device
+            idx = dev_id - self._device_ids[0]
+            (status, soft, hard, idx) = \
+                (status1, soft1, hard1, idx) if idx < _UDC_MAX_NR_DEV \
+                else (status2, soft2, hard2, idx - _UDC_MAX_NR_DEV)
+            # update psdevstate bariables
+            psupply = self._psupplies[dev_id]
+            psupply.sofb_update(status[idx], soft[idx], hard[idx])

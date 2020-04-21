@@ -556,6 +556,9 @@ class FBP(PSBSMP):
         self._sofb_ps_setpoint = None
         self._sofb_ps_reference = None
         self._sofb_ps_iload = None
+        self._sofb_status = None
+        self._sofb_softintlk = None
+        self._sofb_hardintlk = None
 
     # --- SOFB methods ---
 
@@ -574,17 +577,36 @@ class FBP(PSBSMP):
         """."""
         return self._sofb_ps_iload
 
+    @property
+    def sofb_ps_status(self):
+        """."""
+        return self._sofb_status
+
+    @property
+    def sofb_ps_softintlk(self):
+        """."""
+        return self._sofb_softintlk
+
+    @property
+    def sofb_ps_hardintlk(self):
+        """."""
+        return self._sofb_hardintlk
+
     def sofb_ps_setpoint_set(self, value):
         """."""
         self.ps_function_set_slowref_fbp(value)
-
 
     def sofb_update(self):
         """."""
         data = self._sofb_read_group_of_variables()
         (self._sofb_ps_setpoint,
          self._sofb_ps_reference,
-         self._sofb_ps_iload) = data
+         self._sofb_ps_iload,
+         self._sofb_status,
+         self._sofb_softintlk,
+         self._sofb_hardintlk) = data
+
+    # --- private methods ---
 
     def _sofb_read_group_of_variables(self):
         # print('{:<30s} : {:>9.3f} ms'.format(
@@ -594,14 +616,15 @@ class FBP(PSBSMP):
         ack, values = self.read_group_of_variables(
             group_id=group_id)
         if ack == self.CONST_BSMP.ACK_OK:
-            setpoints, references, iload = _np.array(values).reshape((3, -1))
+            setpoints, references, iload, status, softintlk, hardintlk = \
+                _np.array(values).reshape((6, -1))
         else:
             print('Anomalous bsmp communication if sofb read group: ', ack)
 
         # print('{:<30s} : {:>9.3f} ms'.format(
         #     'PSBSMP._sofb_read_group_of_variables (end)', 1e3*(_time.time() % 1)))
 
-        return setpoints, references, iload
+        return setpoints, references, iload, status, softintlk, hardintlk
 
 
 class FAC_DCDC(PSBSMP):

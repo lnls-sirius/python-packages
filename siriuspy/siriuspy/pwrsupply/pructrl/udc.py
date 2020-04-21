@@ -127,6 +127,33 @@ class UDC:
 
     # --- SOFBCurrent methods
 
+    def sofb_status(self):
+        """Return SOFB status."""
+        if self._is_fbp:
+            dev1, dev2 = self._dev_first, self._dev_second
+            val1 = dev1.sofb_ps_status
+            val2 = dev2.sofb_ps_status if dev2 else None
+            return val1, val2
+        return None
+
+    def sofb_softintlk(self):
+        """Return SOFB softintlk."""
+        if self._is_fbp:
+            dev1, dev2 = self._dev_first, self._dev_second
+            val1 = dev1.sofb_ps_softintlk
+            val2 = dev2.sofb_ps_softintlk if dev2 else None
+            return val1, val2
+        return None
+
+    def sofb_hardintlk(self):
+        """Return SOFB hardintlk."""
+        if self._is_fbp:
+            dev1, dev2 = self._dev_first, self._dev_second
+            val1 = dev1.sofb_ps_hardintlk
+            val2 = dev2.sofb_ps_hardintlk if dev2 else None
+            return val1, val2
+        return None
+
     def sofb_current_rb_get(self):
         """Return SOFBCurrent-RB."""
         if self._is_fbp:
