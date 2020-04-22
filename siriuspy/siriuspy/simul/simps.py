@@ -26,11 +26,14 @@ class SimPSTypeModel(_Simulator):
     _properties_base = (
         'PwrState-Sel', 'PwrState-Sts',
         'OpMode-Sel', 'OpMode-Sts',
+        'CtrlMode-Mon',
         )
 
     _properties = _properties_base + (
         'Current-SP', 'Current-RB',
         'CurrentRef-Mon', 'Current-Mon',
+        'KL-SP', 'KL-RB',
+        'KLRef-Mon', 'KL-Mon',
         # FBP-specific (added only if PS is of FBP pstype!)
         'SOFBCurrent-SP', 'SOFBCurrent-RB',
         'SOFBCurrentRef-Mon', 'SOFBCurrent-Mon',
