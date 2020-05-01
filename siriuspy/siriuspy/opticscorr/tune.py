@@ -1,7 +1,9 @@
 """Main module of AS-AP-TuneCorr IOC."""
 
 import numpy as _np
+from epics import PV as _PV
 
+from ..envars import VACA_PREFIX as _vaca_prefix
 from ..namesys import SiriusPVName as _SiriusPVName
 
 from .csdev import Const as _Const
@@ -24,27 +26,28 @@ class TuneCorrApp(_BaseApp):
         self._set_new_refkl_cmd_count = 0
 
         if self._acc == 'SI':
-            self._meas_config_dkl_qf = 0.0500
-            self._meas_config_dkl_qd = 0.0500
+            self._meas_config_dkl_qf = 0.020
+            self._meas_config_dkl_qd = 0.020
 
         # Connect to Quadrupoles Families
         self._psfam_refkl = {fam: 0 for fam in self._psfams}
         self._lastcalc_deltakl = {fam: 0 for fam in self._psfams}
         for fam in self._psfams:
-            self._psfam_intstr_rb_pvs[fam].add_callback(
-                self._callback_init_refkl)
-            self._psfam_intstr_rb_pvs[fam].add_callback(
-                self._callback_estimate_deltatune)
+            self._psfam_intstr_rb_pvs[fam] = _PV(
+                _vaca_prefix+self._acc+'-Fam:PS-'+fam+':KL-RB',
+                callback=[self._callback_init_refkl,
+                          self._callback_estimate_deltatune],
+                connection_timeout=0.05)
 
         self.map_pv2write.update({
             'DeltaTuneX-SP': self.set_dtune_x,
             'DeltaTuneY-SP': self.set_dtune_y,
             'SetNewRefKL-Cmd': self.cmd_set_newref,
-            'MeasConfigDeltaKLQF-SP': self.set_meas_config_dkl_qf,
-            'MeasConfigDeltaKLQD-SP': self.set_meas_config_dkl_qd,
+            'MeasConfigDeltaKLFamQF-SP': self.set_meas_config_dkl_qf,
+            'MeasConfigDeltaKLFamQD-SP': self.set_meas_config_dkl_qd,
         })
 
-    def update_corrparams(self):
+    def update_corrparams_pvs(self):
         """Set initial correction parameters PVs values."""
         self.run_callbacks('RespMat-Mon', self._nominal_matrix)
         self.run_callbacks('NominalKL-Mon', self._psfam_nom_intstr)
@@ -74,19 +77,19 @@ class TuneCorrApp(_BaseApp):
         return False
 
     def set_meas_config_dkl_qf(self, value):
-        """Set MeasConfigDeltaKLQF."""
+        """Set MeasConfigDeltaKLFamQF."""
         if value == self._meas_config_dkl_qf:
             return False
         self._meas_config_dkl_qf = value
-        self.run_callbacks('MeasConfigDeltaKLQF-RB', value)
+        self.run_callbacks('MeasConfigDeltaKLFamQF-RB', value)
         return True
 
     def set_meas_config_dkl_qd(self, value):
-        """Set MeasConfigDeltaKLQD."""
+        """Set MeasConfigDeltaKLFamQD."""
         if value == self._meas_config_dkl_qd:
             return False
         self._meas_config_dkl_qd = value
-        self.run_callbacks('MeasConfigDeltaKLQD-RB', value)
+        self.run_callbacks('MeasConfigDeltaKLFamQD-RB', value)
         return True
 
     # ---------- auxiliar methods ----------
@@ -149,7 +152,9 @@ class TuneCorrApp(_BaseApp):
             deltakl = self._meas_config_dkl_qf
         else:
             deltakl = self._meas_config_dkl_qd
-        return deltakl
+        fam_idx = self._psfams.index(fam)
+        nelm = self._psfam_nelm[fam_idx]
+        return deltakl/nelm
 
     def _update_ref(self):
         if (self._status & 0x1) == 0:  # Check connection
@@ -161,7 +166,6 @@ class TuneCorrApp(_BaseApp):
                         'Log-Mon',
                         'ERR: Received a None value from {}.'.format(fam))
                     return False
-                self._psfam_intstr_rb[fam] = value
                 self._psfam_refkl[fam] = value
                 self.run_callbacks(
                     'RefKL' + fam + '-Mon', self._psfam_refkl[fam])

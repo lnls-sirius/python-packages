@@ -26,13 +26,25 @@ class Const(_csdev.Const):
     SyncCorr = _csdev.Const.register('SyncCorr', _et.OFF_ON)
     MeasCmd = _csdev.Const.register('MeasCmd', _et.MEAS_CMD)
     MeasMon = _csdev.Const.register('MeasMon', _et.MEAS_MON)
+
     BO_SFAMS_CHROMCORR = ('SF', 'SD')
+    BO_SFAMS_NELM = (25, 10)
+
     SI_SFAMS_CHROMCORR = ('SFA1', 'SFA2', 'SDA1', 'SDA2', 'SDA3',
                           'SFB1', 'SFB2', 'SDB1', 'SDB2', 'SDB3',
                           'SFP1', 'SFP2', 'SDP1', 'SDP2', 'SDP3')
+    SI_SFAMS_NELM = (10, 10, 10, 10, 10,
+                     20, 20, 20, 20, 20,
+                     10, 10, 10, 10, 10)
+
     BO_QFAMS_TUNECORR = ('QF', 'QD')
+    BO_QFAMS_NELM = (50, 25)
+
     SI_QFAMS_TUNECORR = ('QFA', 'QFB', 'QFP',
                          'QDA', 'QDB1', 'QDB2', 'QDP1', 'QDP2')
+    SI_QFAMS_NELM = (10, 20, 10,
+                     10, 20, 20, 10, 10)
+
     STATUS_LABELS = ('PS Connection', 'PS PwrState', 'PS OpMode',
                      'PS CtrlMode', 'Timing Config')
 
@@ -139,18 +151,18 @@ def get_chrom_database(acc):
         pvs_database['MeasChromY-Mon'] = {
             'type': 'float', 'value': 0, 'prec': 6}
 
-        pvs_database['MeasConfigDeltaSLSF-SP'] = {
-            'type': 'float', 'value': 0.1000, 'unit': '1/m2',
-            'prec': 4, 'lolim': 0.0020, 'hilim': 1.0000}
-        pvs_database['MeasConfigDeltaSLSF-RB'] = {
-            'type': 'float', 'value': 0.1000, 'unit': '1/m2',
-            'prec': 4, 'lolim': 0.0020, 'hilim': 1.0000}
-        pvs_database['MeasConfigDeltaSLSD-SP'] = {
-            'type': 'float', 'value': 0.1000, 'unit': '1/m2',
-            'prec': 4, 'lolim': 0.0020, 'hilim': 1.0000}
-        pvs_database['MeasConfigDeltaSLSD-RB'] = {
-            'type': 'float', 'value': 0.1000, 'unit': '1/m2',
-            'prec': 4, 'lolim': 0.0020, 'hilim': 1.0000}
+        pvs_database['MeasConfigDeltaSLFamSF-SP'] = {
+            'type': 'float', 'value': 10.000, 'unit': '1/m2',
+            'prec': 3, 'lolim': 0.100, 'hilim': 50.000}
+        pvs_database['MeasConfigDeltaSLFamSF-RB'] = {
+            'type': 'float', 'value': 10.000, 'unit': '1/m2',
+            'prec': 3, 'lolim': 0.100, 'hilim': 50.000}
+        pvs_database['MeasConfigDeltaSLFamSD-SP'] = {
+            'type': 'float', 'value': 10.000, 'unit': '1/m2',
+            'prec': 3, 'lolim': 0.100, 'hilim': 50.000}
+        pvs_database['MeasConfigDeltaSLFamSD-RB'] = {
+            'type': 'float', 'value': 10.000, 'unit': '1/m2',
+            'prec': 3, 'lolim': 0.100, 'hilim': 50.000}
         pvs_database['MeasConfigWait-SP'] = {
             'type': 'float', 'value': 1, 'unit': 's',
             'prec': 3, 'lolim': 0.005, 'hilim': 100}
@@ -252,18 +264,18 @@ def get_tune_database(acc):
             'type': 'enum', 'enums': _et.OFF_ON, 'value': _ct.SyncCorr.Off}
         pvs_database['ConfigTiming-Cmd'] = {'type': 'int', 'value': 0}
 
-        pvs_database['MeasConfigDeltaKLQF-SP'] = {
-            'type': 'float', 'value': 0.0500, 'unit': '1/m',
-            'prec': 4, 'lolim': 0.0020, 'hilim': 0.5000}
-        pvs_database['MeasConfigDeltaKLQF-RB'] = {
-            'type': 'float', 'value': 0.0500, 'unit': '1/m',
-            'prec': 4, 'lolim': 0.0020, 'hilim': 0.5000}
-        pvs_database['MeasConfigDeltaKLQD-SP'] = {
-            'type': 'float', 'value': 0.0500, 'unit': '1/m',
-            'prec': 4, 'lolim': 0.0020, 'hilim': 0.5000}
-        pvs_database['MeasConfigDeltaKLQD-RB'] = {
-            'type': 'float', 'value': 0.0500, 'unit': '1/m',
-            'prec': 4, 'lolim': 0.0020, 'hilim': 0.5000}
+        pvs_database['MeasConfigDeltaKLFamQF-SP'] = {
+            'type': 'float', 'value': 0.020, 'unit': '1/m',
+            'prec': 3, 'lolim': 0.001, 'hilim': 0.100}
+        pvs_database['MeasConfigDeltaKLFamQF-RB'] = {
+            'type': 'float', 'value': 0.020, 'unit': '1/m',
+            'prec': 3, 'lolim': 0.001, 'hilim': 0.100}
+        pvs_database['MeasConfigDeltaKLFamQD-SP'] = {
+            'type': 'float', 'value': 0.020, 'unit': '1/m',
+            'prec': 3, 'lolim': 0.001, 'hilim': 0.100}
+        pvs_database['MeasConfigDeltaKLFamQD-RB'] = {
+            'type': 'float', 'value': 0.020, 'unit': '1/m',
+            'prec': 3, 'lolim': 0.001, 'hilim': 0.100}
         pvs_database['MeasConfigWait-SP'] = {
             'type': 'float', 'value': 1, 'unit': 's',
             'prec': 3, 'lolim': 0.005, 'hilim': 100}

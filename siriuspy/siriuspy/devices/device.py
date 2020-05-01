@@ -2,6 +2,8 @@
 
 import time as _time
 
+from epics.ca import ChannelAccessGetFailure as _ChannelAccessGetFailure
+
 from ..envars import VACA_PREFIX as _VACA_PREFIX
 from ..epics import CONNECTION_TIMEOUT as _CONN_TIMEOUT
 from ..epics import PV as _PV
@@ -92,15 +94,13 @@ class Device:
     def __getitem__(self, propty):
         """Return value of property."""
         pvobj = self._pvs[propty]
-        # NOTE: should pvobj.value be used instead of pvobj.get()?
-        # since we started using Device strange behaviour
-        # has been observed, whereas before, using pvobj.value in
-        # ps and pu-conv IOCs it was not. In pu-conv, for example,
-        # None values, with ca.get timeouts, show up right after a
-        # successful connected-check!
-        #
-        # value = pvobj.value
-        value = pvobj.get()
+        try:
+            value = pvobj.get()
+        except _ChannelAccessGetFailure:
+            # This is raised in a Virtual Circuit Disconnect (192)
+            # event. If the PV IOC goes down, for example.
+            print('Could not get value of {}'.format(pvobj.pvname))
+            value = None
         return value
 
     def __setitem__(self, propty, value):

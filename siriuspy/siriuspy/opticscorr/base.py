@@ -44,20 +44,24 @@ class BaseApp(_Callback):
             self._pvs_database = _get_tune_database(self._acc)
             if self._acc == 'BO':
                 self._psfams = _Const.BO_QFAMS_TUNECORR
+                self._psfam_nelm = _Const.BO_QFAMS_NELM
             else:
                 self._psfams = _Const.SI_QFAMS_TUNECORR
+                self._psfam_nelm = _Const.SI_QFAMS_NELM
                 self._trigger_name = 'SI-Glob:TI-Mags-Quads'
                 self._event_name = 'TunSI'
         else:
             self._pvs_database = _get_chrom_database(self._acc)
             if self._acc == 'BO':
                 self._psfams = _Const.BO_SFAMS_CHROMCORR
+                self._psfam_nelm = _Const.BO_SFAMS_NELM
             else:
                 self._psfams = _Const.SI_SFAMS_CHROMCORR
+                self._psfam_nelm = _Const.SI_SFAMS_NELM
                 self._trigger_name = 'SI-Glob:TI-Mags-Sexts'
                 self._event_name = 'ChromSI'
 
-        self._status = ALLSET
+        self._status = ALLSET if self._acc == 'SI' else 0x0f
 
         self._optprm_est = [0.0, 0.0]
 
@@ -138,10 +142,7 @@ class BaseApp(_Callback):
             intstr = 'KL' if self._optics_param == 'tune' else 'SL'
             self._psfam_intstr_sp_pvs[fam] = _PV(
                 pss.substitute(propty_name=intstr, propty_suffix='SP'),
-                connection_timeout=0.05)
-            self._psfam_intstr_rb_pvs[fam] = _PV(
-                pss.substitute(propty_name=intstr, propty_suffix='RB'),
-                connection_callback=self._callback_conn_psfam_intstr_rb,
+                connection_callback=self._callback_conn_psfam,
                 connection_timeout=0.05)
 
             self._psfam_pwrstate_sel_pvs[fam] = _PV(
@@ -273,7 +274,7 @@ class BaseApp(_Callback):
         """Set initial PV values."""
         self.run_callbacks('ConfigName-SP', self._config_name)
         self.run_callbacks('ConfigName-RB', self._config_name)
-        self.update_corrparams()
+        self.update_corrparams_pvs()
         self.run_callbacks('Log-Mon', 'Started.')
         self.run_callbacks('Status-Mon', self._status)
         if self._optics_param == 'tune':
@@ -286,7 +287,7 @@ class BaseApp(_Callback):
             self.run_callbacks('ChromX-Mon', self._optprm_est[0])
             self.run_callbacks('ChromY-Mon', self._optprm_est[1])
 
-    def update_corrparams(self):
+    def update_corrparams_pvs(self):
         """Set initial correction parameters PVs values."""
         raise NotImplementedError
 
@@ -320,21 +321,27 @@ class BaseApp(_Callback):
         """Set configuration name."""
         [done, corrparams] = self._get_corrparams(value)
         if done:
-            self.cn_handler.set_config_name(corrparams[0])
-            self._config_name = corrparams[0]
-            self._nominal_matrix = corrparams[1]
-            self._psfam_nom_intstr = corrparams[2]
-            self._nominal_opticsparam = corrparams[3]
-            self._opticscorr.nominal_matrix = self._nominal_matrix
-            self._opticscorr.nominal_intstrengths = self._psfam_nom_intstr
-            self._opticscorr.nominal_opticsparam = self._nominal_opticsparam
-            self._calc_intstrength()
-            self.run_callbacks('ConfigName-RB', self._config_name)
-            self.update_corrparams()
-            self.run_callbacks('Log-Mon', 'Updated correction parameters.')
-            return True
-        self.run_callbacks(
-            'Log-Mon', 'ERR: Config not found in configdb.')
+            try:
+                self._opticscorr.nominal_matrix = corrparams[1]
+                self._opticscorr.nominal_intstrengths = corrparams[2]
+                self._opticscorr.nominal_opticsparam = corrparams[3]
+                self._calc_intstrength()
+            except Exception:
+                self.run_callbacks(
+                    'Log-Mon', 'Could not update correction parameters.')
+                return False
+            else:
+                self._config_name = corrparams[0]
+                self.cn_handler.set_config_name(self._config_name)
+                self.run_callbacks('ConfigName-RB', self._config_name)
+
+                self._nominal_matrix = corrparams[1]
+                self._psfam_nom_intstr = corrparams[2]
+                self._nominal_opticsparam = corrparams[3]
+                self.update_corrparams_pvs()
+                self.run_callbacks('Log-Mon', 'Updated correction parameters.')
+                return True
+        self.run_callbacks('Log-Mon', 'ERR: Config not found in configdb.')
         return False
 
     def set_corr_meth(self, value):
@@ -454,9 +461,8 @@ class BaseApp(_Callback):
             self.run_callbacks('ConfigName-RB', self._config_name)
 
             self._meas_config_name = 'UNDEF'
-            self.run_callbacks('MeasConfigName-SP', 'UNDEF')
-            self.run_callbacks('MeasConfigName-RB', 'UNDEF')
-            self._meas_config_2_save = None
+            self.run_callbacks('MeasConfigName-SP', self._meas_config_name)
+            self.run_callbacks('MeasConfigName-RB', self._meas_config_name)
 
             self.run_callbacks('Log-Mon', 'Updated config. name.')
         return False
@@ -483,7 +489,7 @@ class BaseApp(_Callback):
 
     def _save_corrparams(self, config_name):
         """Save correction parameters in configdb."""
-        value = self._handle_config_value_2_save()
+        value = self._handle_corrparams_2_save()
         try:
             self.cdb_client.insert_config(name=config_name, value=value)
         except _ConfigDBException as err:
@@ -493,9 +499,10 @@ class BaseApp(_Callback):
             else:
                 log_msg = 'ERR: Could not save configuration in configdb!'
         else:
+            self._meas_config_2_save = None
             log_msg = "Saved config. '{}' in configdb!".format(config_name)
         self.run_callbacks('Log-Mon', log_msg)
-        return 'ERR' in log_msg
+        return 'ERR' not in log_msg
 
     def _handle_corrparams_2_save(self):
         """Handle configuration value to save."""
@@ -586,13 +593,14 @@ class BaseApp(_Callback):
 
     def _start_meas_config(self):
         """Start configuration measurement."""
+        cont = True
         if self._sync_corr == _Const.SyncCorr.On:
             log_msg = 'ERR: Turn off syncronized correction!'
             cont = False
         elif self._meas_config_name == 'UNDEF':
             log_msg = 'ERR: Define a conf.name to save the measure!'
             cont = False
-        elif self._status != ALLCLR_SYNCOFF:
+        elif self._status != 0:
             log_msg = 'ERR: Verify power supplies status!'
             cont = False
         elif self._measuring_config:
@@ -608,7 +616,8 @@ class BaseApp(_Callback):
             self.run_callbacks('Log-Mon', log_msg)
             return False
 
-        self.run_callbacks('Starting correction config measurement!')
+        self.run_callbacks(
+            'Log-Mon', 'Starting correction config measurement!')
         self._measuring_config = True
         thread = _Thread(target=self._meas_config_thread, daemon=True)
         thread.start()
@@ -644,13 +653,11 @@ class BaseApp(_Callback):
             fam: self._psfam_intstr_rb[fam] for fam in self._psfams}
         fams_intstr = _dcopy(fams_intstr0)
 
-        self._psfam_nom_intstr = \
-            [self._psfam_intstr_rb[fam] for fam in self._psfams]
+        aborted = False
         if self._optics_param == 'chrom':
             sts, data = self._get_optics_param()
             if sts:
                 self._nominal_opticsparam = data
-                aborted = False
             else:
                 log_msg = 'ERR: Could not measure chrom!'
                 aborted = True
@@ -662,7 +669,7 @@ class BaseApp(_Callback):
             elif not self._is_storedebeam:
                 log_msg = 'ERR: Stoping measurement, there is no stored beam!'
                 aborted = True
-            elif self._status != ALLCLR_SYNCOFF:
+            elif self._status != 0:
                 log_msg = 'ERR: Stoping measurement, verify power supplies!'
                 aborted = True
             elif not self._tune_x_pv.connected or \
@@ -675,8 +682,8 @@ class BaseApp(_Callback):
 
             fam_idx = self._psfams.index(fam)
             self.run_callbacks(
-                'Log-Mon', '{0:d}/{1:d} --> {2:s}'.format(
-                    fam_idx, len(self._psfams), fam))
+                'Log-Mon', 'Step: {0:d}/{1:d} --> {2:s}'.format(
+                    fam_idx+1, len(self._psfams), fam))
 
             delta = self._get_delta_intstrength(fam)
 
@@ -724,27 +731,33 @@ class BaseApp(_Callback):
 
         # update corrparams
         self._nominal_matrix = respm.flatten().tolist()
-        self.update_corrparams()
+        self._psfam_nom_intstr = [fams_intstr0[fam] for fam in self._psfams]
+        self.update_corrparams_pvs()
 
-        # update configname
-        self.run_callbacks('ConfigName-RB', self._meas_config_name)
+        try:
+            self._opticscorr.nominal_matrix = self._nominal_matrix
+            self._opticscorr.nominal_intstrengths = self._psfam_nom_intstr
+            self._opticscorr.nominal_opticsparam = self._nominal_opticsparam
+            self._calc_intstrength()
+            self.run_callbacks('Log-Mon', 'New correction parameters in use.')
+        except Exception:
+            self._meas_config_2_save = self._handle_corrparams_2_save()
+            self.run_callbacks('Log-Mon', 'ERR: Could not use new parameters.')
+            self.run_callbacks('Log-Mon', 'ERR: Will not save new parameters.')
+        else:
+            if self._save_corrparams(self._meas_config_name):
+                # update configname
+                self._config_name = _dcopy(self._meas_config_name)
+                self.cn_handler.set_config_name(self._config_name)
+                self.run_callbacks('ConfigName-RB', self._config_name)
 
-        self._opticscorr.nominal_matrix = self._nominal_matrix
-        self._opticscorr.nominal_intstrengths = self._psfam_nom_intstr
-        self._opticscorr.nominal_opticsparam = self._nominal_opticsparam
-        self._calc_intstrength()
-        self.run_callbacks('Log-Mon', 'Updated correction parameters.')
-
-        if self._save_corrparams(self._meas_config_name):
-            self._config_name = _dcopy(self._meas_config_name)
-            self.cn_handler.set_config_name(self._meas_config_name)
-            self._meas_config_name = 'UNDEF'
-            self.run_callbacks('MeasConfigName-SP', 'UNDEF')
-            self.run_callbacks('MeasConfigName-RB', 'UNDEF')
+                self._meas_config_name = 'UNDEF'
+                self.run_callbacks('MeasConfigName-SP', self._meas_config_name)
+                self.run_callbacks('MeasConfigName-RB', self._meas_config_name)
 
     # ---------- callbacks ----------
 
-    def _callback_conn_psfam_intstr_rb(self, pvname, conn, **kws):
+    def _callback_conn_psfam(self, pvname, conn, **kws):
         """Connection callback."""
         if not conn:
             self.run_callbacks('Log-Mon', 'WARN:'+pvname+' disconnected.')

@@ -10,7 +10,7 @@ from siriuspy.opticscorr.chrom import ChromCorrApp
 
 
 PUB_INTERFACE = (
-    'update_corrparams',
+    'update_corrparams_pvs',
     'process',
     'set_chrom_x',
     'set_chrom_y',
