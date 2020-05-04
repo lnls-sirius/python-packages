@@ -71,7 +71,8 @@ class PVDetails:
         for datum in data:
             # print(datum)
             field, value = datum['name'], datum['value']
-            value = value.replace(',', '.')
+            # value = value.replace(',', '.')
+            value = value.replace(',', '')
             if field in PVDetails._field2type:
                 fattr, ftype = PVDetails._field2type[field]
                 setattr(self, fattr, ftype(value))
@@ -151,6 +152,9 @@ class PVData:
     def update(self):
         """."""
         self.connect()
+        if None in (self.timestamp_start, self.timestamp_stop):
+            print('Start and stop timestamps not defined!')
+            return
         data = self.connector.getData(
             self.pvname, self.timestamp_start, self.timestamp_stop)
         if not data:
