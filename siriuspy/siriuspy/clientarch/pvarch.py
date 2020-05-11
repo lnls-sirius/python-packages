@@ -132,7 +132,8 @@ class PVData:
         """."""
         self.connect()
         url = self.connector.getData(
-            self.pvname, self.timestamp_start, self.timestamp_stop)
+            self.pvname, self.timestamp_start,
+            self.timestamp_stop, get_request_url=True)
         return url
 
     @property
@@ -149,58 +150,15 @@ class PVData:
         if self.connector is None:
             self.connector = _ClientArchiver()
 
-    def update(self):
+    def update(self, mean_sec=None):
         """."""
         self.connect()
         if None in (self.timestamp_start, self.timestamp_stop):
             print('Start and stop timestamps not defined!')
             return
         data = self.connector.getData(
-            self.pvname, self.timestamp_start, self.timestamp_stop)
+            self.pvname, self.timestamp_start, self.timestamp_stop,
+            mean_sec=mean_sec)
         if not data:
             return
         self.timestamp, self.value, self.status, self.severity = data
-
-
-class PV:
-    """Archive PV."""
-
-    def __init__(self, pvname, connector=None):
-        """."""
-        self.pvname = pvname
-        self.connector = connector
-        self.details = PVDetails(self.pvname, self.connector)
-        self.data = PVData(self.pvname, self.connector)
-
-    @property
-    def connected(self):
-        """."""
-        return self.details.connected and self.data.connected
-
-    def login(self, **kwargs):
-        """."""
-        self.connect()
-        self.connector.login(**kwargs)
-
-    def connect(self):
-        """."""
-        if self.connector is None:
-            self.connector = _ClientArchiver()
-            self.details = PVDetails(self.pvname, self.connector)
-            self.data = PVData(self.pvname, self.connector)
-
-    def update(self):
-        """."""
-        self.connect()
-        self.details.update()
-        self.data.update()
-
-    def update_details(self):
-        """."""
-        self.connect()
-        self.details.update()
-
-    def update_data(self):
-        """."""
-        self.connect()
-        self.data.update()

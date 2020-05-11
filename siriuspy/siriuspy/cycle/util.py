@@ -40,7 +40,7 @@ def get_sections(psnames):
 
 
 def get_trigger_by_psname(psnames):
-    """."""
+    """Return triggers corresponding to psnames."""
     psnames = set(psnames)
     triggers = set()
     for trig in TRIGGER_NAMES:
