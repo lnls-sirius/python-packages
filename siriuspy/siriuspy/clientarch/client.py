@@ -25,7 +25,7 @@ class ClientArchiver:
         """."""
         self.session = None
         self._url = server_url or self.SERVER_URL
-        print('urllib3 InsecureRequestWarning disabled!')
+        # print('urllib3 InsecureRequestWarning disabled!')
         _urllib3.disable_warnings(_urllib3.exceptions.InsecureRequestWarning)
 
     @property
@@ -96,18 +96,20 @@ class ClientArchiver:
             url = self._create_url(method='resumeArchivingPV', pv=pvname)
             self._make_request(url, need_login=True)
 
-    def getData(self, pvname, timestamp_start, timestamp_stop,
+    def getData(self, pvname, timestamp_start, timestamp_stop, mean_sec=None,
                 get_request_url=False):
         """Get archiver data.
 
         pvname -- name of pv.
         timestamp_start -- timestamp of interval start
-                           Example: (2019-05-23T13:32:27.570Z)
+                           Example: '2019-05-23T13:32:27.570Z'
         timestamp_stop -- timestamp of interval stop
-                           Example: (2019-05-23T14:32:27.570Z)
+                           Example: '2019-05-23T13:32:27.570Z'
         """
         tstart = _parse.quote(timestamp_start)
         tstop = _parse.quote(timestamp_stop)
+        if mean_sec is not None:
+            pvname = 'mean_' + str(int(mean_sec)) + '(' + pvname + ')'
         url = self._create_url(
             method='getData.json', pv=pvname, **{'from': tstart, 'to': tstop})
         if get_request_url:
@@ -115,7 +117,8 @@ class ClientArchiver:
         req = self._make_request(url)
         if not req.ok:
             return None
-        data = req.json()[0]['data']
+        ans = req.json()
+        data = ans[0]['data']
         value = [v['val'] for v in data]
         timestamp = [v['secs'] + v['nanos']/1.0e9 for v in data]
         status = [v['status'] for v in data]

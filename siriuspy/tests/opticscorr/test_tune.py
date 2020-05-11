@@ -2,7 +2,6 @@
 
 """Module to test AS-AP-TuneCorr Soft IOC main module."""
 
-import time as _time
 import unittest
 from unittest import mock
 import siriuspy.util as util
@@ -11,7 +10,7 @@ from siriuspy.opticscorr.tune import TuneCorrApp
 
 
 PUB_INTERFACE = (
-    'update_corrparams',
+    'update_corrparams_pvs',
     'set_dtune_x',
     'set_dtune_y',
     'cmd_set_newref',

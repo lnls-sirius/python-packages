@@ -176,7 +176,7 @@ class SOFB(_Device):
     @deltakickch.setter
     def deltakickch(self, value):
         """."""
-        self['DeltaKickCH-Mon'] = value
+        self['DeltaKickCH-SP'] = value
 
     @property
     def deltakickcv(self):
@@ -186,7 +186,7 @@ class SOFB(_Device):
     @deltakickcv.setter
     def deltakickcv(self, value):
         """."""
-        self['DeltaKickCV-Mon'] = value
+        self['DeltaKickCV-SP'] = value
 
     @property
     def deltafactorch(self):
