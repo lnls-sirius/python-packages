@@ -5,11 +5,12 @@
 import unittest
 from unittest import mock
 import siriuspy.util as util
-from siriuspy.currinfo.lifetime.main import App
+from siriuspy.currinfo import SILifetimeApp
 
 
 PUB_INTERFACE = (
     'pvs_database',
+    'init_database',
     'process',
     'read',
     'write',
@@ -25,12 +26,12 @@ class TestASAPCurrInfoLifetimeMain(unittest.TestCase):
         self.addCleanup(pv_patcher.stop)
         self.mock_pv = pv_patcher.start()
         self.mock_pv.return_value.connected = False
-        self.app = App()
+        self.app = SILifetimeApp()
 
     def test_public_interface(self):
         """Test module's public interface."""
         valid = util.check_public_interface_namespace(
-            App, PUB_INTERFACE, print_flag=True)
+            SILifetimeApp, PUB_INTERFACE, print_flag=True)
         self.assertTrue(valid)
 
     def test_write_MinIntvlBtwSpl(self):
@@ -45,8 +46,8 @@ class TestASAPCurrInfoLifetimeMain(unittest.TestCase):
         self.assertEqual(self.app._min_intvl_btw_spl, 1)
 
     def test_write_SplIntvl(self):
-        """Test write SplIntvl-SP."""
-        self.app.write('SplIntvl-SP', 100)
+        """Test write MaxSplIntvl-SP."""
+        self.app.write('MaxSplIntvl-SP', 100)
         self.assertEqual(self.app._sampling_interval, 100)
 
     def test_write_LtFitMode(self):

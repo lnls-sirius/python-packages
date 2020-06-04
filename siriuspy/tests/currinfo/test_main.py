@@ -6,13 +6,23 @@ import unittest
 from unittest import mock
 import siriuspy.util as util
 from siriuspy.currinfo.csdev import Const
-from siriuspy.currinfo.main import SIApp
+from siriuspy.currinfo import SICurrInfoApp
+from siriuspy.currinfo.main import _CurrInfoApp
 
 
-PUB_INTERFACE = (
+PUB_INTERFACE_BASE = (
     'pvs_database',
     'init_database',
     'process',
+    'read',
+    'write',
+    'close',
+)
+
+PUB_INTERFACE_SI = (
+    'HARMNUM_RATIO',
+    'CURR_THRESHOLD',
+    'init_database',
     'read',
     'write',
 )
@@ -33,12 +43,15 @@ class TestASAPCurrInfoCurrentMain(unittest.TestCase):
         self.addCleanup(pv_patcher.stop)
         self.mock_pv = pv_patcher.start()
         self.mock_pv.return_value.connected = False
-        self.app = SIApp()
+        self.app = SICurrInfoApp()
 
     def test_public_interface(self):
         """Test module's public interface."""
         valid = util.check_public_interface_namespace(
-            SIApp, PUB_INTERFACE, print_flag=True)
+            _CurrInfoApp, PUB_INTERFACE_BASE, print_flag=True)
+        self.assertTrue(valid)
+        valid = util.check_public_interface_namespace(
+            SICurrInfoApp, PUB_INTERFACE_SI, print_flag=True)
         self.assertTrue(valid)
 
     def test_write_DCCTFltCheck(self):

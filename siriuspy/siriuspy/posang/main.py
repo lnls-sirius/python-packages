@@ -18,6 +18,7 @@ from .utils import HandleConfigNameFile as _HandleConfigNameFile
 
 
 # Constants
+_TIMEOUT_CHECK = 1
 _ALLSET = 0xf
 _ALLCLR = 0x0
 
@@ -268,24 +269,51 @@ class App(_Callback):
                 _np.linalg.inv(_np.reshape(respmat, (2, 2), order='C')),
                 _np.array([[delta_pos_meters], [delta_ang_rad]]))
 
-            # Convert kicks from rad to correctors units
+            # Convert kicks from rad to correctors units and send values
+            sp_check = dict()
             vl1 = (c1_refkick_rad + c1_deltakick_rad)/c1_unit_factor
             c1_kick_sp_pv.put(vl1)
+            sp_check[corr1] = [False, vl1]
             if orbit == 'x' and 'CH3' in self._correctors.keys():
                 vl2 = (c2_refkick_rad + c1_deltakick_rad)/c2_unit_factor
                 c2_kick_sp_pv.put(vl2)
+                sp_check[corr2] = [False, vl2]
+
                 vl3 = (c3_refkick_rad + c2_deltakick_rad)/c3_unit_factor
                 c3_kick_sp_pv.put(vl3)
+                sp_check[corr3] = [False, vl3]
             else:
                 vl2 = (c2_refkick_rad + c2_deltakick_rad)/c2_unit_factor
                 c2_kick_sp_pv.put(vl2)
+                sp_check[corr2] = [False, vl2]
 
+            # check if SP were accepted
+            time0 = _time.time()
+            while _time.time() - time0 < _TIMEOUT_CHECK:
+                for corr in sp_check:
+                    if sp_check[corr][0]:
+                        continue
+                    desired = sp_check[corr][1]
+                    currval = self._corr_kick_rb_pvs[corr].get()
+                    isok = currval is not None and \
+                        _np.isclose(currval, desired)
+                    sp_check[corr] = [isok, desired]
+                if not any(not val[0] for val in sp_check.values()):
+                    break
+
+            sp_diff = False
+            for corr in sp_check:
+                if not sp_check[corr][0]:
+                    self.run_callbacks(
+                        'Log-Mon', 'ERR: Delta not applied to '+corr+'.')
+                    sp_diff = True
+            if sp_diff:
+                return False
             self.run_callbacks('Log-Mon', 'Applied new delta.')
             return True
-        else:
-            self.run_callbacks(
-                'Log-Mon', 'ERR:Failed on applying new delta.')
-            return False
+
+        self.run_callbacks('Log-Mon', 'ERR:Failed on applying new delta.')
+        return False
 
     def _update_ref(self):
         if (self._status & 0x1) == 0:  # Check connection
@@ -294,8 +322,7 @@ class App(_Callback):
                 value = self._corr_kick_rb_pvs[corr].get()
                 # Get correctors kick in urad (PS) or mrad (PU).
                 self._corr_refkick[corr] = value
-                self.run_callbacks(
-                    'RefKick' + corr_id + '-Mon', value)
+                self.run_callbacks('RefKick' + corr_id + '-Mon', value)
 
             # the deltas from new kick references are zero
             self._orbx_deltapos = 0

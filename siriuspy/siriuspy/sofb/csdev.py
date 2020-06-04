@@ -115,38 +115,47 @@ class SOFBTLines(ConstTLines):
         self.acc = acc.upper()
         self.evg_name = _TISearch.get_evg_name()
         self.acc_idx = self.Accelerators._fields.index(self.acc)
+        # Define the BPMs and correctors:
         self.bpm_names = _BPMSearch.get_names({'sec': acc})
         self.ch_names = _PSSearch.get_psnames(
             {'sec': acc, 'dis': 'PS', 'dev': 'CH'})
-        if self.acc == 'TS':
-            self.ch_names = [_PVName('TS-01:PU-EjeSeptG'), ] + self.ch_names
         self.cv_names = _PSSearch.get_psnames(
             {'sec': acc, 'dis': 'PS', 'dev': 'CV'})
+        if self.acc == 'TS':
+            self.ch_names = [_PVName('TS-01:PU-EjeSeptG'), ] + self.ch_names
+        elif self.acc == 'SI':
+            id_cors = ('SA', 'SB', 'SP')
+            self.ch_names = list(filter(
+                lambda x: not x.sub.endswith(id_cors), self.ch_names))
+            self.cv_names = list(filter(
+                lambda x: not x.sub.endswith(id_cors), self.cv_names))
+        # Give them a nickname:
         self.bpm_nicknames = _BPMSearch.get_nicknames(self.bpm_names)
         self.ch_nicknames = _PSSearch.get_psnicknames(self.ch_names)
+        self.cv_nicknames = _PSSearch.get_psnicknames(self.cv_names)
         if self.acc == 'TS':
             self.ch_nicknames[0] = 'EjeseptG'
-        self.cv_nicknames = _PSSearch.get_psnicknames(self.cv_names)
+        # Find their position along the ring:
         self.bpm_pos = _BPMSearch.get_positions(self.bpm_names)
-
         self.ch_pos = _MASearch.get_mapositions(map(
             lambda x: x.substitute(dis='MA' if x.dis == 'PS' else 'PM'),
             self.ch_names))
         self.cv_pos = _MASearch.get_mapositions(map(
             lambda x: x.substitute(dis='MA' if x.dis == 'PS' else 'PM'),
             self.cv_names))
+        # Find the total number of BPMs and correctors:
+        self.nr_bpms = len(self.bpm_names)
         self.nr_ch = len(self.ch_names)
         self.nr_cv = len(self.cv_names)
         self.nr_chcv = self.nr_ch + self.nr_cv
-        self.nr_bpms = len(self.bpm_names)
+        self.nr_corrs = self.nr_chcv + 1 if acc == 'SI' else self.nr_chcv
+
         ext = acc.lower() + 'orb'
         ioc_fol = acc.lower() + '-ap-sofb'
         ioc_fol = _os.path.join('/home', 'sirius', 'iocs-log', ioc_fol, 'data')
         self.ref_orb_fname = _os.path.join(ioc_fol, 'ref_orbit.'+ext)
         ext = acc.lower() + 'respmat'
         self.respmat_fname = _os.path.join(ioc_fol, 'respmat.'+ext)
-
-        self.nr_corrs = self.nr_chcv + 1 if acc == 'SI' else self.nr_chcv
 
         self.trigger_acq_name = self.acc + '-Fam:TI-BPM'
         if self.acc == 'SI':
@@ -331,11 +340,11 @@ class SOFBTLines(ConstTLines):
                 'enums': self.SOFBMode._fields},
             'SyncWithInjection-Sel': {
                 'type': 'enum', 'unit': 'Sync orbit acq. with injection',
-                'value': self.SyncWithInj.On,
+                'value': self.SyncWithInj.Off,
                 'enums': self.SyncWithInj._fields},
             'SyncWithInjection-Sts': {
                 'type': 'enum', 'unit': 'Sync orbit acq. with injection',
-                'value': self.SyncWithInj.On,
+                'value': self.SyncWithInj.Off,
                 'enums': self.SyncWithInj._fields},
             'TrigAcqConfig-Cmd': {'type': 'int', 'value': 0},
             'TrigAcqCtrl-Sel': {

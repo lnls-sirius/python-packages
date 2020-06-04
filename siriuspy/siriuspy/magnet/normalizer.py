@@ -21,6 +21,10 @@ if not _BETA_APPROXIMATION:
 _MAGFUNCS = _mutil.get_magfunc_2_multipole_dict()
 _IS_DIPOLE = _re.compile(".*:[A-Z]{2}-B.*:.+$")
 _IS_FAM = _re.compile(".*[A-Z]{2}-Fam:[A-Z]{2}-.+$")
+_KCOEFF = _mp.constants.elementary_charge / \
+          _mp.constants.light_speed / \
+          _mp.constants.electron_mass / \
+          2 / _np.pi  # [1/(T.m)]
 
 
 class _MagnetNormalizer:
@@ -209,6 +213,7 @@ class DipoleNormalizer(_MagnetNormalizer):
             raise NotImplementedError
 
     def _conv_strength_2_intfield(self, strengths, **kwargs):
+        _ = kwargs  # throwaway arguments
         if isinstance(strengths, list):
             strengths = _np.array(strengths)
         if self._maname.sec == 'SI':
@@ -310,6 +315,38 @@ class MagnetNormalizer(_MagnetNormalizer):
         if not isinstance(intfields, (int, float)):
             if isinstance(strengths, (int, float)):
                 strengths = [strengths, ] * len(intfields)
+        return strengths
+
+
+class APUNormalizer(_MagnetNormalizer):
+    """."""
+
+    def _conv_strength_2_intfield(self, strengths, **kwargs):
+        """Convert K parameter to field amplitude.
+
+        For APU, integrated field is just the field amplitude B * lamba [T.m].
+        The strength is the K parameter:
+            K ~ 93.3729/(T.m) * (lambda * B)
+        """
+        _ = kwargs  # throwaway arguments
+        if isinstance(strengths, list):
+            strengths = _np.array(strengths)
+
+        intfields = strengths / _KCOEFF
+        return intfields
+
+    def _conv_intfield_2_strength(self, intfields, **kwargs):
+        """Convert field amplitude to K parameter.
+
+        For APU, integrated field is just the field amplitude B * lamba [T.m].
+        The strength is the K parameter:
+            K ~ 93.3729/(T.m) * (lambda * B)
+        """
+        _ = kwargs  # throwaway arguments
+        if isinstance(intfields, list):
+            intfields = _np.array(intfields)
+
+        strengths = _KCOEFF * intfields
         return strengths
 
 

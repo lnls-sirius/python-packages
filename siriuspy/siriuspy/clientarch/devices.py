@@ -2,247 +2,46 @@
 
 import threading as _threading
 import dateutil as _dateutil
+from copy import deepcopy as _dcopy
 import numpy as _np
 
 from .pvarch import PVData as _PVData
 from .time import Time as _Time
+from ..search import BPMSearch as _BPMSearch
+from ..util import ClassProperty as _classproperty
 
 
 class Consts:
     """."""
 
-    BPMS_TB = (
-        'TB-01:DI-BPM-1',
-        'TB-01:DI-BPM-2',
-        'TB-02:DI-BPM-1',
-        'TB-02:DI-BPM-2',
-        'TB-03:DI-BPM',
-        'TB-04:DI-BPM',
-        )
+    _BPMS_TB = None
+    _BPMS_BO = None
+    _BPMS_TS = None
+    _BPMS_SI = None
 
-    BPMS_BO = (
-        'BO-02U:DI-BPM',
-        'BO-03U:DI-BPM',
-        'BO-04U:DI-BPM',
-        'BO-05U:DI-BPM',
-        'BO-06U:DI-BPM',
-        'BO-07U:DI-BPM',
-        'BO-08U:DI-BPM',
-        'BO-09U:DI-BPM',
-        'BO-10U:DI-BPM',
-        'BO-11U:DI-BPM',
-        'BO-12U:DI-BPM',
-        'BO-13U:DI-BPM',
-        'BO-14U:DI-BPM',
-        'BO-15U:DI-BPM',
-        'BO-16U:DI-BPM',
-        'BO-17U:DI-BPM',
-        'BO-18U:DI-BPM',
-        'BO-19U:DI-BPM',
-        'BO-20U:DI-BPM',
-        'BO-21U:DI-BPM',
-        'BO-22U:DI-BPM',
-        'BO-23U:DI-BPM',
-        'BO-24U:DI-BPM',
-        'BO-25U:DI-BPM',
-        'BO-26U:DI-BPM',
-        'BO-27U:DI-BPM',
-        'BO-28U:DI-BPM',
-        'BO-29U:DI-BPM',
-        'BO-30U:DI-BPM',
-        'BO-31U:DI-BPM',
-        'BO-32U:DI-BPM',
-        'BO-33U:DI-BPM',
-        'BO-34U:DI-BPM',
-        'BO-35U:DI-BPM',
-        'BO-36U:DI-BPM',
-        'BO-37U:DI-BPM',
-        'BO-38U:DI-BPM',
-        'BO-39U:DI-BPM',
-        'BO-40U:DI-BPM',
-        'BO-41U:DI-BPM',
-        'BO-42U:DI-BPM',
-        'BO-43U:DI-BPM',
-        'BO-44U:DI-BPM',
-        'BO-45U:DI-BPM',
-        'BO-46U:DI-BPM',
-        'BO-47U:DI-BPM',
-        'BO-48U:DI-BPM',
-        'BO-49U:DI-BPM',
-        'BO-50U:DI-BPM',
-        'BO-01U:DI-BPM',
-        )
+    @_classproperty
+    def BPMS_TB(cls):
+        if cls._BPMS_TB is None:
+            cls._BPMS_TB = _BPMSearch.get_names({'sec': 'TB'})
+        return _dcopy(cls._BPMS_TB)
 
-    BPMS_TS = (
-        'TS-01:DI-BPM',
-        'TS-02:DI-BPM',
-        'TS-03:DI-BPM',
-        'TS-04:DI-BPM-1',
-        'TS-04:DI-BPM-2',
-        )
+    @_classproperty
+    def BPMS_BO(cls):
+        if cls._BPMS_BO is None:
+            cls._BPMS_BO = _BPMSearch.get_names({'sec': 'BO'})
+        return _dcopy(cls._BPMS_BO)
 
-    BPMS_SI = (
-        'SI-01M2:DI-BPM',
-        'SI-01C1:DI-BPM-1',
-        'SI-01C1:DI-BPM-2',
-        'SI-01C2:DI-BPM',
-        'SI-01C3:DI-BPM-1',
-        'SI-01C3:DI-BPM-2',
-        'SI-01C4:DI-BPM',
-        'SI-02M1:DI-BPM',
-        'SI-02M2:DI-BPM',
-        'SI-02C1:DI-BPM-1',
-        'SI-02C1:DI-BPM-2',
-        'SI-02C2:DI-BPM',
-        'SI-02C3:DI-BPM-1',
-        'SI-02C3:DI-BPM-2',
-        'SI-02C4:DI-BPM',
-        'SI-03M1:DI-BPM',
-        'SI-03M2:DI-BPM',
-        'SI-03C1:DI-BPM-1',
-        'SI-03C1:DI-BPM-2',
-        'SI-03C2:DI-BPM',
-        'SI-03C3:DI-BPM-1',
-        'SI-03C3:DI-BPM-2',
-        'SI-03C4:DI-BPM',
-        'SI-04M1:DI-BPM',
-        'SI-04M2:DI-BPM',
-        'SI-04C1:DI-BPM-1',
-        'SI-04C1:DI-BPM-2',
-        'SI-04C2:DI-BPM',
-        'SI-04C3:DI-BPM-1',
-        'SI-04C3:DI-BPM-2',
-        'SI-04C4:DI-BPM',
-        'SI-05M1:DI-BPM',
-        'SI-05M2:DI-BPM',
-        'SI-05C1:DI-BPM-1',
-        'SI-05C1:DI-BPM-2',
-        'SI-05C2:DI-BPM',
-        'SI-05C3:DI-BPM-1',
-        'SI-05C3:DI-BPM-2',
-        'SI-05C4:DI-BPM',
-        'SI-06M1:DI-BPM',
-        'SI-06M2:DI-BPM',
-        'SI-06C1:DI-BPM-1',
-        'SI-06C1:DI-BPM-2',
-        'SI-06C2:DI-BPM',
-        'SI-06C3:DI-BPM-1',
-        'SI-06C3:DI-BPM-2',
-        'SI-06C4:DI-BPM',
-        'SI-07M1:DI-BPM',
-        'SI-07M2:DI-BPM',
-        'SI-07C1:DI-BPM-1',
-        'SI-07C1:DI-BPM-2',
-        'SI-07C2:DI-BPM',
-        'SI-07C3:DI-BPM-1',
-        'SI-07C3:DI-BPM-2',
-        'SI-07C4:DI-BPM',
-        'SI-08M1:DI-BPM',
-        'SI-08M2:DI-BPM',
-        'SI-08C1:DI-BPM-1',
-        'SI-08C1:DI-BPM-2',
-        'SI-08C2:DI-BPM',
-        'SI-08C3:DI-BPM-1',
-        'SI-08C3:DI-BPM-2',
-        'SI-08C4:DI-BPM',
-        'SI-09M1:DI-BPM',
-        'SI-09M2:DI-BPM',
-        'SI-09C1:DI-BPM-1',
-        'SI-09C1:DI-BPM-2',
-        'SI-09C2:DI-BPM',
-        'SI-09C3:DI-BPM-1',
-        'SI-09C3:DI-BPM-2',
-        'SI-09C4:DI-BPM',
-        'SI-10M1:DI-BPM',
-        'SI-10M2:DI-BPM',
-        'SI-10C1:DI-BPM-1',
-        'SI-10C1:DI-BPM-2',
-        'SI-10C2:DI-BPM',
-        'SI-10C3:DI-BPM-1',
-        'SI-10C3:DI-BPM-2',
-        'SI-10C4:DI-BPM',
-        'SI-11M1:DI-BPM',
-        'SI-11M2:DI-BPM',
-        'SI-11C1:DI-BPM-1',
-        'SI-11C1:DI-BPM-2',
-        'SI-11C2:DI-BPM',
-        'SI-11C3:DI-BPM-1',
-        'SI-11C3:DI-BPM-2',
-        'SI-11C4:DI-BPM',
-        'SI-12M1:DI-BPM',
-        'SI-12M2:DI-BPM',
-        'SI-12C1:DI-BPM-1',
-        'SI-12C1:DI-BPM-2',
-        'SI-12C2:DI-BPM',
-        'SI-12C3:DI-BPM-1',
-        'SI-12C3:DI-BPM-2',
-        'SI-12C4:DI-BPM',
-        'SI-13M1:DI-BPM',
-        'SI-13M2:DI-BPM',
-        'SI-13C1:DI-BPM-1',
-        'SI-13C1:DI-BPM-2',
-        'SI-13C2:DI-BPM',
-        'SI-13C3:DI-BPM-1',
-        'SI-13C3:DI-BPM-2',
-        'SI-13C4:DI-BPM',
-        'SI-14M1:DI-BPM',
-        'SI-14M2:DI-BPM',
-        'SI-14C1:DI-BPM-1',
-        'SI-14C1:DI-BPM-2',
-        'SI-14C2:DI-BPM',
-        'SI-14C3:DI-BPM-1',
-        'SI-14C3:DI-BPM-2',
-        'SI-14C4:DI-BPM',
-        'SI-15M1:DI-BPM',
-        'SI-15M2:DI-BPM',
-        'SI-15C1:DI-BPM-1',
-        'SI-15C1:DI-BPM-2',
-        'SI-15C2:DI-BPM',
-        'SI-15C3:DI-BPM-1',
-        'SI-15C3:DI-BPM-2',
-        'SI-15C4:DI-BPM',
-        'SI-16M1:DI-BPM',
-        'SI-16M2:DI-BPM',
-        'SI-16C1:DI-BPM-1',
-        'SI-16C1:DI-BPM-2',
-        'SI-16C2:DI-BPM',
-        'SI-16C3:DI-BPM-1',
-        'SI-16C3:DI-BPM-2',
-        'SI-16C4:DI-BPM',
-        'SI-17M1:DI-BPM',
-        'SI-17M2:DI-BPM',
-        'SI-17C1:DI-BPM-1',
-        'SI-17C1:DI-BPM-2',
-        'SI-17C2:DI-BPM',
-        'SI-17C3:DI-BPM-1',
-        'SI-17C3:DI-BPM-2',
-        'SI-17C4:DI-BPM',
-        'SI-18M1:DI-BPM',
-        'SI-18M2:DI-BPM',
-        'SI-18C1:DI-BPM-1',
-        'SI-18C1:DI-BPM-2',
-        'SI-18C2:DI-BPM',
-        'SI-18C3:DI-BPM-1',
-        'SI-18C3:DI-BPM-2',
-        'SI-18C4:DI-BPM',
-        'SI-19M1:DI-BPM',
-        'SI-19M2:DI-BPM',
-        'SI-19C1:DI-BPM-1',
-        'SI-19C1:DI-BPM-2',
-        'SI-19C2:DI-BPM',
-        'SI-19C3:DI-BPM-1',
-        'SI-19C3:DI-BPM-2',
-        'SI-19C4:DI-BPM',
-        'SI-20M1:DI-BPM',
-        'SI-20M2:DI-BPM',
-        'SI-20C1:DI-BPM-1',
-        'SI-20C1:DI-BPM-2',
-        'SI-20C2:DI-BPM',
-        'SI-20C3:DI-BPM-1',
-        'SI-20C3:DI-BPM-2',
-        'SI-20C4:DI-BPM',
-        'SI-01M1:DI-BPM',
-        )
+    @_classproperty
+    def BPMS_TS(cls):
+        if cls._BPMS_TS is None:
+            cls._BPMS_TS = _BPMSearch.get_names({'sec': 'TS'})
+        return _dcopy(cls._BPMS_TS)
+
+    @_classproperty
+    def BPMS_SI(cls):
+        if cls._BPMS_SI is None:
+            cls._BPMS_SI = _BPMSearch.get_names({'sec': 'SI'})
+        return _dcopy(cls._BPMS_SI)
 
 
 class OrbitBPM(Consts):
@@ -263,9 +62,6 @@ class OrbitBPM(Consts):
         SI_Y = 'SI_Y'
 
     Time = _Time
-
-    # NOTE: The bpm ordering should come from another location,
-    # from a primary source! SOFB?
 
     def __init__(self, devname, connector=None):
         """."""

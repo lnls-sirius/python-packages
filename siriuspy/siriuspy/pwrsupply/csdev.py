@@ -657,6 +657,17 @@ def _get_ps_sofbcurrent_propty_database():
     return dbase
 
 
+def _get_id_apu_propty_database():
+    """Return database of APU ID."""
+    dbase = {
+        'Phase-SP': {'type': 'float', 'value': 0.0,
+                     'prec': 4, 'unit': 'mm'},
+        'Phase-Mon': {'type': 'float', 'value': 0.0,
+                      'prec': 4, 'unit': 'mm'},
+    }
+    return dbase
+
+
 def _get_pu_septum_propty_database():
     """Return database of common to all septa pulsed pwrsupply PVs."""
     # S TB-04:PU-InjSept
@@ -1600,6 +1611,7 @@ def _get_model_db(psmodel):
         'FP_KCKR': _get_pu_FP_KCKR_propty_database,
         'FP_PINGER': _get_pu_FP_PINGER_propty_database,
         'LINAC_PS': _get_ps_LINAC_propty_database,
+        'APU': _get_id_apu_propty_database,
     }
     if psmodel in psmodel_2_dbfunc:
         func = psmodel_2_dbfunc[psmodel]
@@ -1614,12 +1626,14 @@ def _insert_strengths(database, pstype):
     prec_energy = 5
     prec_kl = 5
     prec_sl = 5
+    prec_id_k = 4
     pulsed_pstypes = (
         'tb-injseptum',
         'bo-injkicker', 'bo-ejekicker',
         'ts-ejeseptum-thin', 'ts-ejeseptum-thick',
         'ts-injseptum-thin', 'ts-injseptum-thick',
         'si-injdpk', 'si-injnlk', 'si-hping', 'si-vping')
+
     # pulsed
     if pstype in pulsed_pstypes:
         database['Kick-SP'] = {
@@ -1629,6 +1643,7 @@ def _insert_strengths(database, pstype):
         database['Kick-Mon'] = {
             'type': 'float', 'value': 0.0, 'prec': prec_kick, 'unit': 'mrad'}
         return database
+
     # linac spectrometer
     if pstype.startswith('li-spect'):
         database['Kick-SP'] = {
@@ -1638,6 +1653,16 @@ def _insert_strengths(database, pstype):
         database['Kick-Mon'] = {
             'type': 'float', 'value': 0.0, 'prec': prec_kick, 'unit': 'deg'}
         return database
+
+    # insertion devices
+    if pstype.startswith('si-id-apu'):
+        database['Kx-SP'] = {
+            'type': 'float', 'value': 0.0, 'prec': prec_id_k, 'unit': 'ID_K'}
+        database['Kx-Mon'] = {
+            'type': 'float', 'value': 0.0, 'prec': prec_id_k, 'unit': 'ID_K'}
+        return database
+
+    print(pstype)
 
     magfunc = _PSSearch.conv_pstype_2_magfunc(pstype)
     if magfunc in {'quadrupole', 'quadrupole-skew'}:

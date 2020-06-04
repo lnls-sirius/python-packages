@@ -86,8 +86,12 @@ class StrengthConv(_Devices):
         # get devices that provide normalization current for strengths
         self._dev_dip, self._dev_fam = \
             self._get_devices(devname, proptype)
-        devices = (self._dev_dip, self._dev_fam) if self._dev_fam \
-            else (self._dev_dip, )
+        if self._dev_fam:
+            devices = (self._dev_dip, self._dev_fam)
+        elif self._dev_dip:
+            devices = (self._dev_dip, )
+        else:
+            devices = ()
 
         # call base class constructor
         super().__init__(devname, devices)
@@ -180,6 +184,10 @@ class StrengthConv(_Devices):
         if StrengthConv._get_dev_if_dipole(devname):
             return None, None
 
+        # is insertion device?
+        if StrengthConv._get_dev_if_id(devname):
+            return None, None
+
         # is trim?
         status, dev_dip, dev_fam = \
             StrengthConv._get_dev_if_trim(devname, proptype)
@@ -199,6 +207,13 @@ class StrengthConv(_Devices):
     def _get_dev_if_dipole(devname):
         if devname.dev in {'B', 'B1B2'}:
             # dipoles need no connectors
+            return True
+        return False
+
+    @staticmethod
+    def _get_dev_if_id(devname):
+        if devname.dis == 'ID':
+            # insertion devices need no connectors
             return True
         return False
 
