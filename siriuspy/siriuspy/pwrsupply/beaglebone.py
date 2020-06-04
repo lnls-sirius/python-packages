@@ -235,7 +235,9 @@ class BeagleBone:
             mirror[propname + 'Ref-Mon'] = strengths[2]
             mirror[propname + '-Mon'] = strengths[3]
             # update strength limits
-            strelims[0] = strengths[4]
-            strelims[1] = strengths[5]
+            if strengths[4] <= strengths[5]:
+                strelims[0], strelims[1] = strengths[4], strengths[5]
+            else:
+                strelims[0], strelims[1] = strengths[5], strengths[4]
         # t1_ = _time.time()
         # print('update_strengths: {:.3f}'.format(1000*(t1_-t0_)))

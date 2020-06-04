@@ -3,6 +3,7 @@
 import collections as _collections
 import time as _time
 import threading as _threading
+import numpy as _np
 
 
 class SiriusPVTimeSerie:
@@ -127,15 +128,14 @@ class SiriusPVTimeSerie:
         return self.get_serie()
 
     def get_serie(self, time_absolute=False):
-        """Return series, as two separate lists: timestamp and value."""
+        """Return series, as two separate numpy arrays: timestamp and value."""
         timestamp = _time.time()
         self._update(timestamp)
+        timestamp_array = _np.array(self._timestamp_deque)
         if not time_absolute:
-            timestamp_list = [item-timestamp for item in self._timestamp_deque]
-        else:
-            timestamp_list = [item for item in self._timestamp_deque]
-        value_list = [item for item in self._value_deque]
-        return timestamp_list, value_list
+            timestamp_array -= timestamp
+        value_array = _np.array(self._value_deque)
+        return timestamp_array, value_array
 
     def acquire(self):
         """Acquire a new time serie datapoint.

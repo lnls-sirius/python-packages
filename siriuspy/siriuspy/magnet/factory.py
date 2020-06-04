@@ -24,6 +24,8 @@ class NormalizerFactory:
             return _norm.DipoleNormalizer(maname, magnet_conv_sign=-1.0)
         if ma_class == 'trim':
             return _norm.TrimNormalizer(maname, magnet_conv_sign=-1.0)
+        if ma_class == 'id-apu':
+            return _norm.APUNormalizer(maname, magnet_conv_sign=+1.0)
         if magfunc == 'corrector-horizontal':
             return _norm.MagnetNormalizer(maname, magnet_conv_sign=+1.0)
         if 'TB' in maname and 'QD' in maname:

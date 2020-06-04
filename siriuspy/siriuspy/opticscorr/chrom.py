@@ -4,6 +4,7 @@ import time as _time
 from threading import Thread as _Thread
 import numpy as _np
 from epics import PV as _PV
+from epics.ca import ChannelAccessGetFailure as _ChannelAccessGetFailure
 
 from ..envars import VACA_PREFIX as _vaca_prefix
 from ..namesys import SiriusPVName as _SiriusPVName
@@ -62,6 +63,12 @@ class ChromCorrApp(_BaseApp):
             'MeasConfigDeltaSLFamSD-SP': self.set_meas_config_dsl_sd,
         })
 
+        # auxiliar dict limit names
+        self._lims_map = {
+            'hilim': 'upper_disp_limit', 'lolim': 'lower_disp_limit',
+            'high': 'upper_alarm_limit', 'low': 'lower_alarm_limit',
+            'hihi': 'upper_warning_limit', 'lolo': 'lower_warning_limit'}
+
     def update_corrparams_pvs(self):
         """Set initial correction parameters PVs values."""
         self.run_callbacks('RespMat-Mon', self._nominal_matrix)
@@ -71,16 +78,19 @@ class ChromCorrApp(_BaseApp):
     def process(self, interval):
         """Sleep."""
         t_ini = _time.time()
-        limit_names = {
-            'hilim': 'upper_disp_limit', 'lolim': 'lower_disp_limit',
-            'high': 'upper_alarm_limit', 'low': 'lower_alarm_limit',
-            'hihi': 'upper_warning_limit', 'lolo': 'lower_warning_limit'}
         if (self._status & 0x1) == 0:  # Check connection
             for fam in self._psfams:
-                data = self._psfam_intstr_rb_pvs[fam].get_ctrlvars()
-                if self._psfam_intstr_rb_pvs[fam].upper_disp_limit is not None:
-                    lis = {k: data[v] for k, v in limit_names.items()}
-                    self.run_callbacks('SL'+fam+'-Mon', info=lis, field='info')
+                rb_pv = self._psfam_intstr_rb_pvs[fam]
+                try:
+                    data = rb_pv.get_ctrlvars(timeout=0.1)
+                    upper_disp_limit = rb_pv.upper_disp_limit
+                except _ChannelAccessGetFailure:
+                    break
+                else:
+                    if upper_disp_limit is not None and data is not None:
+                        lis = {k: data[v] for k, v in self._lims_map.items()}
+                        self.run_callbacks(
+                            'SL'+fam+'-Mon', info=lis, field='info')
         dtime = interval - (_time.time() - t_ini)
         _time.sleep(max(dtime, 0))
 

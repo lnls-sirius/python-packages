@@ -92,6 +92,14 @@ class Device:
         """Return dict of property values."""
         return self.pv_attribute_values('value')
 
+    def wait_for_connection(self, timeout=None):
+        """Wait for connection."""
+        for pvobj in self._pvs.values():
+            res = pvobj.wait_for_connection(timeout)
+            if not res:
+                return False
+        return True
+
     def __getitem__(self, propty):
         """Return value of property."""
         pvobj = self._pvs[propty]

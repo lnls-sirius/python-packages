@@ -157,8 +157,10 @@ class PSCorrSOFB(_Device):
         corrh = {'sec': sec, 'dis': 'PS', 'dev': 'CH'}
         corrv = {'sec': sec, 'dis': 'PS', 'dev': 'CV'}
         # update class consts CH_NAMES and CV_NAMES
-        psnames_ch = tuple(_PSSearch.get_psnames(corrh))
-        psnames_cv = tuple(_PSSearch.get_psnames(corrv))
+        psnames_ch = \
+            PSCorrSOFB._filter_id_correctors(_PSSearch.get_psnames(corrh))
+        psnames_cv = \
+            PSCorrSOFB._filter_id_correctors(_PSSearch.get_psnames(corrv))
         return psnames_ch, psnames_cv
 
     def _get_sofb_indices(self):
@@ -175,6 +177,16 @@ class PSCorrSOFB(_Device):
         indices = _np.array(indices)
         idx_corr = _np.array(idx_corr)
         return indices, idx_corr
+
+    @staticmethod
+    def _filter_id_correctors(psnames):
+        psnames_ = []
+        for psname in psnames:
+            if 'SA:PS-' not in psname and \
+               'SB:PS-' not in psname and \
+               'SP:PS-' not in psname:
+                psnames_.append(psname)
+        return tuple(psnames_)
 
 
 class PSApplySOFB(_Devices):

@@ -1,19 +1,8 @@
 """Module implementing PRU elements."""
 import time as _time
 
-import PRUserial485 as _PRUserial485
-from PRUserial485 import EthBrigdeClient as _EthBrigdeClient
 
 from ... import csdev as _csdev
-
-
-# check PRUserial485 package version
-__version_eth_required__ = '2.5.0'  # eth-PRUserial485
-__version_eth_implmntd__ = _PRUserial485.__version__
-if __version_eth_implmntd__ != __version_eth_required__:
-    _ERR_MSG = 'Incompatible PRUserial485 library versions: {} != {}'.format(
-        __version_eth_implmntd__, __version_eth_required__)
-    raise ValueError(_ERR_MSG)
 
 
 class PRUInterface:
@@ -71,12 +60,8 @@ class PRUInterface:
 class PRU(PRUInterface):
     """Functions for the programmable real-time unit."""
 
-    def __init__(self, bbbname=None, ip_address=None):
+    def __init__(self, ethbridgeclnt_class, bbbname=None, ip_address=None):
         """Init method."""
-        # check if appropriate conditions are met
-        if _PRUserial485 is None:
-            raise ValueError('module PRUserial485 is not installed!')
-
         # if ip address was not given, get it from bbbname
         if ip_address is None:
             dev2ips = _csdev.get_device_2_ioc_ip()
@@ -85,7 +70,7 @@ class PRU(PRUInterface):
         print('IP_ADDRESS: ', ip_address)
 
         # start communication threads
-        self._ethbrigde = _EthBrigdeClient(
+        self._ethbrigde = ethbridgeclnt_class(
             ip_address=ip_address, use_general=False)
         self._ethbrigde.threads_start()
 

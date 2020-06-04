@@ -28,13 +28,13 @@ class BBBFactory:
     _regexp_constant_bsmp_init = _re.compile('^(Param|Version).*-Cte$')
 
     @staticmethod
-    def create(bbbname=None):
+    def create(ethbridgeclnt_class, bbbname=None):
         """Return BBB object."""
         # create timestamp used in all TimestampBoot-Cte PVs
         timestamp = _time.time()
 
         # create PRU used for low-level communication
-        pru = _PRU(bbbname=bbbname)
+        pru = _PRU(ethbridgeclnt_class, bbbname=bbbname)
 
         # create DequeThread that queue all serial operations
         prucqueue = _DequeThread()

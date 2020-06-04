@@ -28,7 +28,7 @@ class EpicsOrbit(BaseOrbit):
         super().__init__(acc, prefix=prefix, callback=callback)
 
         self._mode = self._csorb.SOFBMode.Offline
-        self._sync_with_inj = True
+        self._sync_with_inj = False
         self.ref_orbs = {
             'X': _np.zeros(self._csorb.nr_bpms),
             'Y': _np.zeros(self._csorb.nr_bpms)}

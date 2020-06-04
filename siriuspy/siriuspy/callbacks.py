@@ -72,7 +72,8 @@ class Callback:
             fcn, kwargs = self._callbacks[index]
         except KeyError:
             return
-        kwargs.update(kwd)
-        kwargs['cb_info'] = (index, self)
+        kwargs2use = kwargs.copy()
+        kwargs2use.update(kwd)
+        kwargs2use['cb_info'] = (index, self)
         if callable(fcn):
-            fcn(*args, **kwargs)
+            fcn(*args, **kwargs2use)
