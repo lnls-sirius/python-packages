@@ -1662,8 +1662,6 @@ def _insert_strengths(database, pstype):
             'type': 'float', 'value': 0.0, 'prec': prec_id_k, 'unit': 'ID_K'}
         return database
 
-    print(pstype)
-
     magfunc = _PSSearch.conv_pstype_2_magfunc(pstype)
     if magfunc in {'quadrupole', 'quadrupole-skew'}:
         database['KL-SP'] = {

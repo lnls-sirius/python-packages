@@ -19,9 +19,10 @@ class Device:
     GET_TIMEOUT = _GET_TIMEOUT
     _properties = ()
 
-    def __init__(self, devname, properties):
+    def __init__(self, devname, properties, auto_mon=False):
         """."""
         self._properties = properties[:]
+        self._auto_mon = auto_mon
         self._devname, self._pvs = self._create_pvs(devname)
 
     @property
@@ -127,7 +128,7 @@ class Device:
         for propty in self._properties:
             pvname = self._get_pvname(devname, propty)
             pvname = _VACA_PREFIX + pvname
-            auto_monitor = not pvname.endswith('-Mon')
+            auto_monitor = self._auto_mon or not pvname.endswith('-Mon')
             in_sim = _Simulation.pv_check(pvname)
             pvclass = _PVSim if in_sim else _PV
             pvs[propty] = pvclass(
@@ -179,12 +180,12 @@ class DeviceApp(Device):
     This kind of device groups properties of other devices.
     """
 
-    def __init__(self, properties, devname=None):
+    def __init__(self, properties, devname=None, auto_mon=False):
         """."""
         self._devname_app = devname
 
         # call base class constructor
-        super().__init__(None, properties=properties)
+        super().__init__(None, properties=properties, auto_mon=auto_mon)
 
     @property
     def devname(self):
@@ -269,6 +270,13 @@ class Devices:
     def values(self):
         """Return dict of property values."""
         return self.pv_attribute_values('value')
+
+    def wait_for_connection(self, timeout=None):
+        """Wait for connection."""
+        for dev in self._devices:
+            if not dev.wait_for_connection(timeout=timeout):
+                return False
+        return True
 
     @property
     def devices(self):

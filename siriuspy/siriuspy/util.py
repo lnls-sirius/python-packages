@@ -37,14 +37,14 @@ def conv_splims_labels(label):
     labels_dict = {
         # Epics-DB  pcaspy    PyEpics
         # ===========================
-        'DRVH':     'DRVH',   # ???
+        'DRVH':     'DRVH',   # upper_ctrl_limit
         'HIHI':     'hihi',   # upper_alarm_limit
         'HIGH':     'high',   # upper_warning_limit
-        'HOPR':     'hilim',  # upper_disp_limit & upper_ctrl_limit
-        'LOPR':     'lolim',  # lower_disp_limit & lower_ctrl_limit
+        'HOPR':     'hilim',  # upper_disp_limit
+        'LOPR':     'lolim',  # lower_disp_limit
         'LOW':      'low',    # lower_warning_limit
         'LOLO':     'lolo',   # lower_alarm_limit
-        'DRVL':     'DRVL',   # ???
+        'DRVL':     'DRVL',   # lower_ctrl_limit
         'TSTV':     'TSTV',   # SIRIUS specific (Test value)
         'TSTR':     'TSTR',   # SIRIUS specific (Test acceptable range)
     }

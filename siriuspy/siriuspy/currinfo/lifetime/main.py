@@ -204,6 +204,7 @@ class SILifetimeApp(_Callback):
     def _callback_calclifetime(self, pvname, timestamp, **kws):
         # check DCCT StoredEBeam PV
         if not self._is_stored:
+            self._buffautorst_check()
             return
 
         is_bpm = 'BPM' in pvname

@@ -1,4 +1,4 @@
-"""Search module."""
+"""PS Search module."""
 
 import copy as _copy
 from threading import Lock as _Lock

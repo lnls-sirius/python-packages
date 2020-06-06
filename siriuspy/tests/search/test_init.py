@@ -13,6 +13,7 @@ public_interface = (
     'BPMSearch',
     'HLTimeSearch',
     'LLTimeSearch',
+    'IDSearch',
 )
 
 

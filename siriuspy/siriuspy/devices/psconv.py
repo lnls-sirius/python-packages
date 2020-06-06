@@ -10,6 +10,9 @@ from .syncd import DevicesSync as _DevicesSync
 class PSProperty(_DevicesSync):
     """Power Supply Epics Connector."""
 
+    # TODO: Test changing default value of auto_mon to see if conversion
+    # IOCs are improved.
+
     _ps2devs = {
         # devices which are mapped to more than one device
         'BO-Fam:PS-B-1': ('BO-Fam:PS-B-1', 'BO-Fam:PS-B-2'),
@@ -18,7 +21,7 @@ class PSProperty(_DevicesSync):
         'SI-Fam:PS-B1B2-2': ('SI-Fam:PS-B1B2-1', 'SI-Fam:PS-B1B2-2'),
         }
 
-    def __init__(self, devname, propty):
+    def __init__(self, devname, propty, auto_mon=False):
         """."""
         devname = _SiriusPVName(devname)
 
@@ -27,7 +30,7 @@ class PSProperty(_DevicesSync):
 
         # call base class constructor
         super().__init__(
-            devnames=devnames, propty_sync=[propty])
+            devnames=devnames, propty_sync=[propty], auto_mon=auto_mon)
 
     @property
     def property_sync(self):

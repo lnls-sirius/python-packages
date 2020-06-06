@@ -1,4 +1,4 @@
-"""Search module."""
+"""MA Search module."""
 
 from threading import Lock as _Lock
 
