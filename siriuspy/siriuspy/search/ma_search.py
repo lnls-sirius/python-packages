@@ -43,7 +43,7 @@ class MASearch:
 
     @staticmethod
     def get_mapositions(names=None, filters=None, sorting=None):
-        """Return a sorted and filtered list of all magnet names.
+        """Return a sorted and filtered list of all magnet positions.
 
         This list also includes pulsed magnets (PM).
         """

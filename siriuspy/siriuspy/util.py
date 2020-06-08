@@ -4,7 +4,6 @@ import os as _os
 import sys as _sys
 import time as _time
 from collections import Counter as _Counter
-from collections import namedtuple as _namedtuple
 import logging as _log
 import inspect as _inspect
 import subprocess as _sp

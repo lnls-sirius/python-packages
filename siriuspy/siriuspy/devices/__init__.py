@@ -16,7 +16,9 @@ from .sofb import SOFB
 from .timing import EVG
 from .syncd import DevicesSync
 from .energy import Energy
+from .ids import IDCorrectors, APU, APUFeedForward
 
 del device, bpm, dcct, egun, ict, llrf,
 del pwrsupply, psconv, pssofb, rf,
 del screen, tune, sofb, timing, syncd, energy
+del ids

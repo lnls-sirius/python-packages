@@ -11,6 +11,9 @@ from .ps_search import PSSearch as _PSSearch
 class IDSearch:
     """ID Search Class."""
 
+    # NOTE: Maybe we should move these mappings to
+    # static tables in our cs-constants server.
+
     _beamline2idname = {
         'CARNAUBA': 'SI-06SB:ID-Delta21',
         'CATERETE': 'SI-07SP:ID-Delta21',
