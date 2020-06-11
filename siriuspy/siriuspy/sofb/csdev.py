@@ -202,16 +202,16 @@ class SOFBTLines(ConstTLines):
                 'type': 'enum', 'value': 0,
                 'enums': self.MeasRespMatMon._fields},
             'MeasRespMatKickCH-SP': {
-                'type': 'float', 'value': 80, 'unit': 'urad', 'prec': 3,
+                'type': 'float', 'value': 15, 'unit': 'urad', 'prec': 3,
                 'lolim': 0.002, 'hilim': 500},
             'MeasRespMatKickCH-RB': {
-                'type': 'float', 'value': 80, 'unit': 'urad', 'prec': 3,
+                'type': 'float', 'value': 15, 'unit': 'urad', 'prec': 3,
                 'lolim': 0.002, 'hilim': 500},
             'MeasRespMatKickCV-SP': {
-                'type': 'float', 'value': 80, 'unit': 'urad', 'prec': 3,
+                'type': 'float', 'value': 15, 'unit': 'urad', 'prec': 3,
                 'lolim': 0.002, 'hilim': 500},
             'MeasRespMatKickCV-RB': {
-                'type': 'float', 'value': 80, 'unit': 'urad', 'prec': 3,
+                'type': 'float', 'value': 15, 'unit': 'urad', 'prec': 3,
                 'lolim': 0.002, 'hilim': 500},
             'MeasRespMatWait-SP': {
                 'type': 'float', 'value': 1, 'unit': 's', 'prec': 3,
@@ -685,22 +685,16 @@ class SOFBSI(SOFBRings, ConstSI):
         """Return OpticsCorr-Chrom Soft IOC database."""
         db_ring = {
             'MeasRespMatKickRF-SP': {
-                'type': 'float', 'value': 50, 'unit': 'Hz', 'prec': 2,
+                'type': 'float', 'value': 80, 'unit': 'Hz', 'prec': 2,
                 'lolim': 1, 'hilim': 1000},
             'MeasRespMatKickRF-RB': {
-                'type': 'float', 'value': 50, 'unit': 'Hz', 'prec': 2,
+                'type': 'float', 'value': 80, 'unit': 'Hz', 'prec': 2,
                 'lolim': 1, 'hilim': 1000},
             'DeltaFactorRF-SP': {
                 'type': 'float', 'value': 100, 'unit': '%', 'prec': 2,
                 'lolim': -1000, 'hilim': 1000},
             'DeltaFactorRF-RB': {
                 'type': 'float', 'value': 100, 'prec': 2, 'unit': '%'},
-            'MaxKickRF-SP': {
-                'type': 'float', 'value': 499663000, 'unit': 'Hz', 'prec': 2,
-                'lolim': 499660000, 'hilim': 499665000},
-            'MaxKickRF-RB': {
-                'type': 'float', 'value': 499663000, 'unit': 'Hz', 'prec': 2,
-                'lolim': 499660000, 'hilim': 499665000},
             'MaxDeltaKickRF-SP': {
                 'type': 'float', 'value': 500, 'unit': 'Hz', 'prec': 2,
                 'lolim': 0, 'hilim': 10000},

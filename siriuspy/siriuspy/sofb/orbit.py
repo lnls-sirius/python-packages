@@ -692,7 +692,7 @@ class EpicsOrbit(BaseOrbit):
         shots = _np.arange(nrst)
         pts = _np.arange(nrptpst, dtype=float) + (0.5 - offset)
         vect = dly + dur/nrst*shots[:, None] + dtime*pts[None, :]
-        self._timevector = vect.flatten()
+        self._timevector = vect.ravel()
         self.run_callbacks('MTurnTime-Mon', self._timevector)
         self.set_orbit_multiturn_idx(self._multiturnidx)
 
@@ -849,9 +849,9 @@ class EpicsOrbit(BaseOrbit):
         idx = min(self._multiturnidx, orb.shape[0])
         for pln, orb in orbs.items():
             name = ('Orb' if pln != 'Sum' else '') + pln
-            self.run_callbacks('MTurn' + name + '-Mon', orb.flatten())
+            self.run_callbacks('MTurn' + name + '-Mon', orb.ravel())
             self.run_callbacks(
-                'MTurnIdx' + name + '-Mon', orb[idx, :].flatten())
+                'MTurnIdx' + name + '-Mon', orb[idx, :].ravel())
 
     def _update_singlepass_orbits(self):
         """."""

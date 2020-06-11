@@ -1,5 +1,6 @@
 """Define Insertion Devices."""
 
+import time as _time
 import numpy as _np
 
 from ..namesys import SiriusPVName as _SiriusPVName
@@ -22,9 +23,14 @@ class APU(_Device):
         ALL = (APU22_09SA, )
 
     _properties = (
+        'DevCtrl-Cmd', 'Moving-Mon',
+        'PhaseSpeed-SP', 'PhaseSpeed-Mon',
         'Phase-SP', 'Phase-Mon',
         'Kx-SP', 'Kx-Mon',
     )
+
+    _CMD_MOVE = 3
+    _MOVECHECK_SLEEP = 0.1  # [s]
 
     def __init__(self, devname):
         """."""
@@ -53,6 +59,21 @@ class APU(_Device):
         return self['Phase-SP']
 
     @property
+    def phase_speed(self):
+        """Return APU phase speed [mm/s]."""
+        return self['PhaseSpeed-Mon']
+
+    @phase_speed.setter
+    def phase_speed(self, value):
+        """Set APU phase_speed [mm/s]."""
+        self['PhaseSpeed-SP'] = value
+
+    @property
+    def phase_speed_sp(self):
+        """Return APU phase speed SP [mm/s]."""
+        return self['PhaseSpeed-SP']
+
+    @property
     def idkx(self):
         """Return APU Kx."""
         return self['Kx-SP']
@@ -61,6 +82,21 @@ class APU(_Device):
     def idkx(self, value):
         """Set APU Kx."""
         self['Kx-SP'] = value
+
+    @property
+    def is_moving(self):
+        """Return True if phase is changing."""
+        return round(self['Moving-Mon']) == 1
+
+    def cmd_move(self):
+        """."""
+        self['DevCtrl-Cmd'] = APU._CMD_MOVE
+
+    def wait_move(self):
+        """Wait for phase movement to complete."""
+        _time.sleep(APU._MOVECHECK_SLEEP)
+        while self.is_moving:
+            _time.sleep(APU._MOVECHECK_SLEEP)
 
 
 class IDCorrectors(_DeviceApp):
@@ -263,8 +299,10 @@ class APUFeedForward(_Devices):
         psnames = self.correctors.orbitcorr_psnames
 
         maname = psnames[0].replace(':PS-', ':MA-')
-        strenconv_chs = _StrengthConv(maname, proptype='Ref-Mon', auto_mon=True)
+        strenconv_chs = _StrengthConv(
+            maname, proptype='Ref-Mon', auto_mon=True)
         maname = psnames[self.ffwdcalc.nr_chs].replace(':PS-', ':MA-')
-        strenconv_cvs = _StrengthConv(maname, proptype='Ref-Mon', auto_mon=True)
+        strenconv_cvs = _StrengthConv(
+            maname, proptype='Ref-Mon', auto_mon=True)
 
         return strenconv_chs, strenconv_cvs

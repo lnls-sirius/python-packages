@@ -57,7 +57,7 @@ class Corrector(_BaseTimingConfig):
 
     @opmode.setter
     def opmode(self, val):
-        pass
+        """."""
 
     @property
     def state(self):
@@ -67,6 +67,7 @@ class Corrector(_BaseTimingConfig):
 
     @state.setter
     def state(self, boo):
+        """."""
         val = _PSConst.PwrStateSel.On if boo else _PSConst.PwrStateSel.Off
         pv = self._config_pvs_sp['PwrState']
         if pv.connected:
@@ -81,10 +82,12 @@ class Corrector(_BaseTimingConfig):
 
     @value.setter
     def value(self, val):
+        """."""
         self._sp.put(val, wait=False)
 
     @property
     def refvalue(self):
+        """."""
         return self.value
 
 
@@ -112,6 +115,7 @@ class RFCtrl(Corrector):
 
     @value.setter
     def value(self, freq):
+        """."""
         delta_max = 20  # Hz
         freq0 = self.value
         if freq0 is None or freq is None:
@@ -119,11 +123,12 @@ class RFCtrl(Corrector):
         delta = abs(freq-freq0)
         if delta < 0.1 or delta > 10000:
             return
-        npoints = int(round(delta/delta_max)) + 2
+        npoints = int(delta//delta_max) + 2
         freq_span = _np.linspace(freq0, freq, npoints)[1:]
-        for f in freq_span:
-            self._sp.put(f, wait=False)
-            _time.sleep(1)
+        for i, freq in enumerate(freq_span, 1):
+            self._sp.put(freq, wait=False)
+            if i != freq_span.size:
+                _time.sleep(1)
 
     @property
     def state(self):
@@ -135,6 +140,7 @@ class RFCtrl(Corrector):
 
     @state.setter
     def state(self, boo):
+        """."""
         # TODO: database of RF GEN
         return
         # val = 1 if boo else 0
@@ -187,6 +193,7 @@ class CHCV(Corrector):
 
     @opmode.setter
     def opmode(self, val):
+        """."""
         pv = self._config_pvs_sp['OpMode']
         self._config_ok_vals['OpMode'] = val
         if pv.connected and pv.value != val:
@@ -203,6 +210,7 @@ class CHCV(Corrector):
 
     @property
     def refvalue(self):
+        """."""
         if self._ref.connected:
             return self._ref.value
 
@@ -245,6 +253,7 @@ class Septum(Corrector):
 
     @opmode.setter
     def opmode(self, val):
+        """."""
         pv = self._config_pvs_sp['Pulse']
         self._config_ok_vals['Pulse'] = val
         if pv.connected and pv.value != val:
@@ -260,11 +269,13 @@ class Septum(Corrector):
 
     @value.setter
     def value(self, val):
+        """."""
         val = val/1e3 + self._nominalkick
         self._sp.put(-val, wait=False)
 
 
 def get_corr(name):
+    """."""
     if name.dis == 'PU':
         return Septum(name)
     else:
@@ -332,7 +343,6 @@ class TimingConfig(_BaseTimingConfig):
 
 class BaseCorrectors(_BaseClass):
     """Base correctors class."""
-    pass
 
 
 class EpicsCorrectors(BaseCorrectors):
@@ -357,6 +367,7 @@ class EpicsCorrectors(BaseCorrectors):
 
     @property
     def corrs(self):
+        """."""
         return self._corrs
 
     def get_map2write(self):
@@ -484,7 +495,7 @@ class EpicsCorrectors(BaseCorrectors):
                 _log.error(msg[5:])
                 return False
         msg = 'Correctors set to {0:s} Mode'.format(
-                                    'Sync' if value else 'Async')
+            'Sync' if value else 'Async')
         self._update_log(msg)
         _log.info(msg)
         self.run_callbacks('CorrSync-Sts', value)

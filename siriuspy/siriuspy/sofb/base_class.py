@@ -146,4 +146,5 @@ class BaseTimingConfig(_Callback):
 
 
 def compare_kicks(val1, val2):
+    """."""
     return _math.isclose(val1, val2, abs_tol=_ConstTLines.TINY_KICK)

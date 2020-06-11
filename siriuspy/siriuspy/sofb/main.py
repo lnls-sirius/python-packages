@@ -20,8 +20,9 @@ INTERVAL = 1
 class SOFB(_BaseClass):
     """Main Class of the IOC."""
 
-    def __init__(self, acc, prefix='', callback=None,
-                 orbit=None, matrix=None, correctors=None):
+    def __init__(
+            self, acc, prefix='', callback=None, orbit=None, matrix=None,
+            correctors=None):
         """Initialize Object."""
         super().__init__(acc, prefix=prefix, callback=callback)
         _log.info('Starting SOFB...')
@@ -33,12 +34,12 @@ class SOFB(_BaseClass):
         self._corr_factor = {'ch': 1.00, 'cv': 1.00}
         self._max_kick = {'ch': 300, 'cv': 300}
         self._max_delta_kick = {'ch': 300, 'cv': 300}
-        self._meas_respmat_kick = {'ch': 80, 'cv': 80}
+        self._meas_respmat_kick = {'ch': 15, 'cv': 15}
         if self.acc == 'SI':
             self._corr_factor['rf'] = 1.00
-            self._max_kick['rf'] = 499663000
+            self._max_kick['rf'] = 1e12  # a very large value
             self._max_delta_kick['rf'] = 500
-            self._meas_respmat_kick['rf'] = 50
+            self._meas_respmat_kick['rf'] = 80
         self._meas_respmat_wait = 1  # seconds
         self._dtheta = None
         self._ref_corr_kicks = None
@@ -75,7 +76,6 @@ class SOFB(_BaseClass):
             dbase['RingSize-SP'] = self.set_ring_extension
         if self.acc == 'SI':
             dbase['DeltaFactorRF-SP'] = _part(self.set_corr_factor, 'rf')
-            dbase['MaxKickRF-SP'] = _part(self.set_max_kick, 'rf')
             dbase['MaxDeltaKickRF-SP'] = _part(self.set_max_delta_kick, 'rf')
             dbase['DeltaKickRF-SP'] = _part(
                 self.set_delta_kick, self._csorb.ApplyDelta.RF),
@@ -84,36 +84,43 @@ class SOFB(_BaseClass):
 
     @property
     def orbit(self):
+        """."""
         return self._orbit
 
     @orbit.setter
     def orbit(self, orb):
+        """."""
         if isinstance(orb, _BaseOrbit):
             self._map2write.update(orb.get_map2write())
             self._orbit = orb
 
     @property
     def correctors(self):
+        """."""
         return self._correctors
 
     @correctors.setter
     def correctors(self, corrs):
+        """."""
         if isinstance(corrs, _BaseCorrectors):
             self._map2write.update(corrs.get_map2write())
             self._correctors = corrs
 
     @property
     def matrix(self):
+        """."""
         return self._matrix
 
     @matrix.setter
     def matrix(self, mat):
+        """."""
         if isinstance(mat, _BaseMatrix):
             self._map2write.update(mat.get_map2write())
             self._matrix = mat
 
     @property
     def havebeam(self):
+        """."""
         if self.acc != 'SI':
             return True
         return self._havebeam_pv.connected and self._havebeam_pv.value
@@ -122,23 +129,24 @@ class SOFB(_BaseClass):
         """Run continuously in the main thread."""
         time0 = _time.time()
         self.status
-        tf = _time.time()
-        dtime = INTERVAL - (tf-time0)
+        tfin = _time.time()
+        dtime = INTERVAL - (tfin-time0)
         if dtime > 0:
             _time.sleep(dtime)
         else:
-            _log.debug('process took {0:f}ms.'.format((tf-time0)*1000))
+            _log.debug('process took {0:f}ms.'.format((tfin-time0)*1000))
 
     def set_ring_extension(self, val):
+        """."""
         val = 1 if val < 1 else int(val)
         val = self._csorb.MAX_RINGSZ if val > self._csorb.MAX_RINGSZ else val
         if val == self._ring_extension:
             return True
-        ok = self.orbit.set_ring_extension(val)
-        if not ok:
+        okay = self.orbit.set_ring_extension(val)
+        if not okay:
             return False
-        ok &= self.matrix.set_ring_extension(val)
-        if not ok:
+        okay &= self.matrix.set_ring_extension(val)
+        if not okay:
             return False
         self._ring_extension = val
         self.run_callbacks('RingSize-RB', val)
@@ -193,6 +201,7 @@ class SOFB(_BaseClass):
         return True
 
     def set_respmat_meas_state(self, value):
+        """."""
         if value == self._csorb.MeasRespMatCmd.Start:
             self._start_meas_respmat()
         elif value == self._csorb.MeasRespMatCmd.Stop:
@@ -202,6 +211,7 @@ class SOFB(_BaseClass):
         return True
 
     def set_auto_corr(self, value):
+        """."""
         if value == self._csorb.ClosedLoop.On:
             if self._auto_corr == self._csorb.ClosedLoop.On:
                 msg = 'ERR: ClosedLoop is Already On.'
@@ -233,21 +243,25 @@ class SOFB(_BaseClass):
         return True
 
     def set_auto_corr_frequency(self, value):
+        """."""
         self._auto_corr_freq = value
         self.run_callbacks('ClosedLoopFreq-RB', value)
         return True
 
     def set_max_kick(self, plane, value):
+        """."""
         self._max_kick[plane] = float(value)
         self.run_callbacks('MaxKick'+plane.upper()+'-RB', float(value))
         return True
 
     def set_max_delta_kick(self, plane, value):
+        """."""
         self._max_delta_kick[plane] = float(value)
         self.run_callbacks('MaxDeltaKick'+plane.upper()+'-RB', float(value))
         return True
 
     def set_corr_factor(self, plane, value):
+        """."""
         self._corr_factor[plane] = value/100
         msg = '{0:s} DeltaFactor set to {1:6.2f}'.format(plane.upper(), value)
         self._update_log(msg)
@@ -256,11 +270,13 @@ class SOFB(_BaseClass):
         return True
 
     def set_respmat_kick(self, plane, value):
+        """."""
         self._meas_respmat_kick[plane] = value
         self.run_callbacks('MeasRespMatKick'+plane.upper()+'-RB', value)
         return True
 
     def set_respmat_wait_time(self, value):
+        """."""
         self._meas_respmat_wait = value
         self.run_callbacks('MeasRespMatWait-RB', value)
         return True
@@ -431,7 +447,7 @@ class SOFB(_BaseClass):
             self.correctors.apply_kicks(kicks)
 
         mat = _np.array(mat).T
-        self.matrix.set_respmat(list(mat.flatten()))
+        self.matrix.set_respmat(list(mat.ravel()))
         self.run_callbacks(
             'MeasRespMat-Mon', self._csorb.MeasRespMatMon.Completed)
         self._measuring_respmat = False
@@ -513,6 +529,9 @@ class SOFB(_BaseClass):
         dkicks = self.matrix.calc_kicks(orb)
         if dkicks is not None:
             self._dtheta = dkicks
+        msg = 'Kicks calculated!'
+        self._update_log(msg)
+        _log.info(msg)
 
     def _process_kicks(self, kicks, dkicks):
         if dkicks is None:
@@ -568,17 +587,17 @@ class SOFB(_BaseClass):
             max_kick = _np.max(_np.abs(k_slc + dk_slc))
             factor2 = 1.0
             if max_kick > self._max_kick[pln]:
-                Q = _np.ones((2, k_slc.size), dtype=float)
+                que = _np.ones((2, k_slc.size), dtype=float)
                 # perform the modulus inequality:
-                Q[0, :] = (-self._max_kick[pln] - k_slc) / dk_slc
-                Q[1, :] = (self._max_kick[pln] - k_slc) / dk_slc
+                que[0, :] = (-self._max_kick[pln] - k_slc) / dk_slc
+                que[1, :] = (self._max_kick[pln] - k_slc) / dk_slc
                 # since we know that any initial kick is lesser than max_kick
                 # from the previous comparison, at this point each column of Q
                 # has a positive and a negative value. We must consider only
                 # the positive one and take the minimum value along the columns
                 # to be the multiplicative factor:
-                Q = _np.max(Q, axis=0)
-                factor2 = min(_np.min(Q), 1.0)
+                que = _np.max(que, axis=0)
+                factor2 = min(_np.min(que), 1.0)
                 dk_slc *= factor2
                 percent = self._corr_factor[pln] * factor1 * factor2 * 100
                 msg = 'WARN: reach MaxKick{0:s}. Using {1:5.2f}%'.format(

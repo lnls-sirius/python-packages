@@ -3,14 +3,15 @@
 import os as _os
 from copy import deepcopy as _dcopy
 import logging as _log
-import numpy as _np
 from functools import partial as _part
+
+import numpy as _np
 
 from .base_class import BaseClass as _BaseClass
 
 
 class BaseMatrix(_BaseClass):
-    pass
+    """."""
 
 
 class EpicsMatrix(BaseMatrix):
@@ -47,11 +48,13 @@ class EpicsMatrix(BaseMatrix):
 
     @property
     def bpm_enbllist(self):
+        """."""
         sel_ = self.select_items
         return _np.hstack([sel_['bpmx'], sel_['bpmy']])
 
     @property
     def corrs_enbllist(self):
+        """."""
         sel_ = self.select_items
         seleccor = _np.hstack([sel_['ch'], sel_['cv']])
         if self.acc == 'SI':
@@ -87,7 +90,7 @@ class EpicsMatrix(BaseMatrix):
             return False
         self.respmat_extended = matb
         self._save_respmat(matb)
-        self.run_callbacks('RespMat-RB', list(self.respmat.flatten()))
+        self.run_callbacks('RespMat-RB', list(self.respmat.ravel()))
         return True
 
     def _set_respmat(self, mat):
@@ -118,6 +121,7 @@ class EpicsMatrix(BaseMatrix):
         return mat, matb
 
     def set_enbllist(self, key, val):
+        """."""
         msg = 'Setting {0:s} EnblList'.format(key.upper())
         self._update_log(msg)
         _log.info(msg)
@@ -182,6 +186,7 @@ class EpicsMatrix(BaseMatrix):
         return new, newb
 
     def set_ring_extension(self, val):
+        """."""
         val = 1 if val < 1 else int(val)
         val = self._csorb.MAX_RINGSZ if val > self._csorb.MAX_RINGSZ else val
         if val == self.ring_extension:
@@ -193,27 +198,27 @@ class EpicsMatrix(BaseMatrix):
         selbs = dict()
         sellist = ('bpmx', 'bpmy')
         for k in sellist:
-            v = self.select_items_extended[k]
-            sel, selbs[k] = self._set_enbllist_bpms(k, v)
+            val = self.select_items_extended[k]
+            sel, selbs[k] = self._set_enbllist_bpms(k, val)
             self.select_items[k] = sel
 
         if not self._calc_matrices():
             self.ring_extension = bkup
             self.respmat, _ = self._set_respmat(self.respmat_extended)
             for k in sellist:
-                v = self.select_items_extended[k]
-                self.select_items[k], _ = self._set_enbllist_bpms(k, v)
+                val = self.select_items_extended[k]
+                self.select_items[k], _ = self._set_enbllist_bpms(k, val)
             return False
 
         self.respmat_extended = matb
         self.select_items_extended.update(selbs)
-        self.run_callbacks('RespMat-RB', list(self.respmat.flatten()))
+        self.run_callbacks('RespMat-RB', list(self.respmat.ravel()))
         for k in sellist:
-            v = self.select_items[k]
+            val = self.select_items[k]
             pvname = self.selection_pv_names[k]
-            self.run_callbacks(pvname, v)
+            self.run_callbacks(pvname, val)
             pvname = pvname.replace('-RB', '-SP')
-            self.run_callbacks(pvname, v)
+            self.run_callbacks(pvname, val)
         return True
 
     def calc_kicks(self, orbit):
@@ -233,6 +238,7 @@ class EpicsMatrix(BaseMatrix):
         return kicks
 
     def set_num_sing_values(self, num):
+        """."""
         num = int(num) if int(num) > 0 else 1
         max_num = self.get_max_num_sing_values()
         num = num if num < max_num else max_num
@@ -245,6 +251,7 @@ class EpicsMatrix(BaseMatrix):
         return True
 
     def get_max_num_sing_values(self):
+        """."""
         ncorr = _np.sum(self.select_items['ch'])
         ncorr += _np.sum(self.select_items['cv'])
         if self.acc == 'SI':
@@ -275,13 +282,13 @@ class EpicsMatrix(BaseMatrix):
         mat = self.respmat[sel_mat]
         mat = _np.reshape(mat, [sum(selecbpm), sum(seleccor)])
         try:
-            U, s, V = _np.linalg.svd(mat, full_matrices=False)
+            uuu, sing, vvv = _np.linalg.svd(mat, full_matrices=False)
         except _np.linalg.LinAlgError():
             msg = 'ERR: Could not calculate SVD'
             self._update_log(msg)
             _log.error(msg[5:])
             return False
-        inv_s = 1/s
+        inv_s = 1/sing
         nsv = _np.isfinite(inv_s).sum()
         if not nsv:
             msg = 'ERR: All Singular Values are zero.'
@@ -296,8 +303,7 @@ class EpicsMatrix(BaseMatrix):
             self._update_log(msg)
             _log.warning(msg[6:])
         inv_s[self.num_sing_values:] = 0
-        Inv_S = _np.diag(inv_s)
-        inv_mat = _np.dot(_np.dot(V.T, Inv_S), U.T)
+        inv_mat = _np.dot(vvv.T*inv_s, uuu.T)
         is_nan = _np.any(_np.isnan(inv_mat))
         is_inf = _np.any(_np.isinf(inv_mat))
         if is_nan or is_inf:
@@ -307,12 +313,11 @@ class EpicsMatrix(BaseMatrix):
             return False
 
         self.sing_values[:] = 0
-        self.sing_values[:len(s)] = s
+        self.sing_values[:len(sing)] = sing
         self.run_callbacks('SingValues-Mon', list(self.sing_values))
         self.inv_respmat = _np.zeros(self.respmat.shape, dtype=float).T
-        self.inv_respmat[sel_mat.T] = inv_mat.flatten()
-        self.run_callbacks(
-                'InvRespMat-Mon', list(self.inv_respmat.flatten()))
+        self.inv_respmat[sel_mat.T] = inv_mat.ravel()
+        self.run_callbacks('InvRespMat-Mon', list(self.inv_respmat.ravel()))
         msg = 'Ok!'
         self._update_log(msg)
         _log.info(msg)
