@@ -281,10 +281,10 @@ class SOFBTLines(ConstTLines):
         dbase = {
             'KickAcqRate-SP': {
                 'type': 'float', 'unit': 'Hz', 'value': 2,
-                'hilim': 20, 'lolim': 0.01, 'prec': 2},
+                'hilim': 10, 'lolim': 0.01, 'prec': 2},
             'KickAcqRate-RB': {
                 'type': 'float', 'unit': 'Hz', 'value': 2,
-                'hilim': 20, 'lolim': 0.01, 'prec': 2},
+                'hilim': 10, 'lolim': 0.01, 'prec': 2},
             'KickCH-Mon': {
                 'type': 'float', 'count': self.nr_ch, 'value': self.nr_ch*[0],
                 'unit': 'urad'},
@@ -438,17 +438,17 @@ class SOFBTLines(ConstTLines):
                 'value': self.TrigAcqDataPol.Positive,
                 'enums': self.TrigAcqDataPol._fields},
             'PolyCalibration-Sel': {
-                'type': 'enum', 'value': self.EnbldDsbld.Dsbld,
+                'type': 'enum', 'value': self.EnbldDsbld.Enbld,
                 'enums': self.EnbldDsbld._fields},
             'PolyCalibration-Sts': {
-                'type': 'enum', 'value': self.EnbldDsbld.Dsbld,
+                'type': 'enum', 'value': self.EnbldDsbld.Enbld,
                 'enums': self.EnbldDsbld._fields},
             'OrbAcqRate-SP': {
                 'type': 'float', 'unit': 'Hz', 'value': 10,
-                'hilim': 20, 'lolim': 0.01, 'prec': 2},
+                'hilim': 30, 'lolim': 0.01, 'prec': 2},
             'OrbAcqRate-RB': {
                 'type': 'float', 'unit': 'Hz', 'value': 10,
-                'hilim': 20, 'lolim': 0.01, 'prec': 2},
+                'hilim': 30, 'lolim': 0.01, 'prec': 2},
             'SmoothNrPts-SP': {
                 'type': 'int', 'value': 1,
                 'unit': 'number of points for smoothing',

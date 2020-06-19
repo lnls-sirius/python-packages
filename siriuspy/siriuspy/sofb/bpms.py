@@ -71,8 +71,8 @@ class BPM(_BaseTimingConfig):
             'TbtDataMaskEn': _csbpm.EnbldDsbld.disabled,  # Enable use of mask
             'TbtDataMaskSamplesBeg': 0,
             'TbtDataMaskSamplesEnd': 0,
-            'XYPosCal': _csbpm.EnbldDsbld.disabled,
-            'SUMPosCal': _csbpm.EnbldDsbld.disabled}
+            'XYPosCal': _csbpm.EnbldDsbld.enabled,
+            'SUMPosCal': _csbpm.EnbldDsbld.enabled}
         pvs = {
             'asyn.ENBL': 'asyn.ENBL',
             'ACQBPMMode': 'ACQBPMMode-Sel',

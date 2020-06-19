@@ -12,7 +12,8 @@ def get_dict():
     module_name = __name__.split('.')[-1]
     _dict = {
         'config_type_name': module_name,
-        'value': _dcopy(_template_dict)
+        'value': _dcopy(_template_dict),
+        'check': False,
     }
 
     return _dict

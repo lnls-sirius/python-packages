@@ -14,6 +14,8 @@ PUB_INTERFACE = (
     'process',
     'set_chrom_x',
     'set_chrom_y',
+    'set_deltachrom_x',
+    'set_deltachrom_y',
     'set_meas_chrom_dfreq_rf',
     'set_meas_chrom_wait_tune',
     'set_meas_chrom_nrsteps',

@@ -73,12 +73,24 @@ def get_chrom_database(acc):
                       'hilim': 10, 'lolim': -10, 'high': 10,
                       'low': -10, 'hihi': 10, 'lolo': -10},
         'ChromX-RB': {'type': 'float', 'value': 0, 'prec': 6},
-        'ChromX-Mon': {'type': 'float', 'value': 0, 'prec': 6},
         'ChromY-SP': {'type': 'float', 'value': 0, 'prec': 6,
                       'hilim': 10, 'lolim': -10, 'high': 10,
                       'low': -10, 'hihi': 10, 'lolo': -10},
         'ChromY-RB': {'type': 'float', 'value': 0, 'prec': 6},
+
+        'DeltaChromX-SP': {'type': 'float', 'value': 0, 'prec': 6,
+                           'hilim': 10, 'lolim': -10, 'high': 10,
+                           'low': -10, 'hihi': 10, 'lolo': -10},
+        'DeltaChromX-RB': {'type': 'float', 'value': 0, 'prec': 6},
+        'DeltaChromY-SP': {'type': 'float', 'value': 0, 'prec': 6,
+                           'hilim': 10, 'lolim': -10, 'high': 10,
+                           'low': -10, 'hihi': 10, 'lolo': -10},
+        'DeltaChromY-RB': {'type': 'float', 'value': 0, 'prec': 6},
+
+        'ChromX-Mon': {'type': 'float', 'value': 0, 'prec': 6},
         'ChromY-Mon': {'type': 'float', 'value': 0, 'prec': 6},
+        'CalcChromX-Mon': {'type': 'float', 'value': 0, 'prec': 6},
+        'CalcChromY-Mon': {'type': 'float', 'value': 0, 'prec': 6},
 
         'ApplyDelta-Cmd': {'type': 'int', 'value': 0},
 

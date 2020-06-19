@@ -620,6 +620,7 @@ class FBP(PSBSMP):
                 _np.array(values).reshape((6, -1))
         else:
             print('Anomalous bsmp communication if sofb read group: ', ack)
+            setpoints, references, iload = None, None, None
 
         # print('{:<30s} : {:>9.3f} ms'.format(
         #     'PSBSMP._sofb_read_group_of_variables (end)', 1e3*(_time.time() % 1)))

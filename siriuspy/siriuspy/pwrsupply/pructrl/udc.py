@@ -160,7 +160,8 @@ class UDC:
             dev1, dev2 = self._dev_first, self._dev_second
             val1 = dev1.sofb_ps_setpoint
             val2 = dev2.sofb_ps_setpoint if dev2 else UDC._soft_def
-            return _np.concatenate((val1, val2))
+            if val1 is not None and val2 is not None:
+                return _np.concatenate((val1, val2))
         return None
 
     def sofb_current_refmon_get(self):
@@ -169,7 +170,8 @@ class UDC:
             dev1, dev2 = self._dev_first, self._dev_second
             val1 = dev1.sofb_ps_reference
             val2 = dev2.sofb_ps_reference if dev2 else UDC._soft_def
-            return _np.concatenate((val1, val2))
+            if val1 is not None and val2 is not None:
+                return _np.concatenate((val1, val2))
         return None
 
     def sofb_current_mon_get(self):
@@ -178,7 +180,8 @@ class UDC:
             dev1, dev2 = self._dev_first, self._dev_second
             val1 = dev1.sofb_ps_iload
             val2 = dev2.sofb_ps_iload if dev2 else UDC._soft_def
-            return _np.concatenate((val1, val2))
+            if val1 is not None and val2 is not None:
+                return _np.concatenate((val1, val2))
         return None
 
     def sofb_current_set(self, value):

@@ -1,6 +1,7 @@
 """Definition module."""
 import math as _math
 import logging as _log
+import numpy as _np
 
 from ..callbacks import Callback as _Callback
 
@@ -60,14 +61,19 @@ class BaseClass(_Callback):
         return self._csorb
 
     def write(self, pvname, value):
+        """."""
         pvname = pvname.replace(self.prefix, '')
-        _log.info('Write received for: {} --> {}'.format(pvname, value))
+        if isinstance(value, (_np.ndarray, list, tuple)):
+            pval = f'{value[0]}...{value[-1]}'
+        else:
+            pval = f'{value}'
+        _log.info(f'Write received for: {pvname} --> {pval}')
         if pvname in self._map2write:
             ret = self._map2write[pvname](value)
             if ret:
-                _log.info('YES Write for: {} --> {}'.format(pvname, value))
+                _log.info(f'YES Write for: {pvname} --> {pval}')
             else:
-                _log.info('NOT Write for: {} --> {}'.format(pvname, value))
+                _log.info(f'NOT Write for: {pvname} --> {pval}')
             return ret
         else:
             _log.warning('PV %s does not have a set function.', pvname)

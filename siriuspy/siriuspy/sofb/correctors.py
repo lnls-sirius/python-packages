@@ -12,6 +12,7 @@ from ..timesys.csdev import Const as _TIConst
 from ..search import HLTimeSearch as _HLTimesearch
 from ..envars import VACA_PREFIX as LL_PREF
 from ..namesys import SiriusPVName as _PVName
+from ..devices import PSApplySOFB as _PSSOFB
 
 from .base_class import BaseClass as _BaseClass, \
     BaseTimingConfig as _BaseTimingConfig, compare_kicks as _compare_kicks
@@ -323,9 +324,9 @@ class TimingConfig(_BaseTimingConfig):
             }
         if _HLTimesearch.has_delay_type(trig):
             self._config_pvs_rb['RFDelayType'] = _PV(
-                            pref_trig + 'RFDelayType-Sts', **opt)
+                pref_trig + 'RFDelayType-Sts', **opt)
             self._config_pvs_sp['RFDelayType'] = _PV(
-                            pref_trig + 'RFDelayType-Sel', **opt)
+                pref_trig + 'RFDelayType-Sel', **opt)
 
     def send_evt(self):
         """Send event method."""
@@ -359,10 +360,11 @@ class EpicsCorrectors(BaseCorrectors):
         self._names = self._csorb.ch_names + self._csorb.cv_names
         self._corrs = [get_corr(dev) for dev in self._names]
         if self.acc == 'SI':
+            self._pssofb = _PSSOFB(self.acc, auto_mon=True)
             self._corrs.append(RFCtrl(self.acc))
             self.timing = TimingConfig(acc)
         self._corrs_thread = _Repeat(
-                1/self._acq_rate, self._update_corrs_strength, niter=0)
+            1/self._acq_rate, self._update_corrs_strength, niter=0)
         self._corrs_thread.start()
 
     @property
@@ -380,37 +382,42 @@ class EpicsCorrectors(BaseCorrectors):
             dbase['CorrSync-Sel'] = self.set_corrs_mode
         return dbase
 
-    def apply_kicks(self, values):
+    def apply_kicks(self, values, use_pssofb=False):
         """Apply kicks."""
         strn = '    TIMEIT: {0:20s} - {1:7.3f}'
-        _log.debug('    TIMEIT: BEGIN')
+        _log.info('    TIMEIT: BEGIN')
         time1 = _time.time()
 
+        not_nan_idcs = ~_np.isnan(values)
         # Send correctors setpoint
-        for i, corr in enumerate(self._corrs):
-            if values[i] is not None:
-                self.put_value_in_corr(corr, values[i])
+        if self.acc == 'SI' and use_pssofb:
+            self._pssofb.kick = values[:-1]
+            if not_nan_idcs[-1]:
+                self.put_value_in_corr(self._corrs[-1], values[-1])
+        else:
+            for i, corr in enumerate(self._corrs):
+                if not_nan_idcs[i]:
+                    self.put_value_in_corr(corr, values[i])
         time2 = _time.time()
-        _log.debug(strn.format('send sp:', 1000*(time2-time1)))
+        _log.info(strn.format('send sp:', 1000*(time2-time1)))
 
         # Wait for readbacks to be updated
-        if self._timed_out(values, mode='ready'):
+        if self._timed_out(values, mode='ready', use_pssofb=use_pssofb):
             return
         time3 = _time.time()
-        _log.debug(strn.format('check ready:', 1000*(time3-time2)))
+        _log.info(strn.format('check ready:', 1000*(time3-time2)))
 
         # Send trigger signal for implementation
-        # _time.sleep(0.450)
         self.send_evt()
         time4 = _time.time()
-        _log.debug(strn.format('send evt:', 1000*(time4-time3)))
+        _log.info(strn.format('send evt:', 1000*(time4-time3)))
 
         # Wait for references to be updated
-        if self._timed_out(values, mode='applied'):
-            return
+        if not (self.acc == 'SI' and use_pssofb and self._synced_kicks):
+            self._timed_out(values, mode='applied', use_pssofb=use_pssofb)
         time5 = _time.time()
-        _log.debug(strn.format('check applied:', 1000*(time5-time4)))
-        _log.debug('    TIMEIT: END')
+        _log.info(strn.format('check applied:', 1000*(time5-time4)))
+        _log.info('    TIMEIT: END')
 
     def put_value_in_corr(self, corr, value):
         """Put value in corrector method."""
@@ -445,17 +452,21 @@ class EpicsCorrectors(BaseCorrectors):
             return
         self.timing.send_evt()
 
-    def get_strength(self):
+    def get_strength(self, use_pssofb=False):
         """Get the correctors strengths."""
         corr_values = _np.zeros(self._csorb.nr_corrs, dtype=float)
-        for i, corr in enumerate(self._corrs):
-            if corr.connected and corr.value is not None:
-                corr_values[i] = corr.value
-            else:
-                msg = 'ERR: Failed to get value from '
-                msg += corr.name
-                self._update_log(msg)
-                _log.error(msg[5:])
+        if self.acc == 'SI' and use_pssofb:
+            corr_values[:-1] = self._pssofb.kick
+            corr_values[-1] = self._corrs[-1].value
+        else:
+            for i, corr in enumerate(self._corrs):
+                if corr.connected and corr.value is not None:
+                    corr_values[i] = corr.value
+                else:
+                    msg = 'ERR: Failed to get value from '
+                    msg += corr.name
+                    self._update_log(msg)
+                    _log.error(msg[5:])
         return corr_values
 
     def set_kick_acq_rate(self, value):
@@ -563,24 +574,54 @@ class EpicsCorrectors(BaseCorrectors):
         self._status = status
         self.run_callbacks('CorrStatus-Mon', status)
 
-    def _timed_out(self, values, mode='ready'):
+    def _timed_out(self, values, mode='ready', use_pssofb=False):
+        if self.acc == 'SI' and use_pssofb:
+            return self._timed_out_pssofb(values, mode=mode)
+
+        okg = [False, ] * len(self._corrs)
         for _ in range(self.NUM_TIMEOUT):
-            okg = [False, ] * len(self._corrs)
             for i, corr in enumerate(self._corrs):
-                if not okg[i]:
-                    if values[i] is None:
-                        okg[i] = True
-                        continue
-                    val = corr.value if mode == 'ready' else corr.refvalue
-                    okg[i] = val is not None and _compare_kicks(values[i], val)
+                if okg[i]:
+                    continue
+                if _np.isnan(values[i]):
+                    okg[i] = True
+                    continue
+                val = corr.value if mode == 'ready' else corr.refvalue
+                okg[i] = val is not None and _compare_kicks(values[i], val)
             if all(okg):
                 return False
             _time.sleep(self.TINY_INTERVAL)
 
+        self._print_guilty(okg, mode=mode)
+        return True
+
+    def _timed_out_pssofb(self, values, mode='ready'):
+        pss = self._pssofb
+        rfc = self._corrs[-1]
+
+        okg = [False, ] * len(self._corrs)
+        val4comp = _np.zeros(len(okg), dtype=float)
+        for _ in range(self.NUM_TIMEOUT):
+            val4comp[:-1] = pss.kick_rb if mode == 'ready' else pss.kick
+            val4comp[-1] = rfc.value if mode == 'ready' else rfc.refvalue
+            for i, val in enumerate(val4comp):
+                if okg[i]:
+                    continue
+                if _np.isnan(values[i]):
+                    okg[i] = True
+                    continue
+                okg[i] = ~_np.isnan(val) and _compare_kicks(values[i], val)
+            if all(okg):
+                return False
+            _time.sleep(self.TINY_INTERVAL)
+
+        self._print_guilty(okg, mode=mode)
+        return True
+
+    def _print_guilty(self, okg, mode='ready'):
         mde = 'RB' if mode == 'ready' else 'Ref'
         for oki, corr in zip(okg, self._corrs):
             if not oki:
                 msg = 'ERR: timeout {0:3s}: {1:s}'.format(mde, corr.name)
                 self._update_log(msg)
                 _log.error(msg[5:])
-        return True

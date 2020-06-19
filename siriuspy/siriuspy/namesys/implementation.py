@@ -282,9 +282,15 @@ class SiriusPVName(str):
         elif th_ssec == 'Fam':
             return True
         elif my_ssec == '01M1':
-            return False
+            if th_ssec == '01SA' and th_dev == 'ScrapH':
+                return True
+            else:
+                return False
         elif th_ssec == '01M1':
-            return True
+            if my_ssec == '01SA' and my_dev == 'ScrapH':
+                return False
+            else:
+                return True
         elif my_ssec == '01U' and my_dev in {'CV', 'BPM'}:
             return False
         elif th_ssec == '01U' and th_dev in {'CV', 'BPM'}:
@@ -297,8 +303,20 @@ class SiriusPVName(str):
             return True
         if my_ssec[2] == th_ssec[2]:
             return my_ssec[3] < th_ssec[3]
-        else:
-            return not my_ssec[2] < th_ssec[2]
+        elif my_ssec[2] == 'C':
+            return False
+        elif th_ssec[2] == 'C':
+            return True
+        elif my_ssec[2] == 'S':
+            if th_ssec[2:4] == 'M1':
+                return False
+            elif th_ssec[2:4] == 'M2':
+                return True
+        elif th_ssec[2] == 'S':
+            if my_ssec[2:4] == 'M1':
+                return True
+            elif my_ssec[2:4] == 'M2':
+                return False
 
     @staticmethod
     def is_write_pv(pvname):
