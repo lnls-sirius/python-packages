@@ -17,7 +17,8 @@ class ETypes(_csdev.ETypes):
     """Local enumerate types."""
 
     ENBL_RF = _csdev.ETypes.OFF_ON
-    ORB_MODE_RINGS = ('Offline', 'SlowOrb', 'MultiTurn', 'SinglePass')
+    ORB_MODE_SI = ('Offline', 'SlowOrb', 'MultiTurn', 'SinglePass')
+    ORB_MODE_RINGS = ('Offline', 'MultiTurn', 'SinglePass')
     ORB_MODE_TLINES = ('Offline', 'SinglePass')
     SMOOTH_METH = ('Average', 'Median')
     SPASS_METHOD = ('FromBPMs', 'Calculated')
@@ -97,6 +98,7 @@ class ConstRings(ConstTLines):
 class ConstSI(ConstRings):
     """Const class defining rings orbitcorr constants."""
 
+    SOFBMode = _csdev.Const.register('SOFBMode', _et.ORB_MODE_SI)
     ApplyDelta = _csdev.Const.register('ApplyDelta', _et.APPLY_CORR_SI)
     StsLblsCorr = _csdev.Const.register('StsLblsCorr', _et.STS_LBLS_CORR_SI)
     CorrSync = _csdev.Const.register('CorrSync', _et.OFF_ON)
@@ -603,7 +605,6 @@ class SOFBRings(SOFBTLines, ConstRings):
         """Return Orbit database."""
         nbpm = self.nr_bpms
         pvs_ring = [
-            'SlowOrbX-Mon', 'SlowOrbY-Mon',
             'MTurnIdxOrbX-Mon', 'MTurnIdxOrbY-Mon',
             'MTurnIdxSum-Mon',
             ]
@@ -615,10 +616,10 @@ class SOFBRings(SOFBTLines, ConstRings):
             db_ring[k] = _dcopy(prop)
         db_ring.update({
             'MTurnSyncTim-Sel': {
-                'type': 'enum', 'value': self.EnbldDsbld.Enbld,
+                'type': 'enum', 'value': self.EnbldDsbld.Dsbld,
                 'enums': self.EnbldDsbld._fields},
             'MTurnSyncTim-Sts': {
-                'type': 'enum', 'value': self.EnbldDsbld.Enbld,
+                'type': 'enum', 'value': self.EnbldDsbld.Dsbld,
                 'enums': self.EnbldDsbld._fields},
             'MTurnUseMask-Sel': {
                 'type': 'enum', 'value': self.EnbldDsbld.Dsbld,
@@ -739,6 +740,20 @@ class SOFBSI(SOFBRings, ConstSI):
                 'type': 'float', 'value': 0, 'prec': 2, 'unit': 'Hz'},
             }
         dbase = super().get_respmat_database(prefix=prefix)
+        dbase.update(self._add_prefix(db_ring, prefix))
+        return dbase
+
+    def get_orbit_database(self, prefix=''):
+        """Return Orbit database."""
+        nbpm = self.nr_bpms
+        pvs_ring = ['SlowOrbX-Mon', 'SlowOrbY-Mon']
+        db_ring = dict()
+        prop = {
+            'type': 'float', 'unit': 'um', 'count': self.MAX_RINGSZ*nbpm,
+            'value': nbpm*[0]}
+        for k in pvs_ring:
+            db_ring[k] = _dcopy(prop)
+        dbase = super().get_orbit_database(prefix=prefix)
         dbase.update(self._add_prefix(db_ring, prefix))
         return dbase
 

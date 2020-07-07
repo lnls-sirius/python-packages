@@ -672,7 +672,6 @@ class PRUController:
                         function_id=function_id,
                         data_len=len(data[dev_id]),
                         data_type=type(data[dev_id]),
-                        data_int=int(data[dev_id]),
                         data=data[dev_id])
         except _SerialError:
             return None

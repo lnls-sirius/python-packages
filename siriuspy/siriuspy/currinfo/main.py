@@ -352,6 +352,7 @@ class SICurrInfoApp(_CurrInfoApp):
 
     HARMNUM_RATIO = 864 / 828
     CURR_THRESHOLD = 0.06  # [mA]
+    MAX_CURRENT = 1.0  # [A]
 
     def __init__(self):
         """Class constructor."""
@@ -431,9 +432,14 @@ class SICurrInfoApp(_CurrInfoApp):
             timestamp = _time.time()
             if self._storedebeam_value and not self._is_cycling:
                 dtm = (timestamp - self._time0)  # Delta t [s]
-                inc_charge = self._current_value/1000*dtm/3600  # Charge [A.h]
-                self._charge += inc_charge
-                self.run_callbacks('Charge-Mon', self._charge)
+                current = self._current_value/1000  # Current [A]
+                if current < self.MAX_CURRENT:
+                    inc_charge = current*dtm/3600  # Charge [A.h]
+                    self._charge += inc_charge
+                    self.run_callbacks('Charge-Mon', self._charge)
+                else:
+                    _log.warning(
+                        'Current value is too high: {0:.3f}A.'.format(current))
                 value = self._charge
             self._time0 = timestamp
         return value

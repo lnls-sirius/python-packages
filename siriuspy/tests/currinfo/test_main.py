@@ -22,6 +22,7 @@ PUB_INTERFACE_BASE = (
 PUB_INTERFACE_SI = (
     'HARMNUM_RATIO',
     'CURR_THRESHOLD',
+    'MAX_CURRENT',
     'init_database',
     'read',
     'write',
