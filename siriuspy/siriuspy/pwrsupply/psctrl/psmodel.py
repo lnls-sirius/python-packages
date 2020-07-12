@@ -307,6 +307,7 @@ class PSModelFBP(_PSModel):
     }
 
     _pruc_properties = {
+        'SOFBMode-Sts': 'sofb_mode',
         'SOFBCurrent-RB': 'sofb_current_rb',
         'SOFBCurrentRef-Mon': 'sofb_current_refmon',
         'SOFBCurrent-Mon': 'sofb_current_mon',
@@ -316,6 +317,9 @@ class PSModelFBP(_PSModel):
         """Return function."""
         if epics_field == 'SOFBCurrent-SP':
             return _writers.SOFBCurrent(
+                device_ids, pru_controller, setpoints)
+        if epics_field == 'SOFBMode-Sel':
+            return _writers.SOFBMode(
                 device_ids, pru_controller, setpoints)
         return super().function(
             device_ids, epics_field, pru_controller, setpoints)

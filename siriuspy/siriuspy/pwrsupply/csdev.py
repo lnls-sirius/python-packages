@@ -634,9 +634,15 @@ def _get_ps_basic_propty_database():
 
 
 def _get_ps_sofbcurrent_propty_database():
-    """Return SOFBCurrent properties."""
+    """Return PSSOFB properties."""
     count = UDC_MAX_NR_DEV * PSSOFB_MAX_NR_UDC
     dbase = {
+        'SOFBMode-Sel': {
+            'type': 'enum', 'enums': _et.DSBL_ENBL,
+            'value': Const.DsblEnbl.Dsbl},
+        'SOFBMode-Sts': {
+            'type': 'enum', 'enums': _et.DSBL_ENBL,
+            'value': Const.DsblEnbl.Dsbl},
         'SOFBCurrent-SP': {
             'type': 'float', 'count': count,
             'unit': 'A', 'prec': PS_CURRENT_PRECISION,
