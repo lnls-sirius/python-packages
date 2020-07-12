@@ -105,7 +105,7 @@ class PSBSMP(_BSMP):
         if not add_wfmref_group:
             return ack, data
 
-        # add group fro wfmref vars
+        # add group for wfmref vars
         ack, data = self.create_group_of_variables(
             PSBSMP._wfmref_vars_ids,
             timeout=PSBSMP._timeout_create_vars_groups)

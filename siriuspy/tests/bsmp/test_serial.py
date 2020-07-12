@@ -167,6 +167,7 @@ class TestBSMPChannel(TestCase):
     """Test Channel class of BSMP package."""
 
     api = (
+        'LOCK',
         'pru',
         'address',
         'read',

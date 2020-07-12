@@ -121,9 +121,26 @@ class UDC:
         for dev in self._devs_bsmp.values():
             dev.reset_groups_of_variables(groups=groups)
 
+    def add_groups_of_variables(self):
+        """Add psmodel-specific variables groups in entities (no comm)."""
+        # buld varids for group with id > 2
+        gids = sorted(tuple(self.prucparms.groups.keys()))
+        groups = [self.prucparms.groups[gid] for gid in gids[3:]]
+
+        for dev in self._devs_bsmp.values():
+            # reset group list, adding only default groups 0, 1 and 2.
+            dev.entities.reset_group()
+            # add psmodel-specific groups
+            for var_ids in groups:
+                dev.entities.add_group(var_ids)
+
     def __getitem__(self, index):
         """Return BSMP."""
         return self._devs_bsmp[index]
+
+    def __len__(self):
+        """."""
+        return len(self._devs_bsmp)
 
     # --- SOFBCurrent methods
 

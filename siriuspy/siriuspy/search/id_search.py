@@ -16,8 +16,8 @@ class IDSearch:
 
     _beamline2idname = {
         'CARNAUBA': 'SI-06SB:ID-Delta21',
-        'CATERETE': 'SI-07SP:ID-Delta21',
-        'EMA':      'SI-08SB:ID-APU19',
+        'CATERETE': 'SI-07SP:ID-APU22',
+        'EMA':      'SI-08SB:ID-APU22',
         'MANACA':   'SI-09SA:ID-APU22',
         'SABIA':    'SI-10SB:ID-Delta52',
         'IPE':      'SI-11SP:ID-Delta52',

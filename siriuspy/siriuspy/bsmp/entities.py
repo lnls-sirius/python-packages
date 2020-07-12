@@ -227,13 +227,8 @@ class Entities:
                 Variable(var_id, waccess, var_type, count))
 
         # Standard groups
-        r_var = [var for var in self.variables if not var.waccess]
-        w_var = [var for var in self.variables if var.waccess]
-        self._groups = [
-            VariablesGroup(0, False, self.variables),
-            VariablesGroup(1, False, r_var),
-            VariablesGroup(2, True, w_var),
-        ]
+        self._groups = list()
+        self.reset_group()
 
         self._curves = list()
         for curve in curves:
@@ -271,6 +266,16 @@ class Entities:
     def functions(self):
         """Functions."""
         return self._functions
+
+    def reset_group(self):
+        """."""
+        r_var = [var for var in self.variables if not var.waccess]
+        w_var = [var for var in self.variables if var.waccess]
+        self._groups = [
+            VariablesGroup(0, False, self.variables),
+            VariablesGroup(1, False, r_var),
+            VariablesGroup(2, True, w_var),
+        ]
 
     def add_group(self, var_ids):
         """Add group."""

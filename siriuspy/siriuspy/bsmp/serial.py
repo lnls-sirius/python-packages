@@ -158,8 +158,9 @@ class Channel:
     """
 
     # TODO: should we remove use of default timeout values. It is dangerous!
-
-    _lock = _Lock()
+    # TODO: Test if this lock can be removed for all topologies, including
+    # those process using more than one PRUController.
+    LOCK = _Lock()
 
     def __init__(self, pru, address):
         """Set channel."""
@@ -218,17 +219,23 @@ class Channel:
         #     while True:
         #         pass
 
+        if Channel.LOCK is None:
+            return self._request(message, timeout, read_flag)
+
         # NOTE: this lock is very important in order to avoid threads in
         # the same process space to read each other's responses.
-        with Channel._lock:
-            self.write(message, timeout)
-            if read_flag:
-                response = self.read()
-                # print(response.cmd)
-                # print(response.payload)
-            else:
-                # NOTE: for functions with no return (F_RESET_UDC, for example)
-                # artificially return 0xE0 (OK)
-                # response = Message([chr(0xE0), chr(0), chr(0)])
-                response = None
-            return response
+        with Channel.LOCK:
+            return self._request(message, timeout, read_flag)
+
+    def _request(self, message, timeout=100, read_flag=True):
+        self.write(message, timeout)
+        if read_flag:
+            response = self.read()
+            # print(response.cmd)
+            # print(response.payload)
+        else:
+            # NOTE: for functions with no return (F_RESET_UDC, for example)
+            # artificially return 0xE0 (OK)
+            # response = Message([chr(0xE0), chr(0), chr(0)])
+            response = None
+        return response

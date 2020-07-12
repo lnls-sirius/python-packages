@@ -42,7 +42,8 @@ class SOFB(_Device):
         # properties used only for ring-type accelerators:
         'SlowOrbX-Mon', 'SlowOrbY-Mon',
         'MTurnSum-Mon', 'MTurnOrbX-Mon', 'MTurnOrbY-Mon',
-        'MTurnIdxOrbX-Mon', 'MTurnIdxOrbY-Mon', 'MTurnIdxSum-Mon')
+        'MTurnIdxOrbX-Mon', 'MTurnIdxOrbY-Mon', 'MTurnIdxSum-Mon',
+        'MTurnTime-Mon')
 
     _default_timeout = 10  # [s]
     _off, _on = 0, 1
@@ -111,6 +112,11 @@ class SOFB(_Device):
     def mt_sum(self):
         """."""
         return self['MTurnSum-Mon'] if self.data.isring else None
+
+    @property
+    def mt_time(self):
+        """."""
+        return self['MTurnTime-Mon'] if self.data.isring else None
 
     @property
     def mt_trajx_idx(self):
