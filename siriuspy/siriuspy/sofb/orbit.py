@@ -5,7 +5,7 @@ from math import ceil as _ceil
 import logging as _log
 from functools import partial as _part
 from copy import deepcopy as _dcopy
-from threading import Lock, Thread
+from threading import Lock, Thread, Event
 from multiprocessing import Pipe
 
 from epics import CAProcess as _Process
@@ -26,17 +26,35 @@ class BaseOrbit(_BaseClass):
 
 def run_subprocess(pvs, pipe):
     """Run subprocesses."""
+    # this timeout is needed to slip the orbit acquisition in case the
+    # loop starts in the middle of the BPMs updates
+    timeout = 15/1000  # in [s]
+
+    def callback(*_, **kwargs):
+        pvo = kwargs['cb_info'][1]
+        pvo.event.set()
+
     pvsobj = []
     for pvn in pvs:
-        pvsobj.append(_PV(pvn, connection_timeout=TIMEOUT))
+        pvo = _PV(pvn, connection_timeout=TIMEOUT)
+        pvo.event = Event()
+        pvsobj.append(pvo)
 
     for pvo in pvsobj:
         pvo.wait_for_connection()
+        pvo.add_callback(callback)
 
     while pipe.recv():
         out = []
+        tout = None
         for pvo in pvsobj:
-            out.append(pvo.value if pvo.connected else None)
+            if pvo.connected and pvo.event.wait(timeout=tout):
+                tout = timeout
+                out.append(pvo.value)
+            else:
+                out.append(None)
+        for pvo in pvsobj:
+            pvo.event.clear()
         pipe.send(out)
 
 
@@ -70,7 +88,7 @@ class EpicsOrbit(BaseOrbit):
         self._spass_th_acqbg = None
         self._spass_bgs = [dict() for _ in range(self._csorb.nr_bpms)]
         self._spass_usebg = self._csorb.SPassUseBg.NotUsing
-        self._acqrate = 10
+        self._acqrate = self._csorb.MIN_SLOWORB_RATE
         self._oldacqrate = self._acqrate
         self._acqtrignrsamplespre = 0
         self._acqtrignrsamplespost = 360
@@ -81,6 +99,7 @@ class EpicsOrbit(BaseOrbit):
         self._ring_extension = 1
         self.bpms = [BPM(name, callback) for name in self._csorb.bpm_names]
         self.timing = TimingConfig(acc, callback)
+        self.new_orbit = Event()
         if self.acc == 'SI':
             self._processes = []
             self._mypipes = []
@@ -219,7 +238,7 @@ class EpicsOrbit(BaseOrbit):
         Thread(target=self._prepare_mode, daemon=True).start()
         return True
 
-    def get_orbit(self, reset=False):
+    def get_orbit(self, reset=False, synced=False, timeout=1/10):
         """Return the orbit distortion."""
         nrb = self._ring_extension * self._csorb.nr_bpms
         refx = self.ref_orbs['X'][:nrb]
@@ -243,6 +262,9 @@ class EpicsOrbit(BaseOrbit):
             raw_orbs = self.raw_sporbs
             getorb = self._get_orbit_singlepass
         elif self.acc == 'SI' and self._mode == self._csorb.SOFBMode.SlowOrb:
+            if synced:
+                self.new_orbit.wait(timeout=timeout)
+                self.new_orbit.clear()
             orbs = self.smooth_orb
             raw_orbs = self.raw_orbs
             getorb = self._get_orbit_online
@@ -469,8 +491,16 @@ class EpicsOrbit(BaseOrbit):
         trigmds = [self._csorb.SOFBMode.SinglePass, ]
         if self.isring:
             trigmds.append(self._csorb.SOFBMode.MultiTurn)
-        if self._mode in trigmds and value > 2:
-            msg = 'ERR: In triggered mode cannot set rate > 2.'
+        if self._mode in trigmds and value > self._csorb.MAX_TRIGMODE_RATE:
+            msg = 'ERR: In triggered mode cannot set rate > {:d}.'.format(
+                self._csorb.MAX_TRIGMODE_RATE)
+            self._update_log(msg)
+            _log.error(msg[5:])
+            return False
+        elif self._mode == self._csorb.SOFBMode.SlowOrb and \
+                value < self._csorb.MIN_SLOWORB_RATE:
+            msg = 'ERR: In SlowOrb cannot set rate < {:d}.'.format(
+                self._csorb.MIN_SLOWORB_RATE)
             self._update_log(msg)
             _log.error(msg[5:])
             return False
@@ -487,12 +517,19 @@ class EpicsOrbit(BaseOrbit):
         bo1 = self._mode in trigmds
         bo2 = value not in trigmds
         omode = self._mode
+        if not bo2:
+            acqrate = self._csorb.MAX_TRIGMODE_RATE
+            dic = {'lolim': 0.01, 'hilim': acqrate}
+        else:
+            acqrate = self._oldacqrate
+            dic = {'lolim': self._csorb.MIN_SLOWORB_RATE, 'hilim': 100}
+        self.run_callbacks('OrbAcqRate-SP', acqrate, **dic)
+        self.run_callbacks('OrbAcqRate-RB', acqrate, **dic)
+
         with self._lock_raw_orbs:
             self._mode = value
             if bo1 == bo2:
-                acqrate = 2 if not bo2 else self._oldacqrate
                 self._oldacqrate = self._acqrate
-                self.run_callbacks('OrbAcqRate-SP', acqrate)
                 self.set_orbit_acq_rate(acqrate)
             self._reset_orbs()
         Thread(
@@ -571,7 +608,17 @@ class EpicsOrbit(BaseOrbit):
                 bpm.mode = _csbpm.OpModes.MultiBunch
                 bpm.configure()
                 self.timing.configure()
+        Thread(target=self._synchronize_bpms, daemon=True).start()
         return True
+
+    def _synchronize_bpms(self):
+        for bpm in self.bpms:
+            bpm.monit1_sync_enbl = _csbpm.EnbldDsbld.enabled
+            bpm.monit_sync_enbl = _csbpm.EnbldDsbld.enabled
+        _time.sleep(0.5)
+        for bpm in self.bpms:
+            bpm.monit_sync_enbl = _csbpm.EnbldDsbld.disabled
+            bpm.monit1_sync_enbl = _csbpm.EnbldDsbld.disabled
 
     def set_trig_acq_control(self, value):
         """."""
@@ -808,11 +855,11 @@ class EpicsOrbit(BaseOrbit):
     def _update_online_orbits(self):
         """."""
         nrb = self._csorb.nr_bpms
+        posx, posy = self._get_orbit_from_processes()
         orbsz = nrb * self._ring_extension
         orb = _np.zeros(orbsz, dtype=float)
         orbs = {'X': orb, 'Y': orb.copy()}
         ref = self.ref_orbs
-        posx, posy = self._get_orbit_from_processes()
         for i, pos in enumerate(posx):
             orbs['X'][i::nrb] = ref['X'][i] if pos is None else pos/1000
         for i, pos in enumerate(posy):
@@ -834,6 +881,7 @@ class EpicsOrbit(BaseOrbit):
             smooth[plane] = orb
             name = ('Orb' if plane != 'Sum' else '') + plane
             self.run_callbacks('Slow' + name + '-Mon', list(orb))
+        self.new_orbit.set()
 
     def _get_orbit_from_processes(self):
         for pipe in self._mypipes:

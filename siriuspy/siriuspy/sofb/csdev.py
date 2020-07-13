@@ -57,6 +57,8 @@ class ConstTLines(_csdev.Const):
     MAX_MT_ORBS = 4000
     MAX_RINGSZ = 5
     TINY_KICK = 1e-3  # urad
+    MAX_TRIGMODE_RATE = 2  # Hz
+    MIN_SLOWORB_RATE = 30  # Hz
 
     EnbldDsbld = _csdev.Const.register('EnbldDsbld', _et.DSBLD_ENBLD)
     TrigAcqCtrl = _csbpm.AcqEvents
@@ -446,11 +448,11 @@ class SOFBTLines(ConstTLines):
                 'type': 'enum', 'value': self.EnbldDsbld.Enbld,
                 'enums': self.EnbldDsbld._fields},
             'OrbAcqRate-SP': {
-                'type': 'float', 'unit': 'Hz', 'value': 10,
-                'hilim': 30, 'lolim': 0.01, 'prec': 2},
+                'type': 'float', 'unit': 'Hz', 'value': self.MIN_SLOWORB_RATE,
+                'hilim': 100, 'lolim': self.MIN_SLOWORB_RATE, 'prec': 2},
             'OrbAcqRate-RB': {
-                'type': 'float', 'unit': 'Hz', 'value': 10,
-                'hilim': 30, 'lolim': 0.01, 'prec': 2},
+                'type': 'float', 'unit': 'Hz', 'value': self.MIN_SLOWORB_RATE,
+                'hilim': 100, 'lolim': self.MIN_SLOWORB_RATE, 'prec': 2},
             'SmoothNrPts-SP': {
                 'type': 'int', 'value': 1,
                 'unit': 'number of points for smoothing',

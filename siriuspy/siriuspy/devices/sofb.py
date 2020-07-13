@@ -20,6 +20,7 @@ class SOFB(_Device):
 
     _propty_tmpl = (
         'SOFBMode-Sel', 'SOFBMode-Sts',
+        'TrigAcqChan-Sel', 'TrigAcqChan-Sts',
         'KickCH-Mon', 'KickCV-Mon',
         'DeltaKickCH-Mon', 'DeltaKickCV-Mon',
         'DeltaKickCH-SP', 'DeltaKickCV-SP',
@@ -82,6 +83,26 @@ class SOFB(_Device):
     def opmode_str(self):
         """."""
         return self.data.SOFBMode._fields[self['SOFBMode-Sts']]
+
+    @property
+    def trigchannel(self):
+        """."""
+        return self['TrigAcqChan-Sts']
+
+    @trigchannel.setter
+    def trigchannel(self, value):
+        if value is None:
+            return
+        if isinstance(value, str) and value in self.data.TrigAcqChan._fields:
+            self['TrigAcqChan-Sel'] = \
+                self.data.TrigAcqChan._fields.index(value)
+        elif int(value) in self.data.TrigAcqChan:
+            self['TrigAcqChan-Sel'] = int(value)
+
+    @property
+    def trigchannel_str(self):
+        """."""
+        return self.data.TrigAcqChan._fields[self['TrigAcqChan-Sts']]
 
     @property
     def sp_trajx(self):
