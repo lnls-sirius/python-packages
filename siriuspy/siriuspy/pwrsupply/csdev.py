@@ -577,22 +577,24 @@ def _get_ps_basic_propty_database():
             {'type': 'float', 'count': 4,
              'value': _np.array([0.0, ] * 4),
              'unit': 'Hz'},
+        'ParamCtrlLoopState-Cte':
+            {'type': 'float', 'value': 0.0, 'unit': ''},
         'ParamCtrlMaxRef-Cte':
-            {'type': 'float', 'value': 0.0, 'unit': 'A/V'},
+            {'type': 'float', 'count': 4,
+             'value': _np.array([0.0, ] * 4),
+             'unit': 'A/V'},
         'ParamCtrlMinRef-Cte':
-            {'type': 'float', 'value': 0.0, 'unit': 'A/V'},
+            {'type': 'float', 'count': 4,
+             'value': _np.array([0.0, ] * 4),
+             'unit': 'A/V'},
         'ParamCtrlMaxRefOpenLoop-Cte':
-            {'type': 'float', 'value': 0.0},
+            {'type': 'float', 'count': 4,
+             'value': _np.array([0.0, ] * 4),
+             'unit': '%'},
         'ParamCtrlMinRefOpenLoop-Cte':
-            {'type': 'float', 'value': 0.0},
-        'ParamCtrlSlewRateSlowRef-Cte':
-            {'type': 'float', 'value': 0.0, 'unit': 'Ref/s'},
-        'ParamCtrlSlewRateSigGenAmp-Cte':
-            {'type': 'float', 'value': 0.0, 'unit': 'Ref/s'},
-        'ParamCtrlSlewRateSigGenOffset-Cte':
-            {'type': 'float', 'value': 0.0, 'unit': 'Ref/s'},
-        'ParamCtrlSlewRateWfmRef-Cte':
-            {'type': 'float', 'value': 0.0, 'unit': 'Ref/s'},
+            {'type': 'float', 'count': 4,
+             'value': _np.array([0.0, ] * 4),
+             'unit': '%'},
         # --- PWM ---
         'ParamPWMFreq-Cte':
             {'type': 'float', 'value': 0.0, 'unit': 'Hz'},

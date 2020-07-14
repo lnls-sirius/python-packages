@@ -20,12 +20,6 @@ from .udc import UDC as _UDC
 from .psdevstate import PSDevState as _PSDevState
 
 
-# NOTE: On current behaviour of PRUC and Power Supplies:
-#
-# 01. Discretization of the current-mon can mascarade measurements of update
-#     rates. For testing we should add a small random fluctuation.
-
-
 class PRUController:
     """Beaglebone controller.
 
@@ -34,8 +28,8 @@ class PRUController:
     controllers.
     """
 
-    # NOTE: All private methods starting with '_bsmp' string make a direct
-    #       write to the serial line.
+    # NOTE: All private methods starting with '_bsmp' string invole serial
+    #       bsmp communications.
 
     _sleep_process_loop = 0.020  # [s]
 
@@ -173,7 +167,9 @@ class PRUController:
         #     tstamp = psupply.timestamp_update
         # return tstamp
 
-    # --- public methods: bsmp variable read and func exec ---
+    # === queueing writes and local state copy reads ===
+
+    # --- bsmp variables ---
 
     def read_variables(self, device_ids, variable_id=None):
         """
@@ -236,62 +232,6 @@ class PRUController:
                 return _dcopy(values[device_ids])
             return _dcopy(values)
 
-    def wfm_update_auto_enable(self):
-        """Enable wfm updates."""
-        self._wfm_update = True
-
-    def wfm_update_auto_disable(self):
-        """Disable wfm updates."""
-        self._wfm_update = False
-
-    @property
-    def wfm_update_auto(self):
-        """Return state of wfm_update_auto."""
-        return self._wfm_update
-
-    def wfm_update(self, device_ids, interval=None):
-        """Queue update wfm curve."""
-        if isinstance(device_ids, int):
-            device_ids = (device_ids, )
-        operation = (self._bsmp_update_wfm, (device_ids, interval, ))
-        self._queue.append(operation)
-        return True
-
-    def wfm_rb_read(self, device_id):
-        """Return wfm_rb curve."""
-        psupply = self._psupplies[device_id]
-        with self._lock:
-            return _dcopy(psupply.wfm_rb)
-
-    def wfmref_mon_read(self, device_id):
-        """Return wfm curve."""
-        psupply = self._psupplies[device_id]
-        with self._lock:
-            curve = psupply.wfmref_mon
-            return _dcopy(curve)
-
-    def wfm_mon_read(self, device_id):
-        """Return Wfm-Mon curve."""
-        psupply = self._psupplies[device_id]
-        with self._lock:
-            return _dcopy(psupply.wfm_mon)
-
-    def wfmref_mon_index(self, device_id):
-        """Return current index into DSP selected curve."""
-        psupply = self._psupplies[device_id]
-        with self._lock:
-            index = psupply.wfmref_mon_index
-        return index
-
-    def wfm_write(self, device_ids, data):
-        """Write wfm curves."""
-        # in PRU sync off mode, append BSM function exec operation to queue
-        if isinstance(device_ids, int):
-            device_ids = (device_ids, )
-        operation = (self._bsmp_wfm_write, (device_ids, data))
-        self._queue.append(operation)
-        return True
-
     def exec_functions(self, device_ids, function_id, args=None):
         """
         Append BSMP function executions to opertations queue.
@@ -323,7 +263,66 @@ class PRUController:
         self._queue.append(operation)
         return True
 
-    # --- SOFBCurrent parameters
+    # --- wfmref and scope curves ---
+
+    def wfm_update_auto_enable(self):
+        """Enable wfmref and scope curves updates."""
+        self._wfm_update = True
+
+    def wfm_update_auto_disable(self):
+        """Disable wfmref and scope curves updates."""
+        self._wfm_update = False
+
+    @property
+    def wfm_update_auto(self):
+        """Return state of wfm_update_auto."""
+        return self._wfm_update
+
+    def wfm_update(self, device_ids, interval=None):
+        """Queue update wfm and scope curves."""
+        if isinstance(device_ids, int):
+            device_ids = (device_ids, )
+        operation = (self._bsmp_update_wfm, (device_ids, interval, ))
+        self._queue.append(operation)
+        return True
+
+    def wfmref_write(self, device_ids, data):
+        """Write wfm curves."""
+        # in PRU sync off mode, append BSM function exec operation to queue
+        if isinstance(device_ids, int):
+            device_ids = (device_ids, )
+        operation = (self._bsmp_wfmref_write, (device_ids, data))
+        self._queue.append(operation)
+        return True
+
+    def wfmref_rb_read(self, device_id):
+        """Return wfmref_rb curve."""
+        psupply = self._psupplies[device_id]
+        # NOTE: investigate whether lock and copy are really necessary!
+        with self._lock:
+            return _dcopy(psupply.wfmref_rb)
+
+    def wfmref_read(self, device_id):
+        """Return wfmref curve."""
+        psupply = self._psupplies[device_id]
+        with self._lock:
+            curve = psupply.wfmref
+            return _dcopy(curve)
+
+    def wfmref_index(self, device_id):
+        """Return current index into DSP selected curve."""
+        psupply = self._psupplies[device_id]
+        with self._lock:
+            index = psupply.wfmref_index
+        return index
+
+    def scope_read(self, device_id):
+        """Return Wfm-Mon curve."""
+        psupply = self._psupplies[device_id]
+        with self._lock:
+            return _dcopy(psupply.scope)
+
+    # --- SOFBCurrent parameters ---
 
     def sofb_mode_set(self, state):
         """Change SOFB mode: True or False."""
@@ -373,7 +372,7 @@ class PRUController:
         """."""
         return self._udc.sofb_current_mon_get()
 
-    # --- public methods: access to atomic methods of scan and process loops
+    # --- scan and process loop methods ---
 
     def bsmp_scan(self):
         """Run scan one."""
@@ -476,7 +475,7 @@ class PRUController:
                 self._udc.parse_firmware_version(_firmware_version_udc)
             if 'Simulation' not in _firmware_version_udc and \
                _firmware_version_udc != _firmware_version_siriuspy:
-                errmsg = ('Incompatible bsmp implementation version '
+                errmsg = ('PRUController: Incompatible bsmp implementation version '
                           'for device id:{}')
                 print(errmsg.format(dev_id))
                 errmsg = 'lib version: {}'
@@ -640,18 +639,20 @@ class PRUController:
         # print('{:<30s} : {:>9.3f} ms'.format(
         #     'PRUC._bsmp_update_sofb_setpoint (end)', 1e3*(_time.time() % 1)))
 
-    def _bsmp_wfm_write(self, device_ids, curve):
-        """Write curve to devices."""
+    def _bsmp_wfmref_write(self, device_ids, curve):
+        """Write wfmref curve to devices."""
         try:
             # write curves
             for dev_id in device_ids:
                 psupply = self._psupplies[dev_id]
-                curve = psupply.psbsmp.wfmref_mon_write(curve)
+                # sends new wfmref curve to power supply then reads back
+                # curve in UDC memory
+                curve = psupply.psbsmp.wfmref_write(curve)
                 with self._lock:
-                    psupply.wfm_rb = curve
+                    psupply.wfmref_rb = curve
                     psupply.update_wfm(interval=0.0)
         except (_SerialError, IndexError):
-            print('bsmp_wfm_write error!')
+            print('PRUController: bsmp_wfmref_write error!')
             self._serial_error(device_ids)
 
     def _bsmp_exec_function(self, device_ids, function_id, args=None):
@@ -681,7 +682,7 @@ class PRUController:
         except _SerialError:
             return None
         except TypeError:
-            print('--- debug ----')
+            print('--- PRUController debug ----')
             print('device_ids  : ', device_ids)
             print('dev_id      : ', dev_id)
             print('function_id : ', function_id)
@@ -738,7 +739,7 @@ class PRUController:
             # raise ValueError('!!! Debug stop !!!')
 
             # registers RB using psupply object
-            psupply.wfm_rb = psupply.wfmref_mon
+            psupply.wfmref_rb = psupply.wfmref
 
             # raise ValueError('!!! Debug stop !!!')
 
@@ -769,12 +770,12 @@ class PRUController:
     def _dict2list_vargroups(groups_dict):
         group_ids = sorted(groups_dict.keys())
         if len(group_ids) < 3:  # needs to have all default groups
-            print('Incorrect variables group definition: '
+            print('PRUController: Incorrect variables group definition: '
                   'it does not have all three standard groups!')
             raise ValueError
         for i in range(len(group_ids)):  # consecutive?
             if i not in group_ids:
-                print('Incorrect variables group definition: '
+                print('PRUController: Incorrect variables group definition: '
                       'it does not have consecutive group ids!')
                 raise ValueError
         # create list of variable ids

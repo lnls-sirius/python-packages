@@ -42,9 +42,9 @@ class PSDevState:
         self._variables = PSDevState._init_variables()
         self._curves = PSDevState._init_curves()
         self._parameters = self._init_parameters()
-        self._wfm_rb = None
-        self._wfmref_mon = None
-        self._wfm_mon = None
+        self._wfmref_rb = None
+        self._wfmref = None
+        self._scope = None
         self._timestamp_update = None
         self._timestamp_update_group = None
         self._timestamp_update_variables = None
@@ -62,22 +62,26 @@ class PSDevState:
         return self._connected
 
     @property
-    def wfm_rb(self):
-        """Return wfm_rb."""
-        return self._wfm_rb
+    def wfmref_rb(self):
+        """Return wfmref_rb (Wfm-RB)."""
+        return self._wfmref_rb
 
-    @wfm_rb.setter
-    def wfm_rb(self, value):
-        """Set wfm_rb."""
-        self._wfm_rb = _np.array(value)
+    @wfmref_rb.setter
+    def wfmref_rb(self, value):
+        """Set wfmref_rb.
+
+        This is invoked for the object to store wfmref that has been read
+        from power supply right after writting a new wfmref curve.
+        """
+        self._wfmref_rb = _np.array(value)
 
     @property
-    def wfmref_mon(self):
-        """Return wfmref."""
-        return self._wfmref_mon
+    def wfmref(self):
+        """Return wfmref (WfmRef-Mon)."""
+        return self._wfmref
 
     @property
-    def wfmref_mon_index(self):
+    def wfmref_index(self):
         """Return current index into DSP selected curve."""
         curve_id = \
             self._variables[self._psbsmp.CONST.V_WFMREF_SELECTED]
@@ -95,9 +99,9 @@ class PSDevState:
         return index
 
     @property
-    def wfm_mon(self):
-        """Return wfmref."""
-        return self._wfm_mon
+    def scope(self):
+        """Return scope (Wfm-Mon)."""
+        return self._scope
 
     @property
     def variables(self):
@@ -211,20 +215,20 @@ class PSDevState:
         now = _time.time()
         tstamp = self._timestamp_update_wfm
         if tstamp is None or (now - tstamp) >= interval:
-            # update wfmref_mon
-            wfmref_mon = self._psbsmp.wfmref_mon_read()
-            if wfmref_mon is None:
+            # update wfmref
+            wfmref = self._psbsmp.wfmref_read()
+            if wfmref is None:
                 return False
-            self._wfmref_mon = wfmref_mon
-            # update wfm_mon
-            wfm_mon = self._psbsmp.wfm_mon_read()
-            if wfm_mon is not None:
-                self._wfm_mon = wfm_mon
-                # NOTE: a successful read means bufsample is not
-                # currently being filled by DSP. Therefore an issue
-                # of a bufsample enable command is in order!
-                self._psbsmp.wfmref_mon_bufsample_enable()
-            # update timestamp (even it could not read wfm_mon)
+            self._wfmref = wfmref
+            # update scope
+            scope = self._psbsmp.scope_read()
+            if scope is not None:
+                self._scope = scope
+                # NOTE: a successful readout means scope is not
+                # currently being filled by DSP. Therefore a scope-fill
+                # enable command is in order!
+                self._psbsmp.scope_enable()
+            # update timestamp (even it could not read scope)
             self._timestamp_update_wfm = now
         return True
 

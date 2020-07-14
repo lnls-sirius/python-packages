@@ -66,9 +66,9 @@ class WfmMonAcq(Function):
         """Define CurveAcq."""
         self._device_ids = device_ids
         self.enable = BSMPFunction(
-            device_ids, pru_controller, _const_psbsmp.F_ENABLE_BUF_SAMPLES)
+            device_ids, pru_controller, _const_psbsmp.F_ENABLE_SCOPE)
         self.disable = BSMPFunction(
-            device_ids, pru_controller, _const_psbsmp.F_DISABLE_BUF_SAMPLES)
+            device_ids, pru_controller, _const_psbsmp.F_DISABLE_SCOPE)
         self.setpoints = setpoints
 
     def execute(self, value=None):
@@ -95,7 +95,7 @@ class WfmSP(Function):
         if not self.setpoints or \
                 (self.setpoints and self.setpoints.apply(value)):
             for dev_id in self._device_ids:
-                self.pru_controller.wfm_write(dev_id, value)
+                self.pru_controller.wfmref_write(dev_id, value)
 
 
 class WfmUpdate(Function):
@@ -169,7 +169,8 @@ class PSPwrState(Function):
                 (self.setpoints and self.setpoints.apply(value)):
             if value == 1:
                 self.turn_on.execute()
-                self.close_loop.execute()
+                # Not necessary anymore from firmware v1.25 onwards
+                # self.close_loop.execute()
             elif value == 0:
                 self.turn_off.execute()
 

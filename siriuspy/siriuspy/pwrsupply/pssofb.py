@@ -9,7 +9,6 @@ from ..bsmp import SerialError as _SerialError
 from ..bsmp import constants as _const_bsmp
 from ..bsmp.serial import Channel as _Channel
 from ..devices import StrengthConv as _StrengthConv
-from ..magnet.factory import NormalizerFactory as _NormFact
 
 from .bsmp.constants import ConstFBP as _const_fbp
 from .csdev import PSSOFB_MAX_NR_UDC as _PSSOFB_MAX_NR_UDC
@@ -113,6 +112,7 @@ class PSSOFB:
         self._sofb_current_rb = _np.zeros(len(self._sofb_psnames))
         self._sofb_current_refmon = _np.zeros(len(self._sofb_psnames))
         self._sofb_current_mon = _np.zeros(len(self._sofb_psnames))
+        self._sofb_current_readback_ref = _np.zeros(len(self._sofb_psnames))
 
         # create sofb and bsmp indices
         self.indcs_bsmp, self.indcs_sofb = self._create_indices()
@@ -147,14 +147,14 @@ class PSSOFB:
         self.bsmp_sofb_current_set(current)
         return current
 
-    def bsmp_sofb_kick_setbsmp_sofb_current_set_update(self, current):
+    def bsmp_sofb_current_set_update(self, current):
         """Send current sofb setpoint to power supplies and update."""
         PSSOFB._parallel_execution(self._bsmp_current_setpoint_update, current)
 
     def bsmp_sofb_kick_set_update(self, kick):
         """Send kick sofb setpoint to power supplies and update."""
         current = self._conv_stren2curr(kick)
-        self.bsmp_sofb_kick_setbsmp_sofb_current_set_update(current)
+        self.bsmp_sofb_current_set_update(current)
         return current
 
     def bsmp_sofb_update(self):
@@ -205,6 +205,13 @@ class PSSOFB:
         return strength
 
     @property
+    def sofb_kick_readback_ref(self):
+        """Return SOFB kick calculated from current readback after last setpoint."""
+        current = self.sofb_current_readback_ref
+        strength = self._conv_curr2stren(current)
+        return strength
+
+    @property
     def sofb_current_rb(self):
         """Return SOFB current RB vector, as last updated."""
         return self._sofb_current_rb
@@ -218,6 +225,11 @@ class PSSOFB:
     def sofb_current_mon(self):
         """Return SOFB current -Mon vector, as last updated."""
         return self._sofb_current_mon
+
+    @property
+    def sofb_current_readback_ref(self):
+        """Return SOFB current readback after last setpoint."""
+        return self._sofb_current_readback_ref
 
     def sofb_state_variable_get(self, var_id, dtype=float):
         """Return SOFB vector with bsmp variable values, as last updated."""
@@ -325,6 +337,12 @@ class PSSOFB:
         # --- bsmp communication ---
         udc.sofb_current_set(tuple(setpoint))
 
+        # update sofb_current_readback_ref
+        current = udc.sofb_current_readback_ref_get()
+        if current is None:
+            return
+        self._sofb_current_readback_ref[indcs_sofb] = current[indcs_bsmp]
+
     def _bsmp_current_setpoint_update(self, bbbname, curr_sp):
         """."""
         self._bsmp_current_setpoint(bbbname, curr_sp)
@@ -420,9 +438,11 @@ class PSSOFB:
 
     def _init_connectors(self, ethbridgeclnt_class):
         """."""
-        # NOTE: This is necessary for the threads to interact with
-        # corresponding beaglebones in parallel
+        # NOTE: Setting Channel.LOCK is necessary for the threads to interact with
+        # corresponding beaglebones in parallel. It should be dropped once
+        # write_then_read in eth-bridge is adopted!
         _Channel.LOCK = None
+
         self.pru = PSSOFB._create_pru(ethbridgeclnt_class)
         self.udc = self._create_udc()
         self._add_groups_of_variables()

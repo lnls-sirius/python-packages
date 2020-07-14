@@ -94,7 +94,7 @@ class UDC:
     def bufsample_disable(self):
         """Disable DSP from writting to bufsample curve."""
         for dev in self._devs_bsmp.values():
-            ack, data = dev.wfmref_mon_bufsample_disable()
+            ack, data = dev.scope_disable()
             if ack != self.CONST_BSMP.ACK_OK:
                 return ack, data
         # a single sleep for all devices
@@ -105,7 +105,7 @@ class UDC:
     def bufsample_enable(self):
         """Enable DSP from writting to bufsample curve."""
         for dev in self._devs_bsmp.values():
-            ack, data = dev.wfmref_mon_bufsample_enable()
+            ack, data = dev.scope_enable()
             if ack != self.CONST_BSMP.ACK_OK:
                 return ack, data
         return ack, data
@@ -201,32 +201,30 @@ class UDC:
                 return _np.concatenate((val1, val2))
         return None
 
+    def sofb_current_readback_ref_get(self):
+        """Return SOFBCurrentRef-Mon, readback of last setpoint."""
+        if self._is_fbp:
+            dev1, dev2 = self._dev_first, self._dev_second
+            val1 = dev1.sofb_ps_readback_ref
+            val2 = dev2.sofb_ps_readback_ref if dev2 else UDC._soft_def
+            if val1 is not None and val2 is not None:
+                return _np.concatenate((val1, val2))
+        return None
+
     def sofb_current_set(self, value):
         """Set SOFB Current."""
-        # print('{:<30s} : {:>9.3f} ms'.format(
-        #     'UDC.sofb_current_set (beg)', 1e3*(_time.time() % 1)))
-
         if self._is_fbp:
             # set value
             self._dev_first.sofb_ps_setpoint_set(value[:4])
             if self._dev_second:
                 self._dev_second.sofb_ps_setpoint_set(value[4:])
 
-        # print('{:<30s} : {:>9.3f} ms'.format(
-        #     'UDC.sofb_current_set (end)', 1e3*(_time.time() % 1)))
-
     def sofb_update(self):
         """Update sofb."""
-        # print('{:<30s} : {:>9.3f} ms'.format(
-        #     'UDC.sofb_update (beg)', 1e3*(_time.time() % 1)))
-
         if self._is_fbp:
             self._dev_first.sofb_update()
             if self._dev_second:
                 self._dev_second.sofb_update()
-
-        # print('{:<30s} : {:>9.3f} ms'.format(
-        #     'UDC.sofb_update (end)', 1e3*(_time.time() % 1)))
 
     # --- private methods
 

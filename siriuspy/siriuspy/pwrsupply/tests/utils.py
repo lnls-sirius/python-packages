@@ -87,7 +87,7 @@ def measure_duration_wfmref_read(psupply):
     psupply.channel.size_counter_reset()
     psupply.channel.pru.wr_duration_reset()
     time0 = time.time()
-    psupply.wfmref_mon_read()
+    psupply.wfmref_read()
     time1 = time.time()
     nrbytes = psupply.channel.size_counter
     duration_serial = r485_message_duration(nrbytes=nrbytes)
@@ -172,15 +172,15 @@ def print_wfmref(ps_list):
          ['wfmref_ptr_end'],
          ['wfmref_ptr_idx']]
     for ps in ps_list:
-        wfmref_mon_ptr_values = ps.wfmref_mon_pointer_values
+        wfmref_mon_ptr_values = ps.wfmref_pointer_values
         st1 += ' {:6d}'
-        va1.append(ps.wfmref_mon_select)
+        va1.append(ps.wfmref_select)
         st2 += ' {:6d}'
-        va2.append(ps.wfmref_mon_maxsize)
+        va2.append(ps.wfmref_maxsize)
         st3 += ' {:6d}'
-        va3.append(ps.wfmref_mon_size)
+        va3.append(ps.wfmref_size())
         st4 += ' {:6d}'
-        va4.append(ps.wfmref_mon_index)
+        va4.append(ps.wfmref_index)
         st5 += ' {:6d}'
         va5.append(wfmref_mon_ptr_values[0])
         st6 += ' {:6d}'
@@ -237,7 +237,7 @@ def set_wfmref(ps_list, amplitude=0):
         ps_list = [ps_list, ]
     curve = amplitude * np.sin([2*3.14159 * i/1023.0 for i in range(1024)])
     for i, psupply in enumerate(ps_list):
-        psupply.wfmref_mon_write((i+1) * curve)
+        psupply.wfmref_write((i+1) * curve)
 
 
 def plot_wfmref(ps_list):
@@ -245,7 +245,7 @@ def plot_wfmref(ps_list):
     if not isinstance(ps_list, (list, tuple)):
         ps_list = [ps_list, ]
     for i, psupply in enumerate(ps_list):
-        curve = psupply.wfmref_mon_read()
+        curve = psupply.wfmref_read()
         plt.plot(curve, label='ps{} ({} points)'.format(i+1, len(curve)))
     plt.xlabel('Index')
     plt.ylabel('Current [A]')
@@ -288,7 +288,7 @@ def reset_powersupplies(udc, ps_list, opmode='SlowRef'):
 def test_reset(udc, ps_list):
     """."""
     curve = [0.0 for i in range(500)]
-    ps_list[0].wfmref_mon_write(curve)
+    ps_list[0].wfmref_write(curve)
     print_basic_info(ps_list)
     udc.reset()
     print_basic_info(ps_list)
@@ -301,14 +301,14 @@ def test_reset_2019_10_02():
 
 
 def wfmref_flip(ps):
-    id1 = ps.wfmref_mon_select
-    c1 = ps.wfmref_mon_read()
+    id1 = ps.wfmref_select
+    c1 = ps.wfmref_read()
     c_new = c1[::-1]
     # c_new = [i/1023 for i in range(1024)] # c_new[:500]
     # c_new = c1[:500]
-    ps.wfmref_mon_write(c_new)
-    id2 = ps.wfmref_mon_select
-    c2 = ps.wfmref_mon_read()
+    ps.wfmref_write(c_new)
+    id2 = ps.wfmref_select
+    c2 = ps.wfmref_read()
     plt.plot(c1, label='prev (id:{})'.format(id1))
     plt.plot(c2, label='next (id:{})'.format(id2))
     plt.legend()

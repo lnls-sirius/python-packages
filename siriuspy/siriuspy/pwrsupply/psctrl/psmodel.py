@@ -71,53 +71,53 @@ class _PSModel:
         # --- Control ---
         'ParamCtrlFreqCtrlISR-Cte': _c.P_CTRL_FREQ_CONTROL_ISR,  # 11
         'ParamCtrlFreqTimeSlicer-Cte': _c.P_CTRL_FREQ_TIME_SLICER,  # 12
-        'ParamCtrlMaxRef-Cte': _c.P_CTRL_MAX_REF,  # 13
-        'ParamCtrlMinRef-Cte': _c.P_CTRL_MIN_REF,  # 14
-        'ParamCtrlMaxRefOpenLoop-Cte': _c.P_CTRL_MAX_REF_OPEN_LOOP,  # 15
-        'ParamCtrlMinRefOpenLoop-Cte': _c.P_CTRL_MIN_REF_OPEN_LOOP,  # 16
-        'ParamCtrlSlewRateSlowRef-Cte': _c.P_CTRL_SLEW_RATE_SLOWREF,  # 17
-        'ParamCtrlSlewRateSigGenAmp-Cte': _c.P_CTRL_SLEW_RATE_SIGGEN_AMP,  # 18
-        'ParamCtrlSlewRateSigGenOffset-Cte': _c.P_CTRL_SLEW_RATE_SIGGEN_OFFSET,  # 19
-        'ParamCtrlSlewRateWfmRef-Cte': _c.P_CTRL_SLEW_RATE_WFMREF,  # 20
+        'ParamCtrlLoopState-Cte': _c.P_CTRL_CONTROL_LOOP_STATE,  # 13
+        'ParamCtrlMaxRef-Cte': _c.P_CTRL_MAX_REF,  # 14
+        'ParamCtrlMinRef-Cte': _c.P_CTRL_MIN_REF,  # 15
+        'ParamCtrlMaxRefOpenLoop-Cte': _c.P_CTRL_MAX_REF_OPEN_LOOP,  # 16
+        'ParamCtrlMinRefOpenLoop-Cte': _c.P_CTRL_MIN_REF_OPEN_LOOP,  # 17
         # --- PWM ---
-        'ParamPWMFreq-Cte': _c.P_PWM_FREQ,  # 21
-        'ParamPWMDeadTime-Cte': _c.P_PWM_DEAD_TIME,  # 22
-        'ParamPWMMaxDuty-Cte': _c.P_PWM_MAX_DUTY,  # 23
-        'ParamPWMMinDuty-Cte': _c.P_PWM_MIN_DUTY,  # 24
-        'ParamPWMMaxDutyOpenLoop-Cte': _c.P_PWM_MAX_DUTY_OPEN_LOOP,  # 25
-        'ParamPWMMinDutyOpenLoop-Cte': _c.P_PWM_MIN_DUTY_OPEN_LOOP,  # 26
-        'ParamPWMLimDutyShare-Cte': _c.P_PWM_LIM_DUTY_SHARE,  # 27
-        # # --- HRADC ---
-        # P_HRADC_NR_BOARDS = 28
-        # P_HRADC_SPI_CLK = 29
-        # P_HRADC_FREQ_SAMPLING = 30
-        # P_HRADC_ENABLE_HEATER = 31
-        # P_HRADC_ENABLE_RAILS_MON = 32
-        # P_HRADC_TRANSDUCER_OUTPUT = 33
-        # P_HRADC_TRANSDUCER_GAIN = 34
-        # P_HRADC_TRANSDUCER_OFFSET = 35
-        # # --- SigGen ---
-        # P_SIGGEN_TYPE = 36
-        # P_SIGGEN_NUM_CYCLES = 37
-        # P_SIGGEN_FREQ = 38
-        # P_SIGGEN_AMPLITUDE = 39
-        # P_SIGGEN_OFFSET = 40
-        # P_SIGGEN_AUX_PARAM = 41
-        # # --- WfmRef ---
-        # P_WFMREF_ID = 42
-        # P_WFMREF_SYNC_MODE = 43
-        # P_WFMREF_GAIN = 44
-        # P_WFMREF_OFFSET = 45
+        'ParamPWMFreq-Cte': _c.P_PWM_FREQ,  # 18
+        'ParamPWMDeadTime-Cte': _c.P_PWM_DEAD_TIME,  # 19
+        'ParamPWMMaxDuty-Cte': _c.P_PWM_MAX_DUTY,  # 20
+        'ParamPWMMinDuty-Cte': _c.P_PWM_MIN_DUTY,  # 21
+        'ParamPWMMaxDutyOpenLoop-Cte': _c.P_PWM_MAX_DUTY_OPEN_LOOP,  # 22
+        'ParamPWMMinDutyOpenLoop-Cte': _c.P_PWM_MIN_DUTY_OPEN_LOOP,  # 23
+        'ParamPWMLimDutyShare-Cte': _c.P_PWM_LIM_DUTY_SHARE,  # 24
+        # ----- class HRADC -----
+        # P_HRADC_NR_BOARDS = 25
+        # P_HRADC_SPI_CLK = 26
+        # P_HRADC_FREQ_SAMPLING = 27
+        # P_HRADC_ENABLE_HEATER = 28
+        # P_HRADC_ENABLE_RAILS_MON = 29
+        # P_HRADC_TRANSDUCER_OUTPUT = 30
+        # P_HRADC_TRANSDUCER_GAIN = 31
+        # P_HRADC_TRANSDUCER_OFFSET = 32
+        # # ----- class SigGen -----
+        # P_SIGGEN_TYPE = 33
+        # P_SIGGEN_NUM_CYCLES = 34
+        # P_SIGGEN_FREQ = 35
+        # P_SIGGEN_AMPLITUDE = 36
+        # P_SIGGEN_OFFSET = 37
+        # P_SIGGEN_AUX_PARAM = 38
+        # # ----- class WfmRef -----
+        # P_WFMREF_ID = 39
+        # P_WFMREF_SYNC_MODE = 40
+        # P_WFMREF_FREQ = 41
+        # P_WFMREF_GAIN = 42
+        # P_WFMREF_OFFSET = 43
         # --- Analog Variables ---
-        'ParamAnalogMax-Cte': _c.P_ANALOG_MAX,  # 46
-        'ParamAnalogMin-Cte': _c.P_ANALOG_MIN,  # 47
+        'ParamAnalogMax-Cte': _c.P_ANALOG_MAX,  # 44
+        'ParamAnalogMin-Cte': _c.P_ANALOG_MIN,  # 45
         # --- Debounce Manager ---
-        'ParamHardIntlkDebounceTime-Cte': _c.P_HARD_INTLK_DEBOUNCE_TIME,  # 48
-        'ParamHardIntlkResetTime-Cte': _c.P_HARD_INTLK_RESET_TIME,  # 49
-        'ParamSoftIntlkDebounceTime-Cte': _c.P_SOFT_INTLK_DEBOUNCE_TIME,  # 50
-        'ParamSoftIntlkResetTime-Cte': _c.P_SOFT_INTLK_RESET_TIME,  # 51
+        'ParamHardIntlkDebounceTime-Cte': _c.P_HARD_INTLK_DEBOUNCE_TIME,  # 46
+        'ParamHardIntlkResetTime-Cte': _c.P_HARD_INTLK_RESET_TIME,  # 47
+        'ParamSoftIntlkDebounceTime-Cte': _c.P_SOFT_INTLK_DEBOUNCE_TIME,  # 48
+        'ParamSoftIntlkResetTime-Cte': _c.P_SOFT_INTLK_RESET_TIME,  # 49
+        # ---- Scope -----
+        # P_SCOPE_SAMPLING_FREQUENCY = 50
+        # P_SCOPE_DATA_SOURCE = 51
         }
-
 
     @property
     def name(self):

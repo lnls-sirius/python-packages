@@ -158,18 +158,38 @@ def benchmark_bsmp_sofb_kick_setpoint():
     pssofb.bsmp_sofb_update()
     kick_refmon = pssofb.sofb_kick_refmon
 
+    curr_sp_prev = None
     for i, _ in enumerate(exectimes):
 
+        # print(i)
         # start clock
         time0 = _time.time()
 
         # set kick values
         kick_sp = kick_refmon + 0 * 0.01 * _np.random.randn(len(kick_refmon))
-        pssofb.bsmp_sofb_kick_set(kick_sp)
+        curr_sp_this = pssofb.bsmp_sofb_kick_set(kick_sp)
+
+        # NOTE:
+        # curr_sp_this is kick_sp converted to current units. It should be
+        # used for comparisons instead of kick_sp, since the mapping
+        # (kick -> current -> kick) is not exactly bijective.
+
+        # compare readback_ref read with previous value set
+        if curr_sp_prev is not None:
+            curr_read = pssofb.sofb_current_readback_ref.copy()
+            issame = pssofb.sofb_vector_issame(curr_read, curr_sp_prev)
+        else:
+            issame = True
+
+        # update curr_sp_prev for comparison in the next iteration
+        curr_sp_prev = curr_sp_this
 
         # stop clock
         time1 = _time.time()
         exectimes[i] = 1000*(time1 - time0)
+
+        if not issame:
+            print('SP<>RB in event {}'.format(i))
 
     # restore state
     pssofb.bsmp_sofb_kick_set(kick_refmon)
@@ -353,8 +373,8 @@ def run():
     # benchmark_bsmp_sofb_current_setpoint()
     # benchmark_bsmp_sofb_current_setpoint_update()
     # benchmark_bsmp_sofb_current_setpoint_then_update()
-    # benchmark_bsmp_sofb_kick_setpoint()
-    benchmark_bsmp_sofb_kick_setpoint_then_update()
+    benchmark_bsmp_sofb_kick_setpoint()
+    # benchmark_bsmp_sofb_kick_setpoint_then_update()
     # sleep_trigger_before = float(_sys.argv[1])
     # sleep_trigger_after = float(_sys.argv[2])
     # benchmark_bsmp_sofb_kick_setpoint_delay(
