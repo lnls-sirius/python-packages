@@ -17,8 +17,11 @@ from .timing import EVG
 from .syncd import DevicesSync
 from .energy import Energy
 from .ids import IDCorrectors, APU, APUFeedForward
+from .currinfo import CurrInfoTransp, CurrInfoLinear, \
+                      CurrInfoBO, CurrInfoSI, CurrInfo
 
 del device, bpm, dcct, egun, ict, llrf,
 del pwrsupply, psconv, pssofb, rf,
 del screen, tune, sofb, timing, syncd, energy
 del ids
+del currinfo

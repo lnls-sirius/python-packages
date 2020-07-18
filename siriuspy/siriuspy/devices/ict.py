@@ -11,15 +11,15 @@ class ICT(_Device):
 
         LI_1 = 'LI-01:DI-ICT-1'
         LI_2 = 'LI-01:DI-ICT-2'
-        ALL = (LI_1, LI_2)
+        TB_02 = 'TB-02:DI-ICT'
+        TB_04 = 'TB-04:DI-ICT'
+        TS_01 = 'TS-01:DI-ICT'
+        TS_04 = 'TS-04:DI-ICT'
+        ALL = (LI_1, LI_2, TB_02, TB_04, TS_01, TS_04, )
 
-    _properties_li = (
+    _properties = (
         'Charge-Mon', 'ChargeAvg-Mon', 'ChargeMax-Mon',
         'ChargeMin-Mon', 'ChargeStd-Mon', 'PulseCount-Mon')
-
-    _properties = {
-        DEVICES.LI_1: _properties_li,
-        DEVICES.LI_2: _properties_li}
 
     def __init__(self, devname):
         """."""
@@ -28,7 +28,7 @@ class ICT(_Device):
             raise NotImplementedError(devname)
 
         # call base class constructor
-        super().__init__(devname, properties=ICT._properties[devname])
+        super().__init__(devname, properties=ICT._properties)
 
     @property
     def charge(self):
@@ -62,7 +62,7 @@ class ICT(_Device):
 
 
 class TranspEff(_Device):
-    """Transport Efficiency Device."""
+    """Linac Transport Efficiency Device."""
 
     class DEVICES:
         """Devices names."""
@@ -70,7 +70,7 @@ class TranspEff(_Device):
         LI = 'LI-Glob:AP-TranspEff'
         ALL = (LI, )
 
-    _properties_li = ('Eff-Mon', )
+    _properties_li = ('Eff-Mon', 'EffAvg-Mon', )
 
     _properties = {
         DEVICES.LI: _properties_li}
@@ -88,3 +88,8 @@ class TranspEff(_Device):
     def efficiency(self):
         """."""
         return self['Eff-Mon']
+
+    @property
+    def efficiency_avg(self):
+        """."""
+        return self['EffAvg-Mon']

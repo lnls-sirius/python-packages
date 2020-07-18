@@ -497,8 +497,8 @@ class EpicsOrbit(BaseOrbit):
             self._update_log(msg)
             _log.error(msg[5:])
             return False
-        elif self._mode == self._csorb.SOFBMode.SlowOrb and \
-                value < self._csorb.MIN_SLOWORB_RATE:
+        elif self.acc == 'SI' and self._mode == self._csorb.SOFBMode.SlowOrb \
+                and value < self._csorb.MIN_SLOWORB_RATE:
             msg = 'ERR: In SlowOrb cannot set rate < {:d}.'.format(
                 self._csorb.MIN_SLOWORB_RATE)
             self._update_log(msg)

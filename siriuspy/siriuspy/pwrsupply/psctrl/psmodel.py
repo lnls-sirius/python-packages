@@ -353,6 +353,7 @@ class PSModelFAC_DCDC(_PSModel):
         'InductorsTemperature-Mon': _c.V_TEMP_INDUCTORS,
         'IGBTSTemperature-Mon': _c.V_TEMP_IGBTS,
         'PWMDutyCycle-Mon': _c.V_DUTY_CYCLE,
+        'IntlkIIB-Mon': _c.V_IIB_INTERLOCKS,
         }
 
 
@@ -493,10 +494,10 @@ class PSModelFAP_4P(_PSModel):
         'WfmSyncPulseCount-Mon': _c.V_COUNTER_SYNC_PULSE,
         'IntlkSoft-Mon': _c.V_PS_SOFT_INTERLOCKS,
         'IntlkHard-Mon': _c.V_PS_HARD_INTERLOCKS,
-        'Intlk1IIB-Mon': _c.V_IIB_INTERLOCKS_1,
-        'Intlk2IIB-Mon': _c.V_IIB_INTERLOCKS_2,
-        'Intlk3IIB-Mon': _c.V_IIB_INTERLOCKS_3,
-        'Intlk4IIB-Mon': _c.V_IIB_INTERLOCKS_4,
+        'IntlkIIB1-Mon': _c.V_IIB_INTERLOCKS_1,
+        'IntlkIIB2-Mon': _c.V_IIB_INTERLOCKS_2,
+        'IntlkIIB3-Mon': _c.V_IIB_INTERLOCKS_3,
+        'IntlkIIB4-Mon': _c.V_IIB_INTERLOCKS_4,
         'Current-RB': _c.V_PS_SETPOINT,
         'CurrentRef-Mon': _c.V_PS_REFERENCE,
         'Current-Mon': _c.V_I_LOAD_MEAN,
@@ -584,10 +585,10 @@ class PSModelFAP_2P2S(_PSModel):
         'Mod4IGBT2IIBCurrent-Mon': _c.V_I_IGBT_2_IIB_4,
         'IIB4InductorTemperature-Mon': _c.V_TEMP_INDUCTOR_IIB_4,
         'IIB4HeatSinkTemperature-Mon': _c.V_TEMP_HEATSINK_IIB_4,
-        'Intlk1IIB-Mon': _c.V_IIB_INTERLOCKS_1,
-        'Intlk2IIB-Mon': _c.V_IIB_INTERLOCKS_2,
-        'Intlk3IIB-Mon': _c.V_IIB_INTERLOCKS_3,
-        'Intlk4IIB-Mon': _c.V_IIB_INTERLOCKS_4,
+        'IntlkIIB1-Mon': _c.V_IIB_INTERLOCKS_1,
+        'IntlkIIB2-Mon': _c.V_IIB_INTERLOCKS_2,
+        'IntlkIIB3-Mon': _c.V_IIB_INTERLOCKS_3,
+        'IntlkIIB4-Mon': _c.V_IIB_INTERLOCKS_4,
         'Mod1Current-Mon': _c.V_I_MOD_1,
         'Mod2Current-Mon': _c.V_I_MOD_2,
         'Mod3Current-Mon': _c.V_I_MOD_3,
@@ -671,6 +672,8 @@ class PSModelFAC_2S_ACDC(_PSModel):
         'HeatSinkTemperature-Mon': _c.V_TEMP_HEATSINK,
         'InductorsTemperature-Mon': _c.V_TEMP_INDUCTORS,
         'PWMDutyCycle-Mon': _c.V_DUTY_CYCLE,
+        'IntlkIIBIS-Mon': _c.V_IIB_INTERLOCKS_IS,
+        'IntlkIIBCmd-Mon': _c.V_IIB_INTERLOCKS_CMD,
         }
 
     def function(self, device_ids, epics_field, pru_controller, setpoints):
@@ -725,8 +728,6 @@ class PSModelFAC_2P4S_ACDC(PSModelFAC_2S_ACDC):
         'IIBISHeatSinkTemperature-Mon': _c.V_TEMP_HEATSINK_IS_IIB,
         'IIBCmdInductorTemperature-Mon': _c.V_TEMP_INDUCTOR_CMD_IIB,
         'IIBCmdHeatSinkTemperature-Mon': _c.V_TEMP_HEATSINK_CMD_IIB,
-        'IntlkIIBIS-Mon': _c.V_IIB_INTERLOCKS_IS,
-        'IntlkIIBCmd-Mon': _c.V_IIB_INTERLOCKS_CMD,
         }
 
 

@@ -1,6 +1,6 @@
 """PSSOFB class."""
 
-from threading import Thread as _Thread
+from threading import Thread as _Thread, Event as _Event
 
 import numpy as _np
 
@@ -9,6 +9,7 @@ from ..bsmp import SerialError as _SerialError
 from ..bsmp import constants as _const_bsmp
 from ..bsmp.serial import Channel as _Channel
 from ..devices import StrengthConv as _StrengthConv
+from ..thread import AsynchronousWorker as _AsynWorker
 
 from .bsmp.constants import ConstFBP as _const_fbp
 from .csdev import PSSOFB_MAX_NR_UDC as _PSSOFB_MAX_NR_UDC
@@ -16,6 +17,17 @@ from .csdev import UDC_MAX_NR_DEV as _UDC_MAX_NR_DEV
 from .pructrl.pru import PRU as _PRU
 from .pructrl.udc import UDC as _UDC
 from .psctrl.pscstatus import PSCStatus as _PSCStatus
+
+
+class _BBBThread(_AsynWorker):
+    """Class to run methods from a given BBB."""
+
+    def configure_new_run(self, target, args=None):
+        """Configure a new run of the thread."""
+        args_ = (self.name, )
+        if isinstance(args, tuple):
+            args_ = args_ + args
+        return super().configure_new_run(target, args_)
 
 
 class PSNamesSOFB:
@@ -124,9 +136,13 @@ class PSSOFB:
         self._dev_state_initialized = False
         self._dev_ack = dict()  # last ack state of bsmp comm.
         self._dev_state = dict()  # snapshot of device variable values
+        self._threads = list()  # threads to run BBB methods
         for bbbname, bsmpdevs in PSSOFB.BBB2DEVS.items():
             self._dev_ack[bbbname] = {bsmp[1]: True for bsmp in bsmpdevs}
             self._dev_state[bbbname] = {bsmp[1]: dict() for bsmp in bsmpdevs}
+            thread = _BBBThread(name=bbbname)
+            thread.start()
+            self._threads.append(thread)
 
         # power supply status objects
         self._pscstatus = [_PSCStatus() for _ in self._sofb_psnames]
@@ -139,7 +155,7 @@ class PSSOFB:
 
     def bsmp_sofb_current_set(self, current):
         """Send current sofb setpoint to power supplies."""
-        PSSOFB._parallel_execution(self._bsmp_current_setpoint, (current, ))
+        self._parallel_execution(self._bsmp_current_setpoint, (current, ))
 
     def bsmp_sofb_kick_set(self, kick):
         """Send kick sofb setpoint to power supplies."""
@@ -149,7 +165,7 @@ class PSSOFB:
 
     def bsmp_sofb_current_set_update(self, current):
         """Send current sofb setpoint to power supplies and update."""
-        PSSOFB._parallel_execution(self._bsmp_current_setpoint_update, current)
+        self._parallel_execution(self._bsmp_current_setpoint_update, current)
 
     def bsmp_sofb_kick_set_update(self, kick):
         """Send kick sofb setpoint to power supplies and update."""
@@ -159,36 +175,36 @@ class PSSOFB:
 
     def bsmp_sofb_update(self):
         """Receive from correctors currents and update object attributes."""
-        PSSOFB._parallel_execution(self._bsmp_current_update)
+        self._parallel_execution(self._bsmp_current_update)
 
     def bsmp_state_update(self):
         """Receive from correctors variables and update object attributes."""
-        PSSOFB._parallel_execution(self._bsmp_state_update)
+        self._parallel_execution(self._bsmp_state_update)
         self._dev_state_initialized = True
 
     def bsmp_pwrstate_on(self):
         """Turn all correctors on and update state."""
         args = (_const_fbp.F_TURN_ON, )
-        PSSOFB._parallel_execution(self._bsmp_execute_function, args)
-        PSSOFB._parallel_execution(self._bsmp_state_update)
+        self._parallel_execution(self._bsmp_execute_function, args)
+        self._parallel_execution(self._bsmp_state_update)
 
     def bsmp_pwrstate_off(self):
         """Turn all correctors off and update state."""
         args = (_const_fbp.F_TURN_OFF, )
-        PSSOFB._parallel_execution(self._bsmp_execute_function, args)
-        PSSOFB._parallel_execution(self._bsmp_state_update)
+        self._parallel_execution(self._bsmp_execute_function, args)
+        self._parallel_execution(self._bsmp_state_update)
 
     def bsmp_slowref(self):
         """Set all correctors to SlowRef opmode and update state."""
         args = (_const_fbp.F_SELECT_OP_MODE, _PSCStatus.STATES.SlowRef)
-        PSSOFB._parallel_execution(self._bsmp_execute_function, args)
-        PSSOFB._parallel_execution(self._bsmp_state_update)
+        self._parallel_execution(self._bsmp_execute_function, args)
+        self._parallel_execution(self._bsmp_state_update)
 
     def bsmp_slowrefsync(self):
         """Turn all correctors ro SlowRefSync opmode and update state."""
         args = (_const_fbp.F_SELECT_OP_MODE, _PSCStatus.STATES.SlowRefSync)
-        PSSOFB._parallel_execution(self._bsmp_execute_function, args)
-        PSSOFB._parallel_execution(self._bsmp_state_update)
+        self._parallel_execution(self._bsmp_execute_function, args)
+        self._parallel_execution(self._bsmp_state_update)
 
     # --- sofb-vector object attribute methods ---
 
@@ -281,21 +297,24 @@ class PSSOFB:
         """."""
         return self._sofb_psnames.index(psname)
 
+    def stop_threads(self):
+        """Stop BBB threads."""
+        for thr in self._threads:
+            thr.stop()
+        for thr in self._threads:
+            thr.join()
+
     # --- private methods ---
 
-    @staticmethod
-    def _parallel_execution(target, args=None):
+    def _parallel_execution(self, target, args=None):
         """Execute 'method' in parallel."""
-        threads = dict()
         # run threads
-        for bbbname in PSSOFB.BBBNAMES:
-            # args_ = (bbbname, args)
-            args_ = (bbbname, ) + args if args is not None else (bbbname, )
-            threads[bbbname] = _Thread(target=target, args=args_, daemon=True)
-            threads[bbbname].start()
-        # join threads
-        for thread in threads.values():
-            thread.join()
+        for thr in self._threads:
+            if not thr.configure_new_run(target, args=args):
+                raise RuntimeError('Thread is not ready for job!')
+        # wait for run to finish
+        for thr in self._threads:
+            thr.wait_ready()
 
     def _bsmp_current_update(self, bbbname):
         """Update SOFB parameters of a single beaglebone."""
