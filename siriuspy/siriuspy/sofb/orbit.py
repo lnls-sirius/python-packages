@@ -44,7 +44,7 @@ def run_subprocess(pvs, pipe):
         pvo.wait_for_connection()
         pvo.add_callback(callback)
 
-    while pipe.recv():
+    while True:
         out = []
         tout = None
         for pvo in pvsobj:
@@ -55,7 +55,10 @@ def run_subprocess(pvs, pipe):
                 out.append(_np.nan)
         for pvo in pvsobj:
             pvo.event.clear()
-        pipe.send(out)
+        if pipe.recv():
+            pipe.send(out)
+        else:
+            break
 
 
 class EpicsOrbit(BaseOrbit):
@@ -865,6 +868,7 @@ class EpicsOrbit(BaseOrbit):
         # posx[nanx] = self.ref_orbs['X'][nanx]
         # posy[nany] = self.ref_orbs['Y'][nany]
         posx -= _time.time()
+        # posy -= _time.time()
         if self._ring_extension > 1:
             posx = _np.tile(posx, (self._ring_extension, ))
             posy = _np.tile(posy, (self._ring_extension, ))
