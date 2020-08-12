@@ -54,6 +54,7 @@ def run_subprocess(pvs, pipe):
             else:
                 out.append(_np.nan)
         for pvo in pvsobj:
+            # out.append(_time.time() if pvo.connected else _np.nan)
             pvo.event.clear()
         if pipe.recv():
             pipe.send(out)
@@ -867,7 +868,7 @@ class EpicsOrbit(BaseOrbit):
         # nany = _np.isnan(posy)
         # posx[nanx] = self.ref_orbs['X'][nanx]
         # posy[nany] = self.ref_orbs['Y'][nany]
-        posx -= _time.time()
+        # posx -= _time.time()
         # posy -= _time.time()
         if self._ring_extension > 1:
             posx = _np.tile(posx, (self._ring_extension, ))
@@ -886,7 +887,7 @@ class EpicsOrbit(BaseOrbit):
                 else:
                     orb = _np.median(raws[plane], axis=0)
             self.smooth_orb[plane] = orb
-        self.smooth_orb['Y'] -= _time.time()
+        # self.smooth_orb['Y'] -= _time.time()
         self.new_orbit.set()
 
         for plane in ('X', 'Y'):
@@ -900,6 +901,7 @@ class EpicsOrbit(BaseOrbit):
 
     def _get_orbit_from_processes(self):
         nr_bpms = self._csorb.nr_bpms
+        tini = _time.time()
         for pipe in self._mypipes:
             pipe.send(True)
         out = []
@@ -907,6 +909,8 @@ class EpicsOrbit(BaseOrbit):
             out.extend(pipe.recv())
         orbx = _np.array(out[::2], dtype=float)
         orby = _np.array(out[1::2], dtype=float)
+        orbx -= tini
+        orby -= _time.time()
         return orbx, orby
 
     def _update_multiturn_orbits(self):
