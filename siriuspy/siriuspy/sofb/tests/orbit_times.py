@@ -45,7 +45,9 @@ while not evt.wait(timeout=10e-3):
     orb = orbit.get_orbit(synced=True)
     datax = calc_values(orb[:160])
     datay = calc_values(orb[160:])
-    with open('orbx.txt', 'w') as fil:
+    with open('orbx.txt', 'a') as fil:
         fil.write(tmpl.format(**datax))
-    with open('orby.txt', 'w') as fil:
+    with open('orby.txt', 'a') as fil:
         fil.write(tmpl.format(**datay))
+
+orbit.shutdown()
