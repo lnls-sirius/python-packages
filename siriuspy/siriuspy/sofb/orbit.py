@@ -70,7 +70,7 @@ class EpicsOrbit(BaseOrbit):
         self.ref_orbs = {
             'X': _np.zeros(self._csorb.nr_bpms),
             'Y': _np.zeros(self._csorb.nr_bpms)}
-        self._load_ref_orbs()
+        # self._load_ref_orbs()
         self.raw_orbs = {'X': [], 'Y': []}
         self.raw_sporbs = {'X': [], 'Y': [], 'Sum': []}
         self.raw_mtorbs = {'X': [], 'Y': [], 'Sum': []}
