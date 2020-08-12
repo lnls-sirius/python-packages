@@ -44,7 +44,7 @@ def run_subprocess(pvs, pipe):
         pvo.wait_for_connection()
         pvo.add_callback(callback)
 
-    while True:
+    while pipe.recv():
         out = []
         tout = None
         for pvo in pvsobj:
@@ -53,13 +53,10 @@ def run_subprocess(pvs, pipe):
                 continue
             if pvo.event.wait(timeout=tout):
                 tout = timeout
-            out.append(pvo.timestamp)
-        if pipe.recv():
-            pipe.send(out)
-        else:
-            break
         for pvo in pvsobj:
+            out.append(pvo.timestamp)
             pvo.event.clear()
+        pipe.send(out)
 
 
 class EpicsOrbit(BaseOrbit):
