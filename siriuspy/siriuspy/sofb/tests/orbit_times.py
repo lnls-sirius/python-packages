@@ -34,15 +34,17 @@ with open('orby.txt', 'w') as fil:
 
 print('creating orbit object...')
 orbit = EpicsOrbit('SI')
-time.sleep(10)
+orbit.set_orbit_acq_rate(100)
+time.sleep(15)
 print('setting SlowOrb mode...')
 orbit.set_orbit_mode(orbit._csorb.SOFBMode.SlowOrb)
 time.sleep(5)
 
 print('starting acquisition')
 tmpl = '{ave:18.9f} {std:18.9f} {maxi:18.9f} {mini:18.9f}\n'
-while not evt.wait(timeout=10e-3):
+while not evt.is_set():
     orb = orbit.get_orbit(synced=True)
+    orb *= -1
     datax = calc_values(orb[:160])
     datay = calc_values(orb[160:])
     with open('orbx.txt', 'a') as fil:
