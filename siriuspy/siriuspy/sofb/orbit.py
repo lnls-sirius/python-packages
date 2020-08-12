@@ -114,6 +114,7 @@ class EpicsOrbit(BaseOrbit):
         pvs = []
         for bpm in self._csorb.bpm_names:
             pvs.append(bpm+':PosX-Mon')
+        for bpm in self._csorb.bpm_names:
             pvs.append(bpm+':PosY-Mon')
 
         # subdivide the pv list for the processes
@@ -903,8 +904,8 @@ class EpicsOrbit(BaseOrbit):
         out = []
         for pipe in self._mypipes:
             out.extend(pipe.recv())
-        orbx = _np.array(out[::2], dtype=float)
-        orby = _np.array(out[1::2], dtype=float)
+        orbx = _np.array(out[:nr_bpms], dtype=float)
+        orby = _np.array(out[nr_bpms:], dtype=float)
         return orbx, orby
 
     def _update_multiturn_orbits(self):
