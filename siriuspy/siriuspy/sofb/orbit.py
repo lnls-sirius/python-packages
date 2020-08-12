@@ -56,10 +56,10 @@ def run_subprocess(pvs, pipe):
             out.append(pvo.timestamp)
         if pipe.recv():
             pipe.send(out)
-        for pvo in pvsobj:
-            pvo.event.clear()
         else:
             break
+        for pvo in pvsobj:
+            pvo.event.clear()
 
 
 class EpicsOrbit(BaseOrbit):
