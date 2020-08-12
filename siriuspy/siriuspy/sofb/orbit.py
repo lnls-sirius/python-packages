@@ -859,12 +859,12 @@ class EpicsOrbit(BaseOrbit):
     def _update_online_orbits(self):
         """."""
         posx, posy = self._get_orbit_from_processes()
-        posx /= 1000
-        posy /= 1000
-        nanx = _np.isnan(posx)
-        nany = _np.isnan(posy)
-        posx[nanx] = self.ref_orbs['X'][nanx]
-        posy[nany] = self.ref_orbs['Y'][nany]
+        # posx /= 1000
+        # posy /= 1000
+        # nanx = _np.isnan(posx)
+        # nany = _np.isnan(posy)
+        # posx[nanx] = self.ref_orbs['X'][nanx]
+        # posy[nany] = self.ref_orbs['Y'][nany]
         if self._ring_extension > 1:
             posx = _np.tile(posx, (self._ring_extension, ))
             posy = _np.tile(posy, (self._ring_extension, ))
