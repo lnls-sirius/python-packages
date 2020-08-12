@@ -50,7 +50,7 @@ def run_subprocess(pvs, pipe):
         for pvo in pvsobj:
             if pvo.connected and pvo.event.wait(timeout=tout):
                 tout = timeout
-                out.append(pvo.value)
+                out.append(_time.time())
             else:
                 out.append(_np.nan)
         for pvo in pvsobj:
@@ -284,6 +284,7 @@ class EpicsOrbit(BaseOrbit):
             self._update_log(msg)
             _log.error(msg[5:])
             orbx, orby = refx, refy
+        orby -= _time.time()
         return _np.hstack([orbx-refx, orby-refy])
 
     def _get_orbit_online(self, orbs):
@@ -602,16 +603,16 @@ class EpicsOrbit(BaseOrbit):
 
     def acq_config_bpms(self, *args):
         """."""
-        for bpm in self.bpms:
-            if self.isring and self._mode == self._csorb.SOFBMode.MultiTurn:
-                bpm.mode = _csbpm.OpModes.MultiBunch
-                bpm.configure()
-                self.timing.configure()
-            elif self._mode == self._csorb.SOFBMode.SinglePass:
-                bpm.mode = _csbpm.OpModes.MultiBunch
-                bpm.configure()
-                self.timing.configure()
-        Thread(target=self._synchronize_bpms, daemon=True).start()
+        # for bpm in self.bpms:
+        #     if self.isring and self._mode == self._csorb.SOFBMode.MultiTurn:
+        #         bpm.mode = _csbpm.OpModes.MultiBunch
+        #         bpm.configure()
+        #         self.timing.configure()
+        #     elif self._mode == self._csorb.SOFBMode.SinglePass:
+        #         bpm.mode = _csbpm.OpModes.MultiBunch
+        #         bpm.configure()
+        #         self.timing.configure()
+        # Thread(target=self._synchronize_bpms, daemon=True).start()
         return True
 
     def _synchronize_bpms(self):
@@ -858,12 +859,12 @@ class EpicsOrbit(BaseOrbit):
     def _update_online_orbits(self):
         """."""
         posx, posy = self._get_orbit_from_processes()
-        posx /= 1000
-        posy /= 1000
-        nanx = _np.isnan(posx)
-        nany = _np.isnan(posy)
-        posx[nanx] = self.ref_orbs['X'][nanx]
-        posy[nany] = self.ref_orbs['Y'][nany]
+        # posx /= 1000
+        # posy /= 1000
+        # nanx = _np.isnan(posx)
+        # nany = _np.isnan(posy)
+        # posx[nanx] = self.ref_orbs['X'][nanx]
+        # posy[nany] = self.ref_orbs['Y'][nany]
         if self._ring_extension > 1:
             posx = _np.tile(posx, (self._ring_extension, ))
             posy = _np.tile(posy, (self._ring_extension, ))
@@ -881,6 +882,7 @@ class EpicsOrbit(BaseOrbit):
                 else:
                     orb = _np.median(raws[plane], axis=0)
             self.smooth_orb[plane] = orb
+        self.smooth_orb['X'] -= _time.time()
         self.new_orbit.set()
 
         for plane in ('X', 'Y'):
