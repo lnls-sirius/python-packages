@@ -283,7 +283,7 @@ class EpicsOrbit(BaseOrbit):
             self._update_log(msg)
             _log.error(msg[5:])
             orbx, orby = refx, refy
-        orby -= _time.time()
+        # orby -= _time.time()
         return _np.hstack([orbx-refx, orby-refy])
 
     def _get_orbit_online(self, orbs):
@@ -864,6 +864,7 @@ class EpicsOrbit(BaseOrbit):
         # nany = _np.isnan(posy)
         # posx[nanx] = self.ref_orbs['X'][nanx]
         # posy[nany] = self.ref_orbs['Y'][nany]
+        posx -= _time.time()
         if self._ring_extension > 1:
             posx = _np.tile(posx, (self._ring_extension, ))
             posy = _np.tile(posy, (self._ring_extension, ))
@@ -881,7 +882,7 @@ class EpicsOrbit(BaseOrbit):
                 else:
                     orb = _np.median(raws[plane], axis=0)
             self.smooth_orb[plane] = orb
-        self.smooth_orb['X'] -= _time.time()
+        self.smooth_orb['Y'] -= _time.time()
         self.new_orbit.set()
 
         for plane in ('X', 'Y'):
