@@ -6,7 +6,7 @@ import logging as _log
 from functools import partial as _part
 from copy import deepcopy as _dcopy
 from threading import Lock, Thread, Event as _Event
-from multiprocessing import Pipe as _Pipe
+from multiprocessing import Pipe as _Pipe, Event as _MPEvent
 
 from epics import CAProcess as _Process
 import numpy as _np
@@ -58,7 +58,7 @@ def run_subprocess_old(pvs, pipe):
         pipe.send(out)
 
 
-def run_subprocess(pvs, pipe):
+def run_subprocess(pvs, pipe, pipe2):
     """Run subprocesses."""
     max_spread = 25/1000  # in [s]
     timeout = 50/1000  # in [s]
@@ -94,7 +94,7 @@ def run_subprocess(pvs, pipe):
         pvo.connection_callbacks.append(conn_callback)
 
     boo = True
-    while boo or pipe.recv():
+    while boo or pipe2.recv():
         boo = False
         evt.clear()
         nok = 0.0
@@ -155,6 +155,7 @@ class EpicsOrbit(BaseOrbit):
         if self.acc == 'SI':
             self._processes = []
             self._mypipes = []
+            self._mypipes_send = []
             self._create_processes(nrprocs=4)
         self._orbit_thread = _Repeat(
             1/self._acqrate, self._update_orbits, niter=0)
@@ -174,14 +175,15 @@ class EpicsOrbit(BaseOrbit):
         sub = [div*i + min(i, rem) for i in range(nrprocs+1)]
 
         # create processes
-        self._get_evt = _Event()
         for i in range(nrprocs):
-            mine, theirs = _Pipe()
+            mine, theirs = _Pipe(duplex=False)
             self._mypipes.append(mine)
+            theirs2, mine = _Pipe(duplex=False)
+            self._mypipes_send.append(mine)
             pvsn = pvs[sub[i]:sub[i+1]]
             self._processes.append(_Process(
                 target=run_subprocess,
-                args=(pvsn, theirs),
+                args=(pvsn, theirs, theirs2),
                 daemon=True))
         for proc in self._processes:
             proc.start()
@@ -189,7 +191,7 @@ class EpicsOrbit(BaseOrbit):
     def shutdown(self):
         """."""
         if self.acc == 'SI':
-            for pipe in self._mypipes:
+            for pipe in self._mypipes_send:
                 pipe.send(False)
                 pipe.close()
             for proc in self._processes:
@@ -955,7 +957,7 @@ class EpicsOrbit(BaseOrbit):
             res = pipe.recv()
             out.extend(res[:-1])
             nok.append(res[-1])
-        for pipe in self._mypipes:
+        for pipe in self._mypipes_send:
             pipe.send(True)
         if any(nok):
             print('not ok')
