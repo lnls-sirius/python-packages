@@ -69,6 +69,7 @@ def run_subprocess(pvs, pipe, pipe2):
 
     def callback(*_, **kwargs):
         pvo = kwargs['cb_info'][1]
+        # pvo._args['timestamp'] = _time.time()
         tstamps[pvo.index] = pvo.timestamp
         maxi = _np.nanmax(tstamps)
         mini = _np.nanmin(tstamps)
@@ -156,7 +157,7 @@ class EpicsOrbit(BaseOrbit):
             self._processes = []
             self._mypipes = []
             self._mypipes_send = []
-            self._create_processes(nrprocs=4)
+            self._create_processes(nrprocs=16)
         self._orbit_thread = _Repeat(
             1/self._acqrate, self._update_orbits, niter=0)
         self._orbit_thread.start()
