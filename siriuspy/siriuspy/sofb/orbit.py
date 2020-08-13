@@ -24,7 +24,7 @@ class BaseOrbit(_BaseClass):
     """."""
 
 
-def run_subprocess(pvs, pipe):
+def run_subprocess_old(pvs, pipe):
     """Run subprocesses."""
     # this timeout is needed to slip the orbit acquisition in case the
     # loop starts in the middle of the BPMs updates
@@ -55,6 +55,58 @@ def run_subprocess(pvs, pipe):
                 out.append(_np.nan)
         for pvo in pvsobj:
             pvo.event.clear()
+        pipe.send(out)
+
+
+def run_subprocess(pvs, pipe):
+    """Run subprocesses."""
+    max_spread = 25/1000  # in [s]
+    timeout = 50/1000  # in [s]
+
+    evt = _Event()
+
+    tstamps = _np.full(len(pvs), _np.nan)
+
+    def callback(*_, **kwargs):
+        pvo = kwargs['cb_info'][1]
+        tstamps[pvo.index] = pvo.timestamp
+        maxi = _np.nanmax(tstamps)
+        mini = _np.nanmin(tstamps)
+        if (maxi-mini) < max_spread:
+            evt.set()
+
+    def conn_callback(pvname=None, conn=None, pv=None):
+        if not conn:
+            print('disconnected')
+            tstamps[pv.index] = np.nan
+
+    pvsobj = []
+    for i, pvn in enumerate(pvs):
+        pvo = _PV(pvn, connection_timeout=TIMEOUT)
+        pvo.index = i
+        pvsobj.append(pvo)
+
+    for pvo in pvsobj:
+        pvo.wait_for_connection()
+
+    for pvo in pvsobj:
+        pvo.add_callback(callback)
+        pvo.connection_callbacks.append(conn_callback)
+
+    boo = True
+    while boo or pipe.recv():
+        boo = False
+        evt.clear()
+        nok = 0.0
+        if not evt.wait(timeout=timeout):
+            nok = 1.0
+        out = []
+        for pvo in pvsobj:
+            if not pvo.connected:
+                out.append(_np.nan)
+                continue
+            out.append(pvo.timestamp)
+        out.append(nok)
         pipe.send(out)
 
 
@@ -284,6 +336,7 @@ class EpicsOrbit(BaseOrbit):
             self._update_log(msg)
             _log.error(msg[5:])
             orbx, orby = refx, refy
+        orbx -= _time.time()
         orby -= _time.time()
         return _np.hstack([orbx-refx, orby-refy])
 
@@ -882,7 +935,7 @@ class EpicsOrbit(BaseOrbit):
                 else:
                     orb = _np.median(raws[plane], axis=0)
             self.smooth_orb[plane] = orb
-        self.smooth_orb['X'] -= _time.time()
+        # self.smooth_orb['X'] -= _time.time()
         self.new_orbit.set()
 
         for plane in ('X', 'Y'):
@@ -896,11 +949,16 @@ class EpicsOrbit(BaseOrbit):
 
     def _get_orbit_from_processes(self):
         nr_bpms = self._csorb.nr_bpms
+        out = []
+        nok = []
+        for pipe in self._mypipes:
+            res = pipe.recv()
+            out.extend(res[:-1])
+            nok.append(res[-1])
         for pipe in self._mypipes:
             pipe.send(True)
-        out = []
-        for pipe in self._mypipes:
-            out.extend(pipe.recv())
+        if any(nok):
+            print('not ok')
         orbx = _np.array(out[:nr_bpms], dtype=float)
         orby = _np.array(out[nr_bpms:], dtype=float)
         return orbx, orby
