@@ -1,6 +1,7 @@
 """PVs Configs Handler."""
 
 import time as _time
+import struct as _struct
 import numpy as _np
 from epics import get_pv as _get_pv
 
@@ -130,9 +131,12 @@ class PVsConfig(_ConfigDBDocument):
             self.PVs[pvname] = pvobj
         return pvobj
 
-    def _check_pv(self, pvname, value, timeout=_TIMEOUT,
-                  rel_tol=1e-06, abs_tol=0.0):
+    def _check_pv(self, pvname, value, timeout=_TIMEOUT):
         """Check PV value."""
+        # NOTE: Is the function 'isclose' being used solely because
+        # somes IOCs operate on single-precision floats? If this is
+        # the case maybe we shoud convert float64 to float32 and
+        # do a precise comparison.
         pvobj = self._get_pv(pvname)
         pvobj.wait_for_connection(timeout)
         curr_val = pvobj.get(timeout=timeout)
@@ -145,9 +149,23 @@ class PVsConfig(_ConfigDBDocument):
                     return False
             except TypeError:
                 return False  # one of them is not an array
-            return _np.allclose(curr_val, value, rtol=rel_tol, atol=abs_tol)
+            if isinstance(curr_val[0], (float, _np.float64)):
+                curr_val = _np.asarray(curr_val, dtype=_np.float32)
+            if isinstance(value[0], (float, _np.float64)):
+                value = _np.asarray(curr_val, dtype=_np.float32)
+            # NOTE: benchmark
+            #
+            # size         isclose          array_equal
+            #        (asarray_implicit) (asarray_explicit)
+            #
+            # 4            24.4 us            5.2 us
+            # 4000         36.5 us            6.6 us
+            return _np.array_equal(curr_val, value)
         elif isinstance(curr_val, float) or isinstance(value, float):
-            return _np.isclose(curr_val, value, rtol=rel_tol, atol=abs_tol)
+            # NOTE: benchmark
+            #        isclose            struct.pack
+            #        ~265 ns              ~170 ns
+            return _struct.pack('f', curr_val) == _struct.pack('f', value)
         elif curr_val == value:
             return True
         return False

@@ -1,6 +1,7 @@
 """Epics PV derived classes."""
 
 import time as _time
+import struct as _struct
 import numpy as _np
 
 import epics as _epics
@@ -205,7 +206,7 @@ class EpicsPropertiesList:
         return ppty.setpoint
 
     def set_setpoints_check(self, setpoints, desired_readbacks=None,
-                            timeout=5, order=None, rel_tol=1e-6, abs_tol=0.0):
+                            timeout=5, order=None):
         """Set setpoints of properties."""
         if desired_readbacks is None:
             desired_readbacks = dict()
@@ -233,21 +234,25 @@ class EpicsPropertiesList:
                     continue
                 if pvname not in is_nok:
                     continue
-                rb = self._properties[pvname].readback
+                rbval = self._properties[pvname].readback
                 if isinstance(value, (tuple, list, _np.ndarray)):
-                    if not isinstance(rb, (tuple, list, _np.ndarray)):
+                    if not isinstance(rbval, (tuple, list, _np.ndarray)):
                         finished = False
                         break
-                    if len(value) != len(rb):
+                    if len(value) != len(rbval):
                         finished = False
                         break
-                    if not all(_np.isclose(rb, value,
-                                           rtol=rel_tol, atol=abs_tol)):
-                        finished = False
+                    if isinstance(rbval[0], (float, _np.float64)):
+                        rbval = _np.asarray(rbval, dtype=_np.float32)
+                    if isinstance(value[0], (float, _np.float64)):
+                        value = _np.asarray(value, dtype=_np.float32)
+                    finished = _np.array_equal(rbval, value)
+                    if not finished:
                         break
                 else:
-                    if not _np.isclose(rb, value, rtol=rel_tol, atol=abs_tol):
-                        finished = False
+                    finished = \
+                        _struct.pack('f', rbval) == _struct.pack('f', value)
+                    if not finished:
                         break
                 if finished:
                     is_nok.remove(pvname)

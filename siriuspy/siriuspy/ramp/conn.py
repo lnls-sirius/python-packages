@@ -466,7 +466,7 @@ class ConnPS(_EpicsPropsList):
         sp = dict()
         for ps in pwrsupplys:
             sp[ps+':Wfm-SP'] = self._ramp_config.ps_waveform_get_currents(ps)
-        return self.set_setpoints_check(sp, timeout=timeout, abs_tol=1e-5)
+        return self.set_setpoints_check(sp, timeout=timeout)
 
     # --- power supplies checks ---
 

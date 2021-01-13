@@ -106,6 +106,7 @@ class BoosterNormalized(_ConfigDBDocument):
         return rst
 
     def __eq__(self, value):
+        """."""
         # TODO: deprecated method? missing self.manames property...
         for maname in self.manames:
             if maname == 'BO-Fam:MA-B':

@@ -2,7 +2,7 @@
 """Utilities for cycle."""
 
 import time as _time
-import math as _math
+import struct as _struct
 import numpy as _np
 
 from ..namesys import Filter as _Filter
@@ -55,7 +55,7 @@ def get_trigger_by_psname(psnames):
     return triggers
 
 
-def pv_timed_get(pvobj, value, wait=5, abs_tol=0.0, rel_tol=1e-06):
+def pv_timed_get(pvobj, value, wait=5):
     """Do timed get."""
     if not pvobj.connected:
         return False
@@ -70,12 +70,19 @@ def pv_timed_get(pvobj, value, wait=5, abs_tol=0.0, rel_tol=1e-06):
                 _time.sleep(wait/10.0)
                 continue
             else:
-                if _np.allclose(pvvalue, value, atol=abs_tol, rtol=rel_tol):
-                    return True
+                if isinstance(pvvalue[0], (float, _np.float64)):
+                    pvvalue = _np.asarray(pvvalue, dtype=_np.float32)
+                if isinstance(value[0], (float, _np.float64)):
+                    value = _np.asarray(value, dtype=_np.float32)
+                status = _np.array_equal(pvvalue, value)
+                if status:
+                    break
         else:
-            if _math.isclose(pvvalue, value, abs_tol=abs_tol, rel_tol=rel_tol):
-                return True
-    return False
+            status = _struct.pack('f', pvvalue) == _struct.pack('f', value)
+            if status:
+                break
+        _time.sleep(wait/10.0)
+    return status
 
 
 def pv_conn_put(pvobj, value):
