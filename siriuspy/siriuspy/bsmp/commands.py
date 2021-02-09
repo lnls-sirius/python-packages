@@ -183,6 +183,11 @@ class BSMP:
         cmd, ack = \
             _const.CMD_CREATE_GROUP_OF_VARIABLES, _const.ACK_OK
 
+        print('-- create_group_of_variables --')
+        print('address: ', self._channel.address)
+        print('var_ids: ', var_ids)
+        print()
+
         # build payload
         var_ids = sorted(var_ids)
         payload = [chr(var_id) for var_id in var_ids]
