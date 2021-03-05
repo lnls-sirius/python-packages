@@ -187,19 +187,6 @@ class MacReport:
                 new_timestamp != self._timestamp_stop.get_timestamp():
             self._timestamp_stop = _Time(timestamp=new_timestamp)
 
-    def update(self, avg_intvl=None):
-        """Update."""
-        if avg_intvl is None:
-            avg_intvl = MacReport._AVG_TIME
-        for pvname in self._pvnames:
-            _t0 = _time.time()
-            pvdata = self._pvdata[pvname]
-            pvdata.timestamp_start = self._timestamp_start.get_iso8601()
-            pvdata.timestamp_stop = self._timestamp_stop.get_iso8601()
-            pvdata.update(avg_intvl)
-            print(pvname, _time.time() - _t0)
-        self._compute_metrics()
-
     @property
     def failures_interval(self):
         """Failures interval."""
@@ -219,6 +206,11 @@ class MacReport:
     def ebeam_total_mean_current(self):
         """Electron beam mean current."""
         return self._ebeam_total_mean_current
+
+    @property
+    def ebeam_users_impltd_interval(self):
+        """Electron beam interval."""
+        return self._ebeam_users_impltd_interval
 
     @property
     def ebeam_users_progmd_interval(self):
@@ -244,6 +236,19 @@ class MacReport:
     def beam_availability(self):
         """Beam availability."""
         return self._beam_availability
+
+    def update(self, avg_intvl=None):
+        """Update."""
+        if avg_intvl is None:
+            avg_intvl = MacReport._AVG_TIME
+        for pvname in self._pvnames:
+            _t0 = _time.time()
+            pvdata = self._pvdata[pvname]
+            pvdata.timestamp_start = self._timestamp_start.get_iso8601()
+            pvdata.timestamp_stop = self._timestamp_stop.get_iso8601()
+            pvdata.update(avg_intvl)
+            print(pvname, _time.time() - _t0)
+        self._compute_metrics()
 
     # ----- auxiliary methods -----
 
