@@ -52,15 +52,19 @@ class MacScheduleData:
             timestamp=None, datetime=None, year=None,
             month=None, day=None, hour=None, minute=None):
         """Return whether a day is a predefined user operation."""
+        ret_bool = False
         if timestamp is not None:
             if not isinstance(timestamp, (list, tuple, _np.ndarray)):
                 timestamp = [timestamp, ]
+                ret_bool = True
             datetime = [_datetime.fromtimestamp(ts) for ts in timestamp]
         elif datetime is not None:
             if not isinstance(datetime, (list, tuple, _np.ndarray)):
                 datetime = [datetime, ]
+                ret_bool = True
             timestamp = [dt.timestamp() for dt in datetime]
         elif year is not None:
+            ret_bool = True
             datetime = [_datetime(year, month, day, hour, minute), ]
             timestamp = [dt.timestamp() for dt in datetime]
         else:
@@ -77,7 +81,9 @@ class MacScheduleData:
             tags.extend(ytag)
 
         fun = _interp1d(times, tags, 'previous', fill_value='extrapolate')
-        return bool(fun(timestamp))
+        if ret_bool:
+            return bool(fun(timestamp)[0])
+        return fun(timestamp)
 
     @staticmethod
     def plot_mac_schedule(year):
