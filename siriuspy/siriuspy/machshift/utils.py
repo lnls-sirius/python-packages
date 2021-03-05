@@ -2,6 +2,7 @@
 
 import re as _re
 import copy as _copy
+import time as _time
 from datetime import datetime as _datetime
 from concurrent.futures import ThreadPoolExecutor
 import numpy as _np
@@ -253,26 +254,32 @@ class MacReport:
 
     def _compute_metrics(self):
         # get current data
+        _t0 = _time.time()
         curr_data = self._pvdata['SI-Glob:AP-CurrInfo:Current-Mon']
         curr_values = _np.array(curr_data.value)
         is_stored = curr_values > MacReport._THRESHOLD_STOREDBEAM
         curr_times = _np.array(curr_data.timestamp)
+        print('get current data', _time.time() - _t0)
 
         # get implemented shift data in current timestamps
+        _t0 = _time.time()
         ishift_data = self._pvdata['AS-Glob:AP-MachShift:Mode-Sts']
         ishift_values = _np.array([int(not v) for v in ishift_data.value])
         ishift_times = _np.array(ishift_data.timestamp)
         ishift_fun = _interp1d(
             ishift_times, ishift_values, 'previous', fill_value='extrapolate')
         ishift_values = ishift_fun(curr_times)
+        print('get implem. shift data', _time.time() - _t0)
 
         # get desired shift data in current timestamps
+        _t0 = _time.time()
         dshift_values = [
             int(MacScheduleData.is_user_operation_predefined(
                 datetime=_datetime.fromtimestamp(t))) for t in ishift_times]
         dshift_fun = _interp1d(
             ishift_times, dshift_values, 'previous', fill_value='extrapolate')
         dshift_values = dshift_fun(curr_times)
+        print('get desired shift data', _time.time() - _t0)
 
         # tag failures
         failures = _np.logical_and(
@@ -281,7 +288,7 @@ class MacReport:
         )
 
         # calculate time vectors
-        dtimes = _np.diff(curr_times.timestamp)
+        dtimes = _np.diff(curr_times)
         dtimes = _np.insert(dtimes, 0, 0)
         dtimes_total_stored = dtimes*is_stored
         dtimes_failures = dtimes*failures
