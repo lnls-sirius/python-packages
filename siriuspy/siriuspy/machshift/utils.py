@@ -272,7 +272,8 @@ class MacReport:
             pvdata = self._pvdata[pvname]
             pvdata.timestamp_start = self._timestamp_start.get_iso8601()
             pvdata.timestamp_stop = self._timestamp_stop.get_iso8601()
-            pvdata.update(avg_intvl)
+            intvl = None if 'MachShift' in pvname else avg_intvl
+            pvdata.update(intvl)
             print(pvname, _time.time() - _t0)
         self._compute_metrics()
 
