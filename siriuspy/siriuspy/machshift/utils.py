@@ -304,10 +304,7 @@ class MacReport:
         # get desired shift data in current timestamps
         _t0 = _time.time()
         self._dshift_values = MacScheduleData.is_user_operation_predefined(
-            timestamp=ishift_times)
-        dshift_fun = _interp1d(
-            ishift_times, self._dshift_values, 'previous', fill_value='extrapolate')
-        self._dshift_values = dshift_fun(curr_times)
+            timestamp=curr_times)
         print('get desired shift data', _time.time() - _t0)
 
         # calculate time vectors
