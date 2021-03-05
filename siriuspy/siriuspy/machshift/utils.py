@@ -132,6 +132,7 @@ class MacReport:
     """
 
     _THRESHOLD_STOREDBEAM = 0.005  # [mA]
+    _AVG_TIME = 1  # [s]
     _MQUERRY_MIN_BIN_INTVL = 10  # [h]
 
     def __init__(self, connector=None):
@@ -152,8 +153,16 @@ class MacReport:
         # query data
         self._timestamp_start = None
         self._timestamp_stop = None
-        self._ebeam_mean_current = None
-        self._ebeam_interval = None
+        self._failures_interval = None
+        self._failures_count = None
+        self._ebeam_total_interval = None
+        self._ebeam_total_mean_current = None
+        self._ebeam_users_progmd_interval = None
+        self._ebeam_users_impltd_interval = None
+        self._ebeam_users_mean_current = None
+        self._mean_time_to_recover = None
+        self._mean_time_between_failures = None
+        self._beam_availability = None
 
     @property
     def timestamp_start(self):
@@ -177,24 +186,61 @@ class MacReport:
                 new_timestamp != self._timestamp_stop.get_timestamp():
             self._timestamp_stop = _Time(timestamp=new_timestamp)
 
-    def update(self):
+    def update(self, avg_intvl=None):
         """Update."""
+        if avg_intvl is None:
+            avg_intvl = MacReport._AVG_TIME
         for pvname in self._pvnames:
             pvdata = self._pvdata[pvname]
             pvdata.timestamp_start = self._timestamp_start.get_iso8601()
             pvdata.timestamp_stop = self._timestamp_stop.get_iso8601()
-            pvdata.update()
-        self._compute_mean_current()
+            pvdata.update(avg_intvl)
+        self._compute_metrics()
 
     @property
-    def ebeam_interval(self):
+    def failures_interval(self):
+        """Failures interval."""
+        return self._failures_interval
+
+    @property
+    def failures_count(self):
+        """Failures count."""
+        return self._failures_count
+
+    @property
+    def ebeam_total_interval(self):
         """Electron beam interval."""
-        return self._ebeam_interval
+        return self._ebeam_total_interval
 
     @property
-    def ebeam_mean_current(self):
+    def ebeam_total_mean_current(self):
         """Electron beam mean current."""
-        return self._ebeam_mean_current
+        return self._ebeam_total_mean_current
+
+    @property
+    def ebeam_users_progmd_interval(self):
+        """Electron beam interval."""
+        return self._ebeam_users_progmd_interval
+
+    @property
+    def ebeam_users_mean_current(self):
+        """Electron beam mean current in user shift."""
+        return self._ebeam_users_mean_current
+
+    @property
+    def mean_time_to_recover(self):
+        """Mean time to recover."""
+        return self._mean_time_to_recover
+
+    @property
+    def mean_time_between_failures(self):
+        """Mean time between failures."""
+        return self._mean_time_between_failures
+
+    @property
+    def beam_availability(self):
+        """Beam availability."""
+        return self._beam_availability
 
     # ----- auxiliary methods -----
 
@@ -205,17 +251,71 @@ class MacReport:
             pvdetails[pvname] = _PVDetails(pvname, self._connector)
         return pvdata, pvdetails
 
-    def _compute_mean_current(self):
-        current_data = self._pvdata['SI-Glob:AP-CurrInfo:Current-Mon']
-        values = _np.array(current_data.value)
-        is_stored = values > MacReport._THRESHOLD_STOREDBEAM
+    def _compute_metrics(self):
+        # get current data
+        curr_data = self._pvdata['SI-Glob:AP-CurrInfo:Current-Mon']
+        curr_values = _np.array(curr_data.value)
+        is_stored = curr_values > MacReport._THRESHOLD_STOREDBEAM
+        curr_times = _np.array(curr_data.timestamp)
 
-        timestamps_deltas = _np.diff(current_data.timestamp)
-        timestamps_deltas = _np.insert(timestamps_deltas, 0, 0)
+        # get implemented shift data in current timestamps
+        ishift_data = self._pvdata['AS-Glob:AP-MachShift:Mode-Sts']
+        ishift_values = _np.array([int(not v) for v in ishift_data.value])
+        ishift_times = _np.array(ishift_data.timestamp)
+        ishift_fun = _interp1d(
+            ishift_times, ishift_values, 'previous', fill_value='extrapolate')
+        ishift_values = ishift_fun(curr_times)
 
-        self._ebeam_interval = _np.sum(timestamps_deltas*is_stored)
-        self._ebeam_mean_current = \
-            _np.sum(values*is_stored*timestamps_deltas)/self._ebeam_interval
+        # get desired shift data in current timestamps
+        dshift_values = [
+            int(MacScheduleData.is_user_operation_predefined(
+                datetime=_datetime.fromtimestamp(t))) for t in ishift_times]
+        dshift_fun = _interp1d(
+            ishift_times, dshift_values, 'previous', fill_value='extrapolate')
+        dshift_values = dshift_fun(curr_times)
+
+        # tag failures
+        failures = _np.logical_and(
+            [(dshift_values - ishift_values) > 0],  # wrong shift
+            _np.logical_not(is_stored)              # without beam
+        )
+
+        # calculate time vectors
+        dtimes = _np.diff(curr_times.timestamp)
+        dtimes = _np.insert(dtimes, 0, 0)
+        dtimes_total_stored = dtimes*is_stored
+        dtimes_failures = dtimes*failures
+        dtimes_users_progmd = dtimes*dshift_values
+        dtimes_users_impltd = dtimes*dshift_values*_np.logical_not(failures)
+
+        # metrics
+        self._failures_interval = _np.sum(dtimes_failures)
+
+        self._failures_count = _np.sum(_np.diff(failures) > 0)
+
+        self._ebeam_total_interval = _np.sum(dtimes_total_stored)
+
+        self._ebeam_total_mean_current = \
+            _np.sum(curr_values*dtimes_total_stored) / \
+            self._ebeam_total_interval
+
+        self._ebeam_users_progmd_interval = _np.sum(dtimes_users_progmd)
+
+        self._ebeam_users_impltd_interval = _np.sum(dtimes_users_impltd)
+
+        self._ebeam_users_mean_current = \
+            _np.sum(curr_values*dtimes_users_impltd) / \
+            self._ebeam_users_impltd_interval
+
+        self._mean_time_to_recover = \
+            self._failures_interval / self._failures_count
+
+        self._mean_time_between_failures = \
+            self._ebeam_users_progmd_interval / self._failures_count
+
+        self._beam_availability = \
+            self._ebeam_users_impltd_interval / \
+            self._ebeam_users_progmd_interval
 
     def __getitem__(self, pvname):
         return self._pvdata[pvname], self._pvdetails[pvname]
