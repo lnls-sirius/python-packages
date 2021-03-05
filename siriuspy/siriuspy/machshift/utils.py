@@ -192,10 +192,12 @@ class MacReport:
         if avg_intvl is None:
             avg_intvl = MacReport._AVG_TIME
         for pvname in self._pvnames:
+            _t0 = _time.time()
             pvdata = self._pvdata[pvname]
             pvdata.timestamp_start = self._timestamp_start.get_iso8601()
             pvdata.timestamp_stop = self._timestamp_stop.get_iso8601()
             pvdata.update(avg_intvl)
+            print(pvname, _time.time() - t0)
         self._compute_metrics()
 
     @property
@@ -254,22 +256,18 @@ class MacReport:
 
     def _compute_metrics(self):
         # get current data
-        _t0 = _time.time()
         curr_data = self._pvdata['SI-Glob:AP-CurrInfo:Current-Mon']
         curr_values = _np.array(curr_data.value)
         is_stored = curr_values > MacReport._THRESHOLD_STOREDBEAM
         curr_times = _np.array(curr_data.timestamp)
-        print('get current data', _time.time() - _t0)
 
         # get implemented shift data in current timestamps
-        _t0 = _time.time()
         ishift_data = self._pvdata['AS-Glob:AP-MachShift:Mode-Sts']
         ishift_values = _np.array([int(not v) for v in ishift_data.value])
         ishift_times = _np.array(ishift_data.timestamp)
         ishift_fun = _interp1d(
             ishift_times, ishift_values, 'previous', fill_value='extrapolate')
         ishift_values = ishift_fun(curr_times)
-        print('get implem. shift data', _time.time() - _t0)
 
         # get desired shift data in current timestamps
         _t0 = _time.time()
