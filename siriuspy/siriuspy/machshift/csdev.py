@@ -11,6 +11,7 @@ class ETypes(_csdev.ETypes):
     MACHSHIFT = (
         'Users', 'Commissioning', 'Conditioning',
         'Injection', 'MachineStudy', 'Maintenance')
+    PROGMD_USERS_SHIFT = ('No', 'Yes')
 
 
 _et = ETypes
@@ -22,6 +23,8 @@ class Const(_csdev.Const):
     """Const class."""
 
     MachShift = _csdev.Const.register('MachShift', _et.MACHSHIFT)
+    ProgmdUsersShift = _csdev.Const.register(
+        'ProgmdUsersShift', _et.PROGMD_USERS_SHIFT)
 
 
 _c = Const
@@ -40,6 +43,9 @@ def get_machshift_propty_database():
         'Mode-Sts': {
             'type': 'enum', 'value': _c.MachShift.Commissioning,
             'enums': _et.MACHSHIFT},
+        'ProgmdUsersShift-Mon': {
+            'type': 'enum', 'value': _c.ProgmdUsersShift.No,
+            'enums': _et.PROGMD_USERS_SHIFT, 'scan': 1}
     }
     dbase = _csdev.add_pvslist_cte(dbase)
     return dbase

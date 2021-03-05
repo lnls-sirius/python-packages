@@ -13,6 +13,7 @@ _BBB_FOLDER = '/beaglebone/'
 _PSTYPES_DATA_FOLDER = '/pwrsupply/pstypes-data/'
 _DIAG_FOLDER = '/diagnostics/'
 _TIMESYS_FOLDER = '/timesys/'
+_MAC_SCHEDULE_FOLDER = '/macschedule/'
 
 
 def read_url(url, timeout=_TIMEOUT):
@@ -170,4 +171,10 @@ def high_level_events(timeout=_TIMEOUT):
 def bsmp_dclink_mapping(timeout=_TIMEOUT):
     """Read bsmp dclink mapping."""
     url = _PS_FOLDER + 'bsmp-dclink.txt'
+    return read_url(url, timeout=timeout)
+
+
+def mac_schedule_read(year, timeout=_TIMEOUT):
+    """Read machine schedule data."""
+    url = _MAC_SCHEDULE_FOLDER + str(year) + '.txt'
     return read_url(url, timeout=timeout)
