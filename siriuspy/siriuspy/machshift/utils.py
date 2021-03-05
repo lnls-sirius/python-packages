@@ -131,6 +131,7 @@ class MacReport:
 
     """
 
+    _THRESHOLD_STOREDBEAM = 0.005  # [mA]
     _MQUERRY_MIN_BIN_INTVL = 10  # [h]
 
     def __init__(self, connector=None):
@@ -148,13 +149,11 @@ class MacReport:
         # create pv connectors
         self._pvdata, self._pvdetails = self._init_connectors()
 
-        # query interval
+        # query data
         self._timestamp_start = None
         self._timestamp_stop = None
-
-        # initialize auxiliary variables
-        self._timestamp = dict()
-        self._value = dict()
+        self._ebeam_mean_current = None
+        self._ebeam_interval = None
 
     @property
     def timestamp_start(self):
@@ -185,6 +184,17 @@ class MacReport:
             pvdata.timestamp_start = self._timestamp_start.get_iso8601()
             pvdata.timestamp_stop = self._timestamp_stop.get_iso8601()
             pvdata.update()
+        self._compute_mean_current()
+
+    @property
+    def ebeam_interval(self):
+        """Electron beam interval."""
+        return self._ebeam_interval
+
+    @property
+    def ebeam_mean_current(self):
+        """Electron beam mean current."""
+        return self._ebeam_mean_current
 
     # ----- auxiliary methods -----
 
@@ -194,6 +204,18 @@ class MacReport:
             pvdata[pvname] = _PVData(pvname, self._connector)
             pvdetails[pvname] = _PVDetails(pvname, self._connector)
         return pvdata, pvdetails
+
+    def _compute_mean_current(self):
+        current_data = self._pvdata['SI-Glob:AP-CurrInfo:Current-Mon']
+        values = _np.array(current_data.value)
+        is_stored = values > MacReport._THRESHOLD_STOREDBEAM
+
+        timestamps_deltas = _np.diff(current_data.timestamp)
+        timestamps_deltas = _np.insert(timestamps_deltas, 0, 0)
+
+        self._ebeam_interval = _np.sum(timestamps_deltas*is_stored)
+        self._ebeam_mean_current = \
+            _np.sum(values*is_stored*timestamps_deltas)/self._ebeam_interval
 
     def __getitem__(self, pvname):
         return self._pvdata[pvname], self._pvdetails[pvname]
