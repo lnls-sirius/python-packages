@@ -197,7 +197,7 @@ class MacReport:
             pvdata.timestamp_start = self._timestamp_start.get_iso8601()
             pvdata.timestamp_stop = self._timestamp_stop.get_iso8601()
             pvdata.update(avg_intvl)
-            print(pvname, _time.time() - t0)
+            print(pvname, _time.time() - _t0)
         self._compute_metrics()
 
     @property
