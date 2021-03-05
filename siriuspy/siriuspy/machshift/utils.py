@@ -295,33 +295,33 @@ class MacReport:
 
         # get implemented shift data in current timestamps
         ishift_data = self._pvdata['AS-Glob:AP-MachShift:Mode-Sts']
-        ishift_values = _np.array([int(not v) for v in ishift_data.value])
+        self._ishift_values = _np.array([int(not v) for v in ishift_data.value])
         ishift_times = _np.array(ishift_data.timestamp)
         ishift_fun = _interp1d(
-            ishift_times, ishift_values, 'previous', fill_value='extrapolate')
-        ishift_values = ishift_fun(curr_times)
+            ishift_times, self._ishift_values, 'previous', fill_value='extrapolate')
+        self._ishift_values = ishift_fun(curr_times)
 
         # get desired shift data in current timestamps
         _t0 = _time.time()
-        dshift_values = MacScheduleData.is_user_operation_predefined(
+        self._dshift_values = MacScheduleData.is_user_operation_predefined(
             timestamp=ishift_times)
         dshift_fun = _interp1d(
-            ishift_times, dshift_values, 'previous', fill_value='extrapolate')
-        dshift_values = dshift_fun(curr_times)
+            ishift_times, self._dshift_values, 'previous', fill_value='extrapolate')
+        self._dshift_values = dshift_fun(curr_times)
         print('get desired shift data', _time.time() - _t0)
 
         # calculate time vectors
         dtimes = _np.diff(curr_times)
         dtimes = _np.insert(dtimes, 0, 0)
         dtimes_total_stored = dtimes*is_stored
-        dtimes_users_progmd = dtimes*dshift_values
-        dtimes_users_impltd = dtimes*dshift_values*_np.logical_not(
+        dtimes_users_progmd = dtimes*self._dshift_values
+        dtimes_users_impltd = dtimes*self._dshift_values*_np.logical_not(
             self._failures)
 
         # tag failures
         self._failures = _np.logical_or(
-            [(dshift_values - ishift_values) > 0],          # wrong shift
-            _np.logical_not(is_stored*dtimes_users_progmd)  # without beam
+            [(self._dshift_values - self._ishift_values) > 0], # wrong shift
+            _np.logical_not(is_stored*dtimes_users_progmd)     # without beam
         )
         dtimes_failures = dtimes*self._failures
 
