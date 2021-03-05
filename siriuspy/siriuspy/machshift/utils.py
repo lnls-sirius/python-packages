@@ -53,11 +53,11 @@ class MacScheduleData:
             month=None, day=None, hour=None, minute=None):
         """Return whether a day is a predefined user operation."""
         if timestamp is not None:
-            if not isinstance(timestamp, (list, tuple, _np.array)):
+            if not isinstance(timestamp, (list, tuple, _np.ndarray)):
                 timestamp = [timestamp, ]
             datetime = [_datetime.fromtimestamp(ts) for ts in timestamp]
         elif datetime is not None:
-            if not isinstance(datetime, (list, tuple, _np.array)):
+            if not isinstance(datetime, (list, tuple, _np.ndarray)):
                 datetime = [datetime, ]
             timestamp = [dt.timestamp() for dt in datetime]
         elif year is not None:
