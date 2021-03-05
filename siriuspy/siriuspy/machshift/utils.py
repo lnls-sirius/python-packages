@@ -48,19 +48,36 @@ class MacScheduleData:
         return MacScheduleData._user_operation_count[year]
 
     @staticmethod
-    def is_user_operation_predefined(year=None, month=None, day=None,
-                                     hour=None, minute=None, datetime=None):
+    def is_user_operation_predefined(
+            timestamp=None, datetime=None, year=None,
+            month=None, day=None, hour=None, minute=None):
         """Return whether a day is a predefined user operation."""
-        if year is not None:
-            datetime_obj = _datetime(year, month, day, hour, minute)
+        if timestamp is not None:
+            if not isinstance(timestamp, (list, tuple, _np.array)):
+                timestamp = [timestamp, ]
+            datetime = [_datetime.fromtimestamp(ts) for ts in timestamp]
+        elif datetime is not None:
+            if not isinstance(datetime, (list, tuple, _np.array)):
+                datetime = [datetime, ]
+            timestamp = [dt.timestamp() for dt in datetime]
+        elif year is not None:
+            datetime = [_datetime(year, month, day, hour, minute), ]
+            timestamp = [dt.timestamp() for dt in datetime]
         else:
-            year = datetime.year
-            datetime_obj = datetime
-        MacScheduleData._reload_mac_schedule_data(year)
-        data = MacScheduleData._mac_schedule_data_numeric[year]
-        timestamps, tags = list(zip(*data))
-        fun = _interp1d(timestamps, tags, 'previous', fill_value='extrapolate')
-        return bool(fun(datetime_obj.timestamp()))
+            raise Exception('Enter timestamp, datetime or datetime items data.')
+
+        year_init = datetime[0].year
+        year_end = datetime[-1].year
+        times, tags = list(), list()
+        for y2l in _np.arange(year_init, year_end+1):
+            MacScheduleData._reload_mac_schedule_data(y2l)
+            data = MacScheduleData._mac_schedule_data_numeric[y2l]
+            ytim, ytag = list(zip(*data))
+            times.extend(ytim)
+            tags.extend(ytag)
+
+        fun = _interp1d(times, tags, 'previous', fill_value='extrapolate')
+        return bool(fun(timestamp))
 
     @staticmethod
     def plot_mac_schedule(year):
@@ -276,9 +293,8 @@ class MacReport:
 
         # get desired shift data in current timestamps
         _t0 = _time.time()
-        dshift_values = [
-            int(MacScheduleData.is_user_operation_predefined(
-                datetime=_datetime.fromtimestamp(t))) for t in ishift_times]
+        dshift_values = MacScheduleData.is_user_operation_predefined(
+            timestamp=ishift_times)
         dshift_fun = _interp1d(
             ishift_times, dshift_values, 'previous', fill_value='extrapolate')
         dshift_values = dshift_fun(curr_times)
