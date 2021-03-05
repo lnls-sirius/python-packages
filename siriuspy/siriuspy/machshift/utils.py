@@ -188,6 +188,9 @@ class MacReport:
         self._mean_time_between_failures = None
         self._beam_availability = None
 
+        # auxiliary data
+        self._failures = None
+
     @property
     def timestamp_start(self):
         """Query interval start timestamp."""
@@ -307,7 +310,7 @@ class MacReport:
         print('get desired shift data', _time.time() - _t0)
 
         # tag failures
-        failures = _np.logical_and(
+        self._failures = _np.logical_or(
             [(dshift_values - ishift_values) > 0],  # wrong shift
             _np.logical_not(is_stored)              # without beam
         )
@@ -316,14 +319,15 @@ class MacReport:
         dtimes = _np.diff(curr_times)
         dtimes = _np.insert(dtimes, 0, 0)
         dtimes_total_stored = dtimes*is_stored
-        dtimes_failures = dtimes*failures
+        dtimes_failures = dtimes*self._failures
         dtimes_users_progmd = dtimes*dshift_values
-        dtimes_users_impltd = dtimes*dshift_values*_np.logical_not(failures)
+        dtimes_users_impltd = dtimes*dshift_values*_np.logical_not(
+            self._failures)
 
         # metrics
         self._failures_interval = _np.sum(dtimes_failures)
 
-        self._failures_count = _np.sum(_np.diff(failures) > 0)
+        self._failures_count = _np.sum(_np.diff(self._failures) > 0)
 
         self._ebeam_total_interval = _np.sum(dtimes_total_stored)
 
