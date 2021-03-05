@@ -310,12 +310,6 @@ class MacReport:
         dshift_values = dshift_fun(curr_times)
         print('get desired shift data', _time.time() - _t0)
 
-        # tag failures
-        self._failures = _np.logical_or(
-            [(dshift_values - ishift_values) > 0],  # wrong shift
-            _np.logical_not(is_stored)              # without beam
-        )
-
         # calculate time vectors
         dtimes = _np.diff(curr_times)
         dtimes = _np.insert(dtimes, 0, 0)
@@ -324,6 +318,12 @@ class MacReport:
         dtimes_users_progmd = dtimes*dshift_values
         dtimes_users_impltd = dtimes*dshift_values*_np.logical_not(
             self._failures)
+
+        # tag failures
+        self._failures = _np.logical_or(
+            [(dshift_values - ishift_values) > 0],          # wrong shift
+            _np.logical_not(is_stored*dtimes_users_progmd)  # without beam
+        )
 
         # metrics
         self._failures_interval = _np.sum(dtimes_failures)
