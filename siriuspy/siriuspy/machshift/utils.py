@@ -314,7 +314,6 @@ class MacReport:
         dtimes = _np.diff(curr_times)
         dtimes = _np.insert(dtimes, 0, 0)
         dtimes_total_stored = dtimes*is_stored
-        dtimes_failures = dtimes*self._failures
         dtimes_users_progmd = dtimes*dshift_values
         dtimes_users_impltd = dtimes*dshift_values*_np.logical_not(
             self._failures)
@@ -324,6 +323,7 @@ class MacReport:
             [(dshift_values - ishift_values) > 0],          # wrong shift
             _np.logical_not(is_stored*dtimes_users_progmd)  # without beam
         )
+        dtimes_failures = dtimes*self._failures
 
         # metrics
         self._failures_interval = _np.sum(dtimes_failures)
