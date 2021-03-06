@@ -203,6 +203,11 @@ class MacReport:
         self._ishift_values = None
 
     @property
+    def connector(self):
+        """Client archiver connector."""
+        return self._connector
+
+    @property
     def timestamp_start(self):
         """Query interval start timestamp."""
         return self._timestamp_start
