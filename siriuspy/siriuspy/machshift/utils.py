@@ -81,9 +81,8 @@ class MacScheduleData:
             tags.extend(ytag)
 
         fun = _interp1d(times, tags, 'previous', fill_value='extrapolate')
-        if ret_bool:
-            return bool(fun(timestamp)[0])
-        return fun(timestamp)
+        ret_val = fun(timestamp)
+        return bool([ret_val][0]) if ret_bool else ret_val
 
     @staticmethod
     def plot_mac_schedule(year):
@@ -148,11 +147,21 @@ class MacScheduleData:
 
 
 class MacReport:
-    """Class for machine reports.
+    """Machine reports.
+
+    Based on archiver appliance data and machine schedule data.
 
     Reports available:
-    -
-
+     - Stored electron beam interval
+     - Stored electron beam mean current
+     - User shift interval programmed
+     - User shift interval implemented
+     - User shift mean current
+     - Failures count
+     - Failures interval
+     - Mean time to recover
+     - Mean time between failures
+     - Beam availability
     """
 
     _THRESHOLD_STOREDBEAM = 0.005  # [mA]
@@ -190,6 +199,8 @@ class MacReport:
 
         # auxiliary data
         self._failures = None
+        self._dshift_values = None
+        self._ishift_values = None
 
     @property
     def timestamp_start(self):
@@ -214,9 +225,29 @@ class MacReport:
             self._timestamp_stop = _Time(timestamp=new_timestamp)
 
     @property
-    def failures_interval(self):
-        """Failures interval."""
-        return self._failures_interval
+    def ebeam_total_interval(self):
+        """Stored electron beam interval."""
+        return self._ebeam_total_interval
+
+    @property
+    def ebeam_total_mean_current(self):
+        """Stored electron beam mean current."""
+        return self._ebeam_total_mean_current
+
+    @property
+    def user_shift_progmd_interval(self):
+        """User shift interval programmed."""
+        return self._ebeam_users_progmd_interval
+
+    @property
+    def user_shift_impltd_interval(self):
+        """User shift interval implemented."""
+        return self._ebeam_users_impltd_interval
+
+    @property
+    def user_shift_mean_current(self):
+        """User shift mean current."""
+        return self._ebeam_users_mean_current
 
     @property
     def failures_count(self):
@@ -224,29 +255,9 @@ class MacReport:
         return self._failures_count
 
     @property
-    def ebeam_total_interval(self):
-        """Electron beam interval."""
-        return self._ebeam_total_interval
-
-    @property
-    def ebeam_total_mean_current(self):
-        """Electron beam mean current."""
-        return self._ebeam_total_mean_current
-
-    @property
-    def ebeam_users_impltd_interval(self):
-        """Electron beam interval."""
-        return self._ebeam_users_impltd_interval
-
-    @property
-    def ebeam_users_progmd_interval(self):
-        """Electron beam interval."""
-        return self._ebeam_users_progmd_interval
-
-    @property
-    def ebeam_users_mean_current(self):
-        """Electron beam mean current in user shift."""
-        return self._ebeam_users_mean_current
+    def failures_interval(self):
+        """Failures interval."""
+        return self._failures_interval
 
     @property
     def mean_time_to_recover(self):
@@ -295,10 +306,10 @@ class MacReport:
 
         # get implemented shift data in current timestamps
         ishift_data = self._pvdata['AS-Glob:AP-MachShift:Mode-Sts']
-        self._ishift_values = _np.array([int(not v) for v in ishift_data.value])
+        ishift_values = _np.array([1*(not v) for v in ishift_data.value])
         ishift_times = _np.array(ishift_data.timestamp)
         ishift_fun = _interp1d(
-            ishift_times, self._ishift_values, 'previous', fill_value='extrapolate')
+            ishift_times, ishift_values, 'previous', fill_value='extrapolate')
         self._ishift_values = ishift_fun(curr_times)
 
         # get desired shift data in current timestamps
@@ -315,8 +326,8 @@ class MacReport:
 
         # tag failures
         self._failures = 1 * _np.logical_or(
-            (self._dshift_values - self._ishift_values) > 0,   # wrong shift
-            _np.logical_not(is_stored)*dtimes_users_progmd     # without beam
+            (self._dshift_values-self._ishift_values) > 0,  # wrong shiftmode
+            _np.logical_not(is_stored)*dtimes_users_progmd  # without beam
         )
         dtimes_failures = dtimes*self._failures
         dtimes_users_impltd = dtimes*self._dshift_values*_np.logical_not(
