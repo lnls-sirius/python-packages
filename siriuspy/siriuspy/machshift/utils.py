@@ -186,13 +186,13 @@ class MacReport:
         # query data
         self._timestamp_start = None
         self._timestamp_stop = None
-        self._failures_interval = None
-        self._failures_count = None
         self._ebeam_total_interval = None
         self._ebeam_total_mean_current = None
-        self._ebeam_users_progmd_interval = None
-        self._ebeam_users_impltd_interval = None
-        self._ebeam_users_mean_current = None
+        self._user_shift_progmd_interval = None
+        self._user_shift_impltd_interval = None
+        self._user_shift_mean_current = None
+        self._failures_count = None
+        self._failures_interval = None
         self._mean_time_to_recover = None
         self._mean_time_between_failures = None
         self._beam_availability = None
@@ -237,17 +237,17 @@ class MacReport:
     @property
     def user_shift_progmd_interval(self):
         """User shift interval programmed."""
-        return self._ebeam_users_progmd_interval
+        return self._user_shift_progmd_interval
 
     @property
     def user_shift_impltd_interval(self):
         """User shift interval implemented."""
-        return self._ebeam_users_impltd_interval
+        return self._user_shift_impltd_interval
 
     @property
     def user_shift_mean_current(self):
         """User shift mean current."""
-        return self._ebeam_users_mean_current
+        return self._user_shift_mean_current
 
     @property
     def failures_count(self):
@@ -344,23 +344,23 @@ class MacReport:
             _np.sum(curr_values*dtimes_total_stored) / \
             self._ebeam_total_interval
 
-        self._ebeam_users_progmd_interval = _np.sum(dtimes_users_progmd)
+        self._user_shift_progmd_interval = _np.sum(dtimes_users_progmd)
 
-        self._ebeam_users_impltd_interval = _np.sum(dtimes_users_impltd)
+        self._user_shift_impltd_interval = _np.sum(dtimes_users_impltd)
 
-        self._ebeam_users_mean_current = \
+        self._user_shift_mean_current = \
             _np.sum(curr_values*dtimes_users_impltd) / \
-            self._ebeam_users_impltd_interval
+            self._user_shift_impltd_interval
 
         self._mean_time_to_recover = \
             self._failures_interval / self._failures_count
 
         self._mean_time_between_failures = \
-            self._ebeam_users_progmd_interval / self._failures_count
+            self._user_shift_progmd_interval / self._failures_count
 
         self._beam_availability = \
-            self._ebeam_users_impltd_interval / \
-            self._ebeam_users_progmd_interval
+            self._user_shift_impltd_interval / \
+            self._user_shift_progmd_interval
 
     def __getitem__(self, pvname):
         return self._pvdata[pvname], self._pvdetails[pvname]
