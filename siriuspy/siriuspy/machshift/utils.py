@@ -314,7 +314,7 @@ class MacReport:
         dtimes_users_progmd = dtimes*self._dshift_values
 
         # tag failures
-        self._failures = _np.logical_or(
+        self._failures = 1 * _np.logical_or(
             (self._dshift_values - self._ishift_values) > 0,   # wrong shift
             _np.logical_not(is_stored)*dtimes_users_progmd     # without beam
         )
