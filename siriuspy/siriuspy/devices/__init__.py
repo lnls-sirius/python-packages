@@ -1,6 +1,6 @@
 """Devices subpackage."""
 
-from .device import Device, DeviceApp, Devices, ProptyDevice
+from .device import Device, DeviceApp, Devices
 from .bpm import BPM
 from .dcct import DCCT
 from .egun import EGBias, EGFilament, EGHVPS
@@ -12,13 +12,13 @@ from .pssofb import PSCorrSOFB, PSApplySOFB
 from .rf import RFGen, LLRF, BORFCavMonitor, SIRFCavMonitor, RFCav
 from .screen import Screen
 from .tune import TuneFrac, TuneProc, Tune, TuneCorr
-from .timing import EVG, Event
 from .sofb import SOFB
+from .timing import EVG, Event
 from .syncd import DevicesSync
 from .energy import Energy
 from .ids import IDCorrectors, APU, APUFeedForward
-from .currinfo import CurrInfoTransp, CurrInfoLinear, CurrInfoBO, CurrInfoSI, \
-    CurrInfo
+from .currinfo import CurrInfoTranspEff, CurrInfoLinear, \
+    CurrInfoBO, CurrInfoSI, CurrInfoAS
 from .blscreen import BeamlineScreen
 from .bbb import BunchbyBunch
 

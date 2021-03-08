@@ -27,6 +27,8 @@ class SOFB(_Device):
         'KickCH-Mon', 'KickCV-Mon',
         'DeltaKickCH-Mon', 'DeltaKickCV-Mon',
         'DeltaKickCH-SP', 'DeltaKickCV-SP',
+        'MaxDeltaKickCH-RB', 'MaxDeltaKickCV-RB',
+        'MaxDeltaKickCH-SP', 'MaxDeltaKickCV-SP',
         'ManCorrGainCH-SP', 'ManCorrGainCV-SP',
         'ManCorrGainCH-RB', 'ManCorrGainCV-RB',
         'RefOrbX-SP', 'RefOrbY-SP',
@@ -36,6 +38,7 @@ class SOFB(_Device):
         'CHEnblList-SP', 'CVEnblList-SP',
         'CHEnblList-RB', 'CVEnblList-RB',
         'CalcDelta-Cmd', 'ApplyDelta-Cmd', 'SmoothReset-Cmd',
+        'ApplyDelta-Mon',
         'SmoothNrPts-SP', 'SmoothNrPts-RB',
         'BufferCount-Mon',
         'TrigNrSamplesPost-SP',
@@ -55,6 +58,7 @@ class SOFB(_Device):
         # properties used only for sirius:
         'KickRF-Mon',
         'DeltaKickRF-Mon', 'DeltaKickRF-SP',
+        'MaxDeltaKickRF-RB', 'MaxDeltaKickRF-SP',
         'ManCorrGainRF-SP', 'ManCorrGainRF-RB',
         'MeasRespMatKickRF-SP', 'MeasRespMatKickRF-RB',
         'RFEnbl-Sel', 'RFEnbl-Sts',
@@ -62,6 +66,7 @@ class SOFB(_Device):
 
     _default_timeout = 10  # [s]
     _default_timeout_respm = 2 * 60 * 60  # [s]
+    _default_timeout_kick_apply = 2  # [s]
 
     def __init__(self, devname):
         """."""
@@ -248,6 +253,36 @@ class SOFB(_Device):
         self['DeltaKickRF-SP'] = value
 
     @property
+    def maxdeltakickch(self):
+        """."""
+        return self['MaxDeltaKickCH-RB']
+
+    @maxdeltakickch.setter
+    def maxdeltakickch(self, value):
+        """."""
+        self['MaxDeltaKickCH-SP'] = value
+
+    @property
+    def maxdeltakickcv(self):
+        """."""
+        return self['MaxDeltaKickCV-RB']
+
+    @maxdeltakickcv.setter
+    def maxdeltakickcv(self, value):
+        """."""
+        self['MaxDeltaKickCV-SP'] = value
+
+    @property
+    def maxdeltakickrf(self):
+        """."""
+        return self['MaxDeltaKickRF-RB']
+
+    @maxdeltakickrf.setter
+    def maxdeltakickrf(self, value):
+        """."""
+        self['MaxDeltaKickRF-SP'] = value
+
+    @property
     def mancorrgainch(self):
         """."""
         return self['ManCorrGainCH-RB']
@@ -415,6 +450,11 @@ class SOFB(_Device):
         self['MeasRespMat-Cmd'] = 2
 
     @property
+    def applydeltakick_mon(self):
+        """."""
+        return self['ApplyDelta-Mon']
+
+    @property
     def measrespmat_mon(self):
         """."""
         return self['MeasRespMat-Mon']
@@ -467,7 +507,8 @@ class SOFB(_Device):
             self.cmd_calccorr()
             _time.sleep(0.5)
             self.cmd_applycorr_all()
-            _time.sleep(0.5)
+            self.wait_apply_delta_kick()
+            _time.sleep(0.2)
             self.cmd_reset()
             self.wait_buffer()
             resx = _np.std(self.orbx - self.refx)
@@ -478,6 +519,8 @@ class SOFB(_Device):
     def cmd_turn_on_autocorr(self, timeout=None):
         """."""
         timeout = timeout or SOFB._default_timeout
+        if self.autocorrsts == self.data.LoopState.Closed:
+            return
         self['LoopState-Sel'] = self.data.LoopState.Closed
         self._wait(
             'LoopState-Sts', self.data.LoopState.Closed, timeout=timeout)
@@ -485,6 +528,8 @@ class SOFB(_Device):
     def cmd_turn_off_autocorr(self, timeout=None):
         """."""
         timeout = timeout or SOFB._default_timeout
+        if self.autocorrsts == self.data.LoopState.Open:
+            return
         self['LoopState-Sel'] = self.data.LoopState.Open
         self._wait(
             'LoopState-Sts', self.data.LoopState.Open, timeout=timeout)
@@ -492,24 +537,21 @@ class SOFB(_Device):
     def wait_buffer(self, timeout=None):
         """."""
         timeout = timeout or SOFB._default_timeout
-        interval = 0.050  # [s]
-        ntrials = int(timeout/interval)
-        _time.sleep(10*interval)
-        for _ in range(ntrials):
-            if self.buffer_count >= self['SmoothNrPts-SP']:
-                break
-            _time.sleep(interval)
-        else:
-            print('WARN: Timed out waiting orbit.')
+        return self._wait(
+            'BufferCount-Mon', self.nr_points, timeout=timeout, comp='ge')
+
+    def wait_apply_delta_kick(self, timeout=None):
+        """."""
+        def_timeout = min(1.05*self.deltakickrf, self.maxdeltakickrf) // 20
+        def_timeout = max(SOFB._default_timeout_kick_apply, def_timeout)
+        timeout = timeout or def_timeout
+        return self._wait(
+            'ApplyDelta-Mon', self.data.ApplyDeltaMon.Applying,
+            timeout=timeout, comp='ne')
 
     def wait_respm_meas(self, timeout=None):
         """."""
         timeout = timeout or SOFB._default_timeout_respm
-        interval = 1  # [s]
-        ntrials = int(timeout/interval)
-        for _ in range(ntrials):
-            if not self.measrespmat_mon == self.data.MeasRespMatMon.Measuring:
-                break
-            _time.sleep(interval)
-        else:
-            print('WARN: Timed out waiting respm measurement.')
+        return self._wait(
+            'MeasRespMat-Mon', self.data.MeasRespMatMon.Measuring,
+            timeout=timeout, comp='ne')

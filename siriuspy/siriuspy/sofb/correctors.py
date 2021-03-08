@@ -655,7 +655,7 @@ class EpicsCorrectors(BaseCorrectors):
             self.run_callbacks('KickCH-Mon', corr_vals[:self._csorb.nr_ch])
             self.run_callbacks(
                 'KickCV-Mon', corr_vals[self._csorb.nr_ch:self._csorb.nr_chcv])
-            if self.acc == 'SI':
+            if self.acc == 'SI' and corr_vals[-1] > 0:
                 rfv = corr_vals[-1]
                 circ = 1/rfv * self._csorb.harm_number * 299792458
                 self.run_callbacks('KickRF-Mon', rfv)

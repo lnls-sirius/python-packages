@@ -1,1 +1,1 @@
-__all__ = ('correctors', 'main', 'matrix', 'orbit', 'bpms', 'csdev')
+__all__ = ('correctors', 'main', 'matrix', 'orbit', 'bpms', 'csdev', 'utils')

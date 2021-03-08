@@ -132,6 +132,9 @@ class EpicsOrbit(BaseOrbit):
         self._update_time_vector()
 
     def _create_processes(self, nrprocs=8):
+        # get the start method of the Processes that will be launched:
+        spw = _mp.get_context('spawn')
+
         pvs = []
         for bpm in self._csorb.bpm_names:
             pvs.append(bpm+':PosX-Mon')
@@ -145,9 +148,9 @@ class EpicsOrbit(BaseOrbit):
 
         # create processes
         for i in range(nrprocs):
-            mine, send_pipe = _mp.Pipe(duplex=False)
+            mine, send_pipe = spw.Pipe(duplex=False)
             self._mypipes_recv.append(mine)
-            recv_pipe, mine = _mp.Pipe(duplex=False)
+            recv_pipe, mine = spw.Pipe(duplex=False)
             self._mypipes_send.append(mine)
             pvsn = pvs[sub[i]:sub[i+1]]
             self._processes.append(_Process(

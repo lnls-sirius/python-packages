@@ -1,6 +1,7 @@
 """Epics Devices and Device Application."""
 
 import time as _time
+import operator as _opr
 
 from epics.ca import ChannelAccessGetFailure as _ChannelAccessGetFailure
 
@@ -148,15 +149,17 @@ class Device:
                 connection_timeout=Device.CONNECTION_TIMEOUT)
         return devname, pvs
 
-    def _wait(self, propty, value, timeout=10):
+    def _wait(self, propty, value, timeout=10, comp='eq'):
         """."""
+        comp = getattr(_opr, comp)
         interval = 0.050  # [s]
         ntrials = int(timeout/interval)
         _time.sleep(4*interval)
         for _ in range(ntrials):
-            if self[propty] == value:
-                break
+            if comp(self[propty], value):
+                return True
             _time.sleep(interval)
+        return False
 
     def _get_pvname(self, devname, propty):
         if devname:

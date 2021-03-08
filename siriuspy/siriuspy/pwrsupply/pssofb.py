@@ -728,6 +728,9 @@ class PSSOFB:
 
     def processes_start(self):
         """."""
+        # get the start method of the Processes that will be launched:
+        spw = _mp.get_context('spawn')
+
         # Create shared memory objects to be shared with worker processes.
         arr = self._sofb_current_readback_ref
 
@@ -753,9 +756,11 @@ class PSSOFB:
         sub = [div*i + min(i, rem) for i in range(self._nr_procs+1)]
         for i in range(self._nr_procs):
             bbbnames = PSSOFB.BBBNAMES[sub[i]:sub[i+1]]
-            evt = _mp.Event()
+            # NOTE: It is crucial to use the Event class from the appropriate
+            # context, otherwise it will fail for 'spawn' start method.
+            evt = spw.Event()
             evt.set()
-            theirs, mine = _mp.Pipe(duplex=False)
+            theirs, mine = spw.Pipe(duplex=False)
             proc = _Process(
                 target=PSSOFB._run_process,
                 args=(self._ethbridge_cls, bbbnames, theirs, evt,

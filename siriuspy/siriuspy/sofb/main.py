@@ -95,7 +95,7 @@ class SOFB(_BaseClass):
             dbase['ManCorrGainRF-SP'] = _part(self.set_mancorr_gain, 'rf')
             dbase['MaxDeltaKickRF-SP'] = _part(self.set_max_delta_kick, 'rf')
             dbase['DeltaKickRF-SP'] = _part(
-                self.set_delta_kick, self._csorb.ApplyDelta.RF),
+                self.set_delta_kick, self._csorb.ApplyDelta.RF)
             dbase['MeasRespMatKickRF-SP'] = _part(self.set_respmat_kick, 'rf')
         return dbase
 
@@ -197,6 +197,7 @@ class SOFB(_BaseClass):
 
     def calc_correction(self, _):
         """Calculate correction."""
+        self.run_callbacks('ApplyDelta-Mon', self._csorb.ApplyDeltaMon.Idle)
         if self._thread and self._thread.is_alive():
             msg = 'ERR: Loop is Closed or MeasRespMat is On.'
             self._update_log(msg)
@@ -340,11 +341,15 @@ class SOFB(_BaseClass):
             self.run_callbacks('DeltaKickRF-Mon', float(dkicks))
 
     def _apply_corr(self, code):
+        self.run_callbacks(
+            'ApplyDelta-Mon', self._csorb.ApplyDeltaMon.Applying)
         nr_ch = self._csorb.nr_ch
         if self._dtheta is None:
             msg = 'Err: All kicks are zero.'
             self._update_log(msg)
             _log.warning(msg[6:])
+            self.run_callbacks(
+                'ApplyDelta-Mon', self._csorb.ApplyDeltaMon.Error)
             return
         dkicks = self._dtheta.copy()
         if code == self._csorb.ApplyDelta.CH:
@@ -355,18 +360,22 @@ class SOFB(_BaseClass):
                 dkicks[-1] = 0
         elif self.acc == 'SI' and code == self._csorb.ApplyDelta.RF:
             dkicks[:-1] = 0
-        msg = 'Applying {0:s} kicks.'.format(
-                        self._csorb.ApplyDelta._fields[code])
+        msg = f'Applying {self._csorb.ApplyDelta._fields[code]:s} kicks.'
         self._update_log(msg)
         _log.info(msg)
         kicks = self._process_kicks(self._ref_corr_kicks, dkicks)
         if kicks is None:
+            self.run_callbacks(
+                'ApplyDelta-Mon', self._csorb.ApplyDeltaMon.Error)
             return
         ret = self.correctors.apply_kicks(kicks)
         if ret is None:
             msg = 'ERR: There is some problem with a corrector!'
             self._update_log(msg)
             _log.error(msg[:5])
+            self.run_callbacks(
+                'ApplyDelta-Mon', self._csorb.ApplyDeltaMon.Error)
+            return
         elif ret == -1:
             msg = 'WARN: Last was not applied yet'
             self._update_log(msg)
@@ -379,6 +388,7 @@ class SOFB(_BaseClass):
             msg = f'WARN: {ret:03d} kicks were not applied previously!'
             self._update_log(msg)
             _log.warning(msg[:6])
+        self.run_callbacks('ApplyDelta-Mon', self._csorb.ApplyDeltaMon.Done)
 
     def _stop_meas_respmat(self):
         if not self._measuring_respmat:

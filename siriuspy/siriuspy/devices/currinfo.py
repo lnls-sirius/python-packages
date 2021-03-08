@@ -4,7 +4,7 @@ from .device import Devices as _Devices
 from .ict import ICT
 
 
-class CurrInfoTransp(_Device):
+class CurrInfoTranspEff(_Device):
     """."""
 
     class DEVICES:
@@ -20,11 +20,11 @@ class CurrInfoTransp(_Device):
     def __init__(self, devname):
         """."""
         # check if device exists
-        if devname not in CurrInfoTransp.DEVICES.ALL:
+        if devname not in CurrInfoTranspEff.DEVICES.ALL:
             raise NotImplementedError(devname)
 
         # call base class constructor
-        super().__init__(devname, properties=CurrInfoTransp._properties)
+        super().__init__(devname, properties=CurrInfoTranspEff._properties)
 
     @property
     def transpeff(self):
@@ -38,9 +38,9 @@ class CurrInfoLinear(_Devices):
     class DEVICES:
         """Devices names."""
 
-        LI = CurrInfoTransp.DEVICES.LI
-        TB = CurrInfoTransp.DEVICES.TB
-        TS = CurrInfoTransp.DEVICES.TS
+        LI = CurrInfoTranspEff.DEVICES.LI
+        TB = CurrInfoTranspEff.DEVICES.TB
+        TS = CurrInfoTranspEff.DEVICES.TS
         ALL = (LI, TB, TS, )
 
     def __init__(self, devname):
@@ -50,15 +50,15 @@ class CurrInfoLinear(_Devices):
             raise NotImplementedError(devname)
 
         if devname == CurrInfoLinear.DEVICES.LI:
-            transp = CurrInfoTransp(CurrInfo.DEVICES.LI)
+            transp = CurrInfoTranspEff(CurrInfo.DEVICES.LI)
             ict1 = ICT(ICT.DEVICES.LI_1)
             ict2 = ICT(ICT.DEVICES.LI_2)
         elif devname == CurrInfoLinear.DEVICES.TB:
-            transp = CurrInfoTransp(CurrInfo.DEVICES.TB)
+            transp = CurrInfoTranspEff(CurrInfo.DEVICES.TB)
             ict1 = ICT(ICT.DEVICES.TB_02)
             ict2 = ICT(ICT.DEVICES.TB_04)
         elif devname == CurrInfoLinear.DEVICES.TS:
-            transp = CurrInfoTransp(CurrInfo.DEVICES.TS)
+            transp = CurrInfoTranspEff(CurrInfo.DEVICES.TS)
             ict1 = ICT(ICT.DEVICES.TS_01)
             ict2 = ICT(ICT.DEVICES.TS_04)
 
@@ -138,11 +138,7 @@ class CurrInfoLinear(_Devices):
 class CurrInfoBO(_Device):
     """."""
 
-    class DEVICES:
-        """Devices names."""
-
-        BO = 'BO-Glob:AP-CurrInfo'
-        ALL = (BO, )
+    DEVNAME = 'BO-Glob:AP-CurrInfo'
 
     _properties = (
         'Charge150MeV-Mon', 'Current150MeV-Mon',
@@ -152,14 +148,10 @@ class CurrInfoBO(_Device):
         'IntCurrent3GeV-Mon', 'RampEff-Mon',
     )
 
-    def __init__(self, devname):
+    def __init__(self):
         """."""
-        # check if device exists
-        if devname not in CurrInfoBO.DEVICES.ALL:
-            raise NotImplementedError(devname)
-
         # call base class constructor
-        super().__init__(devname, properties=CurrInfoBO._properties)
+        super().__init__(CurrInfoBO.DEVNAME, properties=CurrInfoBO._properties)
 
     @property
     def charge150mev(self):
@@ -215,11 +207,7 @@ class CurrInfoBO(_Device):
 class CurrInfoSI(_Device):
     """."""
 
-    class DEVICES:
-        """Devices names."""
-
-        SI = 'SI-Glob:AP-CurrInfo'
-        ALL = (SI, )
+    DEVNAME = 'SI-Glob:AP-CurrInfo'
 
     _properties = (
         'Charge-Mon', 'Current-Mon',
@@ -227,14 +215,10 @@ class CurrInfoSI(_Device):
         'StoredEBeam-Mon',
     )
 
-    def __init__(self, devname):
+    def __init__(self):
         """."""
-        # check if device exists
-        if devname not in CurrInfoSI.DEVICES.ALL:
-            raise NotImplementedError(devname)
-
         # call base class constructor
-        super().__init__(devname, properties=CurrInfoSI._properties)
+        super().__init__(CurrInfoSI.DEVNAME, properties=CurrInfoSI._properties)
 
     @property
     def charge(self):
@@ -267,7 +251,7 @@ class CurrInfoSI(_Device):
         return self['StoredEBeam-Mon']
 
 
-class CurrInfo(_Devices):
+class CurrInfoAS(_Devices):
     """."""
 
     class DEVICES:
@@ -275,22 +259,18 @@ class CurrInfo(_Devices):
 
         LI = CurrInfoLinear.DEVICES.LI
         TB = CurrInfoLinear.DEVICES.TB
-        BO = CurrInfoBO.DEVICES.BO
+        BO = CurrInfoBO.DEVNAME
         TS = CurrInfoLinear.DEVICES.TS
-        SI = CurrInfoSI.DEVICES.SI
+        SI = CurrInfoSI.DEVNAME
         ALL = (LI, TB, BO, TS, SI, )
 
-    def __init__(self, devname):
+    def __init__(self):
         """."""
-        # check if device exists
-        if devname not in CurrInfo.DEVICES.ALL:
-            raise NotImplementedError(devname)
-
-        currinfo_li = CurrInfoLinear(CurrInfo.DEVICES.LI)
-        currinfo_tb = CurrInfoLinear(CurrInfo.DEVICES.TB)
-        currinfo_bo = CurrInfoBO(CurrInfo.DEVICES.BO)
-        currinfo_ts = CurrInfoLinear(CurrInfo.DEVICES.TS)
-        currinfo_si = CurrInfoSI(CurrInfo.DEVICES.SI)
+        currinfo_li = CurrInfoLinear(CurrInfoLinear.DEVICES.LI)
+        currinfo_tb = CurrInfoLinear(CurrInfoLinear.DEVICES.TB)
+        currinfo_bo = CurrInfoBO()
+        currinfo_ts = CurrInfoLinear(CurrInfoLinear.DEVICES.TS)
+        currinfo_si = CurrInfoSI()
 
         devices = (
             currinfo_li, currinfo_tb, currinfo_bo,
@@ -298,7 +278,7 @@ class CurrInfo(_Devices):
         )
 
         # call base class constructor
-        super().__init__(devname, devices)
+        super().__init__('', devices)
 
     @property
     def li(self):

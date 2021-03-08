@@ -28,6 +28,7 @@ class ETypes(_csdev.ETypes):
     SPASS_USE_BG = ('NotUsing', 'Using')
     MTURN_ACQUIRE = ('Idle', 'Acquire')
     APPLY_CORR_TLINES = ('CH', 'CV', 'All')
+    APPLY_DELTA_MON = ('Idle', 'Applying', 'Done', 'Error')
     APPLY_CORR_SI = ('CH', 'CV', 'RF', 'All')
     SI_CORR_SYNC = ('Off', 'Event', 'Clock')
     ORB_ACQ_CHAN = ('Monit1', 'FOFB', 'TbT', 'ADC', 'ADCSwp')
@@ -59,7 +60,7 @@ class ConstTLines(_csdev.Const):
     ORBIT_CONVERSION_UNIT = 1/1000  # from nm to um
     MAX_MT_ORBS = 4000
     MAX_RINGSZ = 5
-    MIN_SING_VAL = 1e-4
+    MIN_SING_VAL = 0.2
     TIKHONOV_REG_CONST = 0
     TINY_KICK = 1e-3  # [urad]
     DEF_MAX_ORB_DISTORTION = 200  # [um]
@@ -90,6 +91,8 @@ class ConstTLines(_csdev.Const):
     SOFBMode = _csdev.Const.register('SOFBMode', _et.ORB_MODE_TLINES)
     SyncWithInj = _csdev.Const.register('SyncWithInj', _et.OFF_ON)
     ApplyDelta = _csdev.Const.register('ApplyDelta', _et.APPLY_CORR_TLINES)
+    ApplyDeltaMon = _csdev.Const.register(
+        'ApplyDeltaMon', _et.APPLY_DELTA_MON)
     StsLblsCorr = _csdev.Const.register(
         'StsLblsCorr', _et.STS_LBLS_CORR_TLINES)
     StsLblsOrb = _csdev.Const.register('StsLblsOrb', _et.STS_LBLS_ORB)
@@ -335,6 +338,9 @@ class SOFBTLines(ConstTLines):
             'ApplyDelta-Cmd': {
                 'type': 'enum', 'enums': self.ApplyDelta._fields, 'value': 0,
                 'unit': 'Apply last calculated kicks.'},
+            'ApplyDelta-Mon': {
+                'type': 'enum', 'enums': self.ApplyDeltaMon._fields,
+                'value': 0, 'unit': 'Status of Kicks implementation.'},
             'Status-Mon': {
                 'type': 'enum', 'value': 1,
                 'enums': self.StsLblsGlob._fields}
