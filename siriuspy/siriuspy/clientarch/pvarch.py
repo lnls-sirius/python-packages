@@ -2,6 +2,7 @@
 
 from datetime import timedelta as _timedelta
 from concurrent.futures import ThreadPoolExecutor
+import time as _time
 
 from .client import ClientArchiver as _ClientArchiver
 from .time import Time as _Time
@@ -246,6 +247,10 @@ class PVData:
                 else:
                     t_aux_end = self._timestamp_stop
             executor.shutdown(wait=True)
+
+        while not len(self._aux_data) != index:
+            print(self._aux_data)
+            _time.sleep(1)
 
         timestamp, value, status, severity = list(), list(), list(), list()
         for idx in range(index):
