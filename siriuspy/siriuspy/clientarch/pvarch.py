@@ -227,7 +227,21 @@ class PVData:
 
         timestamp, value, status, severity = list(), list(), list(), list()
 
-        t_start, t_stop = self.timestamp_start, self.timestamp_stop
+        t_stop = self._timestamp_stop.get_timestamp()
+        t_start = self._timestamp_start.get_timestamp()
+        total_period = t_stop - t_start
+        intervals = list()
+        t_aux_init = t_start
+        t_aux_end = t_start + PVData._MQUERY_BIN_INTVL
+        while t_aux_end < t_stop:
+            intervals.append([t_aux_init, t_aux_end])
+            t_aux_init += PVData._MQUERY_BIN_INTVL
+            if t_aux_end + PVData._MQUERY_BIN_INTVL < t_stop:
+                t_aux_end += PVData._MQUERY_BIN_INTVL
+            else:
+                t_aux_end = t_stop
+            print([t_aux_init, t_aux_end])
+
         data = self.connector.getData(
             self._pvname, t_start.get_iso8601(), t_stop.get_iso8601(),
             process_type=process_type, interval=mean_sec)
