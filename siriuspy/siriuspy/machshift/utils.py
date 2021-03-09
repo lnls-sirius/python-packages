@@ -299,8 +299,8 @@ class MacReport:
         for pvname in self._pvnames:
             _t0 = _time.time()
             pvdata = self._pvdata[pvname]
-            pvdata.timestamp_start = self._timestamp_start.get_iso8601()
-            pvdata.timestamp_stop = self._timestamp_stop.get_iso8601()
+            pvdata.timestamp_start = self._timestamp_start.get_timestamp()
+            pvdata.timestamp_stop = self._timestamp_stop.get_timestamp()
             intvl = None if 'MachShift' in pvname else avg_intvl
             pvdata.update(intvl)
             self._update_log(
