@@ -271,6 +271,8 @@ class PVData:
 
     def _get_partial_data(self, timestamp_start, timestamp_stop,
                           process_type, interval, index):
+        print('get_partial_data', 'get', index)
         self._aux_data[index] = self.connector.getData(
             self._pvname, timestamp_start, timestamp_stop,
             process_type=process_type, interval=interval)
+        print('get_partial_data', 'done', index)
