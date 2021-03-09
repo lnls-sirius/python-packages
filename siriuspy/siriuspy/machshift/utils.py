@@ -203,8 +203,12 @@ class MacReport:
         self._beam_availability = None
 
         # auxiliary data
+        self._raw_data = None
         self._failures = None
-        self._dshift_values = None
+        self._curr_values = None
+        self._is_stored = None
+        self._curr_times = None
+        self._pshift_values = None
         self._ishift_values = None
 
     @property
@@ -300,6 +304,11 @@ class MacReport:
                     pvname, _time.time()-_t0))
         self._compute_metrics()
 
+    @property
+    def raw_data(self):
+        """Shift data and failures details."""
+        return self._raw_data
+
     # ----- auxiliary methods -----
 
     def _init_connectors(self):
@@ -310,11 +319,17 @@ class MacReport:
         return pvdata, pvdetails
 
     def _compute_metrics(self):
+        self._raw_data = dict()
+        self._raw_data['ShiftData'] = dict()
+        self._raw_data['Failures'] = dict()
+
         # get current data
         curr_data = self._pvdata['SI-Glob:AP-CurrInfo:Current-Mon']
-        curr_values = _np.array(curr_data.value)
-        is_stored = curr_values > MacReport._THRESHOLD_STOREDBEAM
-        curr_times = _np.array(curr_data.timestamp)
+        self._curr_values = _np.array(curr_data.value)
+        self._is_stored = self._curr_values > MacReport._THRESHOLD_STOREDBEAM
+        self._curr_times = _np.array(curr_data.timestamp)
+        self._raw_data['ShiftData']['Current'] = self._curr_values
+        self._raw_data['ShiftData']['Timestamp'] = self._curr_times
 
         # get implemented shift data in current timestamps
         ishift_data = self._pvdata['AS-Glob:AP-MachShift:Mode-Sts']
@@ -322,30 +337,38 @@ class MacReport:
         ishift_times = _np.array(ishift_data.timestamp)
         ishift_fun = _interp1d(
             ishift_times, ishift_values, 'previous', fill_value='extrapolate')
-        self._ishift_values = ishift_fun(curr_times)
+        self._ishift_values = ishift_fun(self._curr_times)
+        self._raw_data['ShiftData']['ImpltdShift'] = self._ishift_values
 
         # get desired shift data in current timestamps
         _t0 = _time.time()
+        self._pshift_values = MacScheduleData.is_user_operation_predefined(
+            timestamp=self._curr_times)
         self._update_log(
             'Query for machine schedule data took {0}s'.format(
                 _time.time()-_t0))
+        self._raw_data['ShiftData']['ProgrmdShift'] = self._pshift_values
 
-        # calculate time vectors
-        dtimes = _np.diff(curr_times)
+        # calculate time vectors and failures
+        dtimes = _np.diff(self._curr_times)
         dtimes = _np.insert(dtimes, 0, 0)
-        dtimes_total_stored = dtimes*is_stored
-        dtimes_users_progmd = dtimes*self._dshift_values
+        dtimes_total_stored = dtimes*self._is_stored
+        dtimes_users_progmd = dtimes*self._pshift_values
 
-        # tag failures
+        self._raw_data['Failures']['Wrong Shift Mode'] = \
+            (self._pshift_values-self._ishift_values) > 0
+        self._raw_data['Failures']['No EBeam on User Shift'] = \
+            _np.logical_not(self._is_stored)*dtimes_users_progmd
+
         self._failures = 1 * _np.logical_or(
-            (self._dshift_values-self._ishift_values) > 0,  # wrong shiftmode
-            _np.logical_not(is_stored)*dtimes_users_progmd  # without beam
+            self._raw_data['Failures']['Wrong Shift Mode'],
+            self._raw_data['Failures']['No EBeam on User Shift'],
         )
         dtimes_failures = dtimes*self._failures
-        dtimes_users_impltd = dtimes*self._dshift_values*_np.logical_not(
+        dtimes_users_impltd = dtimes_users_progmd*_np.logical_not(
             self._failures)
 
-        # metrics
+        # calculate metrics
         self._failures_interval = _np.sum(dtimes_failures)
 
         self._failures_count = _np.sum(_np.diff(self._failures) > 0)
@@ -353,7 +376,7 @@ class MacReport:
         self._ebeam_total_interval = _np.sum(dtimes_total_stored)
 
         self._ebeam_total_mean_current = \
-            _np.sum(curr_values*dtimes_total_stored) / \
+            _np.sum(self._curr_values*dtimes_total_stored) / \
             self._ebeam_total_interval
 
         self._user_shift_progmd_interval = _np.sum(dtimes_users_progmd)
@@ -361,7 +384,7 @@ class MacReport:
         self._user_shift_impltd_interval = _np.sum(dtimes_users_impltd)
 
         self._user_shift_mean_current = \
-            _np.sum(curr_values*dtimes_users_impltd) / \
+            _np.sum(self._curr_values*dtimes_users_impltd) / \
             self._user_shift_impltd_interval
 
         self._mean_time_to_recover = \
