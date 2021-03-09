@@ -97,7 +97,7 @@ class Time:
 
     def __gt__(self, other):
         """Greater-than operator."""
-        return other.__lt__(self)
+        return other.__lt__(self.datetime)
 
     def __le__(self, other):
         """Less-or-equal operator."""
