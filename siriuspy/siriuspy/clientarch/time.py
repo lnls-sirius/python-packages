@@ -89,14 +89,20 @@ class Time:
 
     def __eq__(self, other):
         """Equal operator."""
-        return self.datetime == other.datetime
+        if isinstance(other, Time):
+            return self.datetime == other.datetime
+        return self.datetime == other
 
     def __lt__(self, other):
         """Less-than operator."""
-        return self.datetime < other.datetime
+        if isinstance(other, Time):
+            return self.datetime < other.datetime
+        return self.datetime < other
 
     def __gt__(self, other):
         """Greater-than operator."""
+        if isinstance(other, Time):
+            return other.__lt__(self)
         return other.__lt__(self.datetime)
 
     def __le__(self, other):
