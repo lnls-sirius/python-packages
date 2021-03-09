@@ -248,7 +248,7 @@ class PVData:
                     t_aux_end = self._timestamp_stop
             executor.shutdown(wait=True)
 
-        while not len(self._aux_data) != index:
+        while len(self._aux_data) != index:
             print(self._aux_data)
             _time.sleep(1)
 
