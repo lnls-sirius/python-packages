@@ -244,6 +244,7 @@ class PVData:
                     self._get_partial_data, t_aux_init, t_aux_end,
                     process_type, mean_sec, index)
                 index += 1
+            executor.shutdown(wait=True)
 
         timestamp, value, status, severity = list(), list(), list(), list()
         for idx in range(index):
