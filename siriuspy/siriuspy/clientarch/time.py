@@ -77,19 +77,23 @@ class Time:
 
     def __add__(self, other):
         """Addition."""
+        if isinstance(other, Time):
+            return self.datetime + other.datetime
         return self.datetime + other
 
     def __sub__(self, other):
         """Subtraction."""
+        if isinstance(other, Time):
+            return self.datetime - other.datetime
         return self.datetime - other
 
     def __eq__(self, other):
         """Equal operator."""
-        return self.datetime == other
+        return self.datetime == other.datetime
 
     def __lt__(self, other):
         """Less-than operator."""
-        return self.datetime < other
+        return self.datetime < other.datetime
 
     def __gt__(self, other):
         """Greater-than operator."""
