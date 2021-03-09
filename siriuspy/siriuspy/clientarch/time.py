@@ -116,3 +116,7 @@ class Time:
     def __ge__(self, other):
         """Greater-or-equal operator."""
         return self.__gt__(other) or self.__eq__(other)
+
+    def __str__(self):
+        """Return string representation."""
+        return self.datetime.__str__()
