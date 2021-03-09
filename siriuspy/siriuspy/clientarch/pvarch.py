@@ -1,6 +1,7 @@
 """."""
 
 from .client import ClientArchiver as _ClientArchiver
+from .time import Time as _Time
 
 
 class PVDetails:
@@ -113,27 +114,75 @@ class PVDetails:
 class PVData:
     """Archive PV Data."""
 
-    _MQUERY_BIN_INTVL = 10  # [h]
+    _MQUERY_BIN_INTVL = 10*60*60  # [s]
 
     def __init__(self, pvname, connector=None):
         """."""
-        self.pvname = pvname
-        self.connector = connector
-        self.timestamp_start = None
-        self.timestamp_stop = None
-        self.timestamp = None
-        self.value = None
-        self.status = None
-        self.severity = None
+        self._pvname = pvname
+        self._connector = connector
+        self._timestamp_start = None
+        self._timestamp_stop = None
+        self._timestamp = None
+        self._value = None
+        self._status = None
+        self._severity = None
+
+    @property
+    def pvname(self):
+        """PVName."""
+        return self._pvname
+
+    @property
+    def connector(self):
+        """Connector."""
+        return self._connector
 
     @property
     def connected(self):
-        """."""
+        """Check connected."""
         return self.connector and self.connector.connected
 
     @property
+    def timestamp_start(self):
+        """Timestamp start."""
+        return self._timestamp_start
+
+    @timestamp_start.setter
+    def timestamp_start(self, new_timestamp):
+        self._timestamp_start = _Time(timestamp=new_timestamp)
+
+    @property
+    def timestamp_stop(self):
+        """Timestamp stop."""
+        return self._timestamp_stop
+
+    @timestamp_stop.setter
+    def timestamp_stop(self, new_timestamp):
+        self._timestamp_stop = _Time(timestamp=new_timestamp)
+
+    @property
+    def timestamp(self):
+        """Timestamp data."""
+        return self._timestamp
+
+    @property
+    def value(self):
+        """Value data."""
+        return self._value
+
+    @property
+    def status(self):
+        """Status data."""
+        return self._status
+
+    @property
+    def severity(self):
+        """Severity data."""
+        return self._severity
+
+    @property
     def request_url(self):
-        """."""
+        """Request url."""
         self.connect()
         url = self.connector.getData(
             self.pvname, self.timestamp_start,
@@ -142,7 +191,7 @@ class PVData:
 
     @property
     def is_archived(self):
-        """."""
+        """Is archived."""
         self.connect()
         req = self.connector.getPVDetails(self.pvname)
         if not req.ok:
@@ -150,26 +199,26 @@ class PVData:
         return True
 
     def connect(self):
-        """."""
+        """Connect."""
         if self.connector is None:
             self.connector = _ClientArchiver()
 
     def update_orig(self, mean_sec=None):
-        """."""
+        """Update."""
         self.connect()
-        if None in (self.timestamp_start, self.timestamp_stop):
+        if None in (self._timestamp_start, self._timestamp_stop):
             print('Start and stop timestamps not defined!')
             return
         process_type = 'mean' if mean_sec is not None else ''
         data = self.connector.getData(
-            self.pvname, self.timestamp_start, self.timestamp_stop,
+            self.pvname, self._timestamp_start, self._timestamp_stop,
             process_type=process_type, interval=mean_sec)
         if not data:
             return
-        self.timestamp, self.value, self.status, self.severity = data
+        self._timestamp, self._value, self._status, self._severity = data
 
     def update(self, mean_sec=None):
-        """."""
+        """Update."""
         self.connect()
         if None in (self.timestamp_start, self.timestamp_stop):
             print('Start and stop timestamps not defined!')
@@ -180,8 +229,8 @@ class PVData:
 
         t_start, t_stop = self.timestamp_start, self.timestamp_stop
         data = self.connector.getData(
-            self.pvname, t_start, t_stop, process_type=process_type,
-            interval=mean_sec)
+            self._pvname, t_start.get_iso8601(), t_stop.get_iso8601(),
+            process_type=process_type, interval=mean_sec)
         timestamp.extend(data[0])
         value.extend(data[1])
         status.extend(data[2])
@@ -189,5 +238,5 @@ class PVData:
 
         if not timestamp:
             return
-        self.timestamp, self.value = timestamp, value
-        self.status, self.severity = status, severity
+        self._timestamp, self._value = timestamp, value
+        self._status, self._severity = status, severity
