@@ -167,7 +167,6 @@ class MacReport:
 
     _THRESHOLD_STOREDBEAM = 0.005  # [mA]
     _AVG_TIME = 1  # [s]
-    _MQUERRY_MIN_BIN_INTVL = 10  # [h]
 
     def __init__(self, connector=None, logger=None):
         """Initialize object."""

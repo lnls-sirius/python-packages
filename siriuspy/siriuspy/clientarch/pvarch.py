@@ -113,6 +113,8 @@ class PVDetails:
 class PVData:
     """Archive PV Data."""
 
+    _MQUERY_BIN_INTVL = 10  # [h]
+
     def __init__(self, pvname, connector=None):
         """."""
         self.pvname = pvname
@@ -152,7 +154,7 @@ class PVData:
         if self.connector is None:
             self.connector = _ClientArchiver()
 
-    def update(self, mean_sec=None):
+    def update_orig(self, mean_sec=None):
         """."""
         self.connect()
         if None in (self.timestamp_start, self.timestamp_stop):
@@ -165,3 +167,27 @@ class PVData:
         if not data:
             return
         self.timestamp, self.value, self.status, self.severity = data
+
+    def update(self, mean_sec=None):
+        """."""
+        self.connect()
+        if None in (self.timestamp_start, self.timestamp_stop):
+            print('Start and stop timestamps not defined!')
+            return
+        process_type = 'mean' if mean_sec is not None else ''
+
+        timestamp, value, status, severity = list(), list(), list(), list()
+
+        t_start, t_stop = self.timestamp_start, self.timestamp_stop
+        data = self.connector.getData(
+            self.pvname, t_start, t_stop, process_type=process_type,
+            interval=mean_sec)
+        timestamp.extend(data[0])
+        value.extend(data[1])
+        status.extend(data[2])
+        severity.extend(data[3])
+
+        if not timestamp:
+            return
+        self.timestamp, self.value = timestamp, value
+        self.status, self.severity = status, severity
