@@ -79,12 +79,16 @@ class Time:
         """Addition."""
         if isinstance(other, Time):
             return self.datetime + other.datetime
+        if isinstance(other, _datetime):
+            return Time(datetime=self.datetime + other)
         return self.datetime + other
 
     def __sub__(self, other):
         """Subtraction."""
         if isinstance(other, Time):
             return self.datetime - other.datetime
+        if isinstance(other, _datetime):
+            return Time(datetime=self.datetime - other)
         return self.datetime - other
 
     def __eq__(self, other):
