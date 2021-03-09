@@ -235,15 +235,16 @@ class PVData:
         index = 0
         with ThreadPoolExecutor(max_workers=100) as executor:
             while t_aux_end < self._timestamp_stop:
+                print(t_aux_init, t_aux_end, index)
+                executor.submit(
+                    self._get_partial_data, t_aux_init, t_aux_end,
+                    process_type, mean_sec, index)
+                index += 1
                 t_aux_init += bin_interval
                 if t_aux_end + bin_interval < self._timestamp_stop:
                     t_aux_end += bin_interval
                 else:
                     t_aux_end = self._timestamp_stop
-                executor.submit(
-                    self._get_partial_data, t_aux_init, t_aux_end,
-                    process_type, mean_sec, index)
-                index += 1
             executor.shutdown(wait=True)
 
         timestamp, value, status, severity = list(), list(), list(), list()
