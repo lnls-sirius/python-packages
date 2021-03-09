@@ -243,7 +243,9 @@ class PVData:
             print([t_aux_init, t_aux_end])
 
         data = self.connector.getData(
-            self._pvname, t_start.get_iso8601(), t_stop.get_iso8601(),
+            self._pvname,
+            self._timestamp_start.get_iso8601(),
+            self._timestamp_stop.get_iso8601(),
             process_type=process_type, interval=mean_sec)
         timestamp.extend(data[0])
         value.extend(data[1])
