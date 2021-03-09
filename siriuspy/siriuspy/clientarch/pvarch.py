@@ -255,13 +255,17 @@ class PVData:
         for idx in range(index):
             print(idx)
             data = self._aux_data[idx]
-            for i, tim in enumerate(data[0]):
-                if tim in timestamp:
-                    continue
-                timestamp.append(data[0][i])
-                value.append(data[1][i])
-                status.append(data[2][i])
-                severity.append(data[3][i])
+            # for i, tim in enumerate(data[0]):
+            #     if tim in timestamp:
+            #         continue
+            #     timestamp.append(data[0][i])
+            #     value.append(data[1][i])
+            #     status.append(data[2][i])
+            #     severity.append(data[3][i])
+            timestamp.extend(data[0])
+            value.extend(data[1])
+            status.extend(data[2])
+            severity.extend(data[3])
         print(len(timestamp), len(set(timestamp)))
 
         if not timestamp:
