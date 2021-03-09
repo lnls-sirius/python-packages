@@ -3,6 +3,7 @@
 import re as _re
 import copy as _copy
 import time as _time
+import logging as _log
 from datetime import datetime as _datetime
 from concurrent.futures import ThreadPoolExecutor
 import numpy as _np
@@ -168,10 +169,14 @@ class MacReport:
     _AVG_TIME = 1  # [s]
     _MQUERRY_MIN_BIN_INTVL = 10  # [h]
 
-    def __init__(self, connector=None):
+    def __init__(self, connector=None, logger=None):
         """Initialize object."""
         # client archiver connector
         self._connector = connector or _CltArch()
+
+        # auxiliary logger
+        self._logger = logger
+        self._logger_message = ''
 
         # pvs used to compose reports
         self._pvnames = [
@@ -290,7 +295,9 @@ class MacReport:
             pvdata.timestamp_stop = self._timestamp_stop.get_iso8601()
             intvl = None if 'MachShift' in pvname else avg_intvl
             pvdata.update(intvl)
-            print(pvname, _time.time() - _t0)
+            self._update_log(
+                'Query for {0} in archiver took {1}s'.format(
+                    pvname, _time.time()-_t0))
         self._compute_metrics()
 
     # ----- auxiliary methods -----
@@ -319,9 +326,9 @@ class MacReport:
 
         # get desired shift data in current timestamps
         _t0 = _time.time()
-        self._dshift_values = MacScheduleData.is_user_operation_predefined(
-            timestamp=curr_times)
-        print('get desired shift data', _time.time() - _t0)
+        self._update_log(
+            'Query for machine schedule data took {0}s'.format(
+                _time.time()-_t0))
 
         # calculate time vectors
         dtimes = _np.diff(curr_times)
@@ -369,3 +376,11 @@ class MacReport:
 
     def __getitem__(self, pvname):
         return self._pvdata[pvname], self._pvdetails[pvname]
+
+    def _update_log(self, message='', done=False, warning=False, error=False):
+        self._logger_message = message
+        if self._logger:
+            self._logger.update(message, done, warning, error)
+        if done and not message:
+            message = 'Done.'
+        _log.info(message)
