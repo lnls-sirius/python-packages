@@ -1,5 +1,6 @@
 """Machine shift utils."""
 
+import sys as _sys
 import re as _re
 import copy as _copy
 import time as _time
@@ -176,6 +177,10 @@ class MacReport:
         # auxiliary logger
         self._logger = logger
         self._logger_message = ''
+        if not logger:
+            _log.basicConfig(format='%(asctime)s | %(message)s',
+                             datefmt='%F %T', level=_log.INFO,
+                             stream=_sys.stdout)
 
         # pvs used to compose reports
         self._pvnames = [
