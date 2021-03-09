@@ -1,6 +1,6 @@
 """Time conversion module."""
 
-from datetime import datetime as _datetime
+from datetime import datetime as _datetime, timedelta as _timedelta
 
 
 class Time:
@@ -79,7 +79,7 @@ class Time:
         """Addition."""
         if isinstance(other, Time):
             return self.datetime + other.datetime
-        if isinstance(other, _datetime):
+        if isinstance(other, _timedelta):
             return Time(datetime=self.datetime + other)
         return self.datetime + other
 
@@ -87,7 +87,7 @@ class Time:
         """Subtraction."""
         if isinstance(other, Time):
             return self.datetime - other.datetime
-        if isinstance(other, _datetime):
+        if isinstance(other, _timedelta):
             return Time(datetime=self.datetime - other)
         return self.datetime - other
 
