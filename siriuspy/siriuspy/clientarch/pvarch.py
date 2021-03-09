@@ -1,5 +1,8 @@
 """."""
 
+from datetime import timedelta as _timedelta
+from concurrent.futures import ThreadPoolExecutor
+
 from .client import ClientArchiver as _ClientArchiver
 from .time import Time as _Time
 
@@ -114,7 +117,7 @@ class PVDetails:
 class PVData:
     """Archive PV Data."""
 
-    _MQUERY_BIN_INTVL = 10*60*60  # [s]
+    _MQUERY_BIN_INTVL = _timedelta(seconds=10*60*60)
 
     def __init__(self, pvname, connector=None):
         """."""
@@ -225,34 +228,42 @@ class PVData:
             return
         process_type = 'mean' if mean_sec is not None else ''
 
+        self._aux_data = dict()
+        bin_interval = PVData._MQUERY_BIN_INTVL
+        t_aux_init = self._timestamp_start
+        t_aux_end = self._timestamp_start + bin_interval
+        index = 0
+        with ThreadPoolExecutor(max_workers=100) as executor:
+            while t_aux_end < self._timestamp_stop:
+                t_aux_init += bin_interval
+                if t_aux_end + bin_interval < self._timestamp_stop:
+                    t_aux_end += bin_interval
+                else:
+                    t_aux_end = self._timestamp_stop
+                executor.submit(
+                    self._get_partial_data, t_aux_init, t_aux_end,
+                    process_type, mean_sec, index)
+                index += 1
+
         timestamp, value, status, severity = list(), list(), list(), list()
-
-        t_stop = self._timestamp_stop.get_timestamp()
-        t_start = self._timestamp_start.get_timestamp()
-        total_period = t_stop - t_start
-        intervals = list()
-        t_aux_init = t_start
-        t_aux_end = t_start + PVData._MQUERY_BIN_INTVL
-        while t_aux_end < t_stop:
-            intervals.append([t_aux_init, t_aux_end])
-            t_aux_init += PVData._MQUERY_BIN_INTVL
-            if t_aux_end + PVData._MQUERY_BIN_INTVL < t_stop:
-                t_aux_end += PVData._MQUERY_BIN_INTVL
-            else:
-                t_aux_end = t_stop
-            print([t_aux_init, t_aux_end])
-
-        data = self.connector.getData(
-            self._pvname,
-            self._timestamp_start.get_iso8601(),
-            self._timestamp_stop.get_iso8601(),
-            process_type=process_type, interval=mean_sec)
-        timestamp.extend(data[0])
-        value.extend(data[1])
-        status.extend(data[2])
-        severity.extend(data[3])
+        for idx in range(index):
+            data = self._aux_data[idx]
+            for i, tim in enumerate(data[0]):
+                if tim in timestamp:
+                    continue
+                timestamp.append(data[0][i])
+                value.append(data[1][i])
+                status.append(data[2][i])
+                severity.append(data[3][i])
+        print(len(timestamp), len(set(timestamp)))
 
         if not timestamp:
             return
         self._timestamp, self._value = timestamp, value
         self._status, self._severity = status, severity
+
+    def _get_partial_data(self, timestamp_start, timestamp_stop,
+                          process_type, interval, index):
+        self._aux_data[index] = self.connector.getData(
+            self._pvname, timestamp_start, timestamp_stop,
+            process_type=process_type, interval=interval)

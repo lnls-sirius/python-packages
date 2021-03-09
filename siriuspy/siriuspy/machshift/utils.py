@@ -6,7 +6,7 @@ import copy as _copy
 import time as _time
 import logging as _log
 from datetime import datetime as _datetime
-from concurrent.futures import ThreadPoolExecutor
+
 import numpy as _np
 from scipy.interpolate import interp1d as _interp1d
 from matplotlib import pyplot as _plt
