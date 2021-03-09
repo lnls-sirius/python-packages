@@ -351,7 +351,7 @@ class MacReport:
         self._update_log(
             'Query for machine schedule data took {0}s'.format(
                 _time.time()-_t0))
-        self._raw_data['ShiftData']['ProgrmdShift'] = self._pshift_values
+        self._raw_data['ShiftData']['ProgmdShift'] = self._pshift_values
 
         # calculate time vectors and failures
         dtimes = _np.diff(self._curr_times)
@@ -360,7 +360,7 @@ class MacReport:
         dtimes_users_progmd = dtimes*self._pshift_values
 
         self._raw_data['Failures']['Wrong Shift Mode'] = \
-            (self._pshift_values-self._ishift_values) > 0
+            1 * ((self._pshift_values-self._ishift_values) > 0)
         self._raw_data['Failures']['No EBeam on User Shift'] = \
             _np.logical_not(self._is_stored)*dtimes_users_progmd
 
