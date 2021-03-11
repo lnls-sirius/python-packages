@@ -266,7 +266,7 @@ class PVData:
             _np.array(_ts)[_tsidx], _np.array(_vs)[_tsidx], \
             _np.array(_st)[_tsidx], _np.array(_sv)[_tsidx]
         print(_time.time() - _t0, len(_ts), len(self._timestamp),
-              len(set(self._timestamp), _tsf == _np.array(_ts)[_tsidx]))
+              len(set(self._timestamp)), _tsf == _np.array(_ts)[_tsidx])
 
     def _get_partial_data(self, timestamp_start, timestamp_stop,
                           process_type, interval, index):
