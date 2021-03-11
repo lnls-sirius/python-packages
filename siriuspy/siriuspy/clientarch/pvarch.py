@@ -1,8 +1,9 @@
-"""."""
+"""PV Arch Module."""
 
 from datetime import timedelta as _timedelta
 from concurrent.futures import ThreadPoolExecutor
 import time as _time
+import numpy as _np
 
 from .client import ClientArchiver as _ClientArchiver
 from .time import Time as _Time
@@ -236,7 +237,6 @@ class PVData:
         index = 0
         with ThreadPoolExecutor(max_workers=100) as executor:
             while t_aux_end < self._timestamp_stop:
-                print(t_aux_init, t_aux_end, index)
                 executor.submit(
                     self._get_partial_data,
                     t_aux_init.get_iso8601(), t_aux_end.get_iso8601(),
@@ -249,24 +249,18 @@ class PVData:
                     t_aux_end = self._timestamp_stop
             executor.shutdown(wait=True)
 
-        print('here')
-
-        timestamp, value, status, severity = list(), list(), list(), list()
+        _ts, _vs, _st, _sv = list(), list(), list(), list()
         for idx in range(index):
-            print(idx)
             data = self._aux_data[idx]
-            # for i, tim in enumerate(data[0]):
-            #     if tim in timestamp:
-            #         continue
-            #     timestamp.append(data[0][i])
-            #     value.append(data[1][i])
-            #     status.append(data[2][i])
-            #     severity.append(data[3][i])
-            timestamp.extend(data[0])
-            value.extend(data[1])
-            status.extend(data[2])
-            severity.extend(data[3])
-        print(len(timestamp), len(set(timestamp)))
+            _ts.extend(data[0])
+            _vs.extend(data[1])
+            _st.extend(data[2])
+            _sv.extend(data[3])
+        _t0 = _time.time()
+        alldata = _np.unique([row for row in zip(_ts, _vs, _st, _sv)], axis=0)
+        timestamp, value, status, severity = \
+            alldata[:, 0], alldata[:, 1], alldata[:, 2], alldata[:, 3]
+        print(_time.time() - _t0, len(timestamp), len(set(timestamp)))
 
         if not timestamp:
             return

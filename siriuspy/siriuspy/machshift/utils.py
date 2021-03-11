@@ -94,8 +94,8 @@ class MacScheduleData:
             year, formating='numeric')
         days_of_year = len(MacScheduleData._mac_schedule_data_plain[year])
         fun = _interp1d(timestamps, tags, 'previous', fill_value='extrapolate')
-        new_timestamp = _np.linspace(timestamps[0], timestamps[-1],
-                                     days_of_year*24*60)
+        new_timestamp = _np.linspace(
+            timestamps[0], timestamps[-1], days_of_year*24*60)
         new_datetimes = [_datetime.fromtimestamp(ts) for ts in new_timestamp]
         new_tags = fun(new_timestamp)
 
