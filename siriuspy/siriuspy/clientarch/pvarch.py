@@ -257,16 +257,14 @@ class PVData:
             _vs.extend(data[1])
             _st.extend(data[2])
             _sv.extend(data[3])
-        _t0 = _time.time()
-        alldata = _np.unique([row for row in zip(_ts, _vs, _st, _sv)], axis=0)
-        timestamp, value, status, severity = \
-            alldata[:, 0], alldata[:, 1], alldata[:, 2], alldata[:, 3]
-        print(_time.time() - _t0, len(timestamp), len(set(timestamp)))
-
-        if not timestamp:
+        if not _ts:
             return
-        self._timestamp, self._value = timestamp, value
-        self._status, self._severity = status, severity
+
+        _t0 = _time.time()
+        alldata = _np.unique(_np.r_[[_ts], [_vs], [_st], [_sv]], axis=1)
+        self._timestamp, self._value, self._status, self._severity = \
+            alldata[0, :], alldata[1, :], alldata[2, :], alldata[3, :]
+        print(_time.time() - _t0, len(self._timestamp), len(set(self._timestamp)))
 
     def _get_partial_data(self, timestamp_start, timestamp_stop,
                           process_type, interval, index):
