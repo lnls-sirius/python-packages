@@ -248,6 +248,7 @@ class PVData:
                 else:
                     t_aux_end = self._timestamp_stop
             executor.shutdown(wait=True)
+        print('executer shutdown')
 
         _ts, _vs, _st, _sv = list(), list(), list(), list()
         for idx in range(index):
@@ -269,6 +270,7 @@ class PVData:
 
     def _get_partial_data(self, timestamp_start, timestamp_stop,
                           process_type, interval, index):
+        print('get_partial', index, timestamp_start, timestamp_stop)
         self._aux_data[index] = self.connector.getData(
             self._pvname, timestamp_start, timestamp_stop,
             process_type=process_type, interval=interval)
