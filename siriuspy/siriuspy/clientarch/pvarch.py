@@ -2,7 +2,6 @@
 
 from datetime import timedelta as _timedelta
 from concurrent.futures import ThreadPoolExecutor
-import time as _time
 import numpy as _np
 
 from .client import ClientArchiver as _ClientArchiver
@@ -119,7 +118,7 @@ class PVDetails:
 class PVData:
     """Archive PV Data."""
 
-    _MQUERY_BIN_INTVL = _timedelta(seconds=10*60*60)
+    _MQUERY_BIN_INTVL = _timedelta(seconds=12*60*60)
 
     def __init__(self, pvname, connector=None):
         """."""
