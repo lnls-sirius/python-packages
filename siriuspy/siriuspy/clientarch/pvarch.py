@@ -263,9 +263,10 @@ class PVData:
         _t0 = _time.time()
         _tsf, _tsidx = _np.unique(_ts, return_index=True)
         self._timestamp, self._value, self._status, self._severity = \
-            _ts[_tsidx], _vs[_tsidx], _st[_tsidx], _sv[_tsidx]
-        print(_time.time() - _t0, len(self._timestamp),
-              len(set(self._timestamp), _tsf == _ts[_tsidx]))
+            _np.array(_ts)[_tsidx], _np.array(_vs)[_tsidx], \
+            _np.array(_st)[_tsidx], _np.array(_sv)[_tsidx]
+        print(_time.time() - _t0, len(_ts), len(self._timestamp),
+              len(set(self._timestamp), _tsf == _np.array(_ts)[_tsidx]))
 
     def _get_partial_data(self, timestamp_start, timestamp_stop,
                           process_type, interval, index):
