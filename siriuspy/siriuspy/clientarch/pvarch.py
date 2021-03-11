@@ -235,20 +235,19 @@ class PVData:
                     t_aux_end = self._timestamp_stop
             executor.shutdown(wait=True)
 
-        _ts, _vs, _st, _sv = list(), list(), list(), list()
+        _ts, _vs, _st, _sv = [], [], [], []
         for idx in range(index):
             data = self._aux_data[idx]
-            _ts.extend(data[0])
-            _vs.extend(data[1])
-            _st.extend(data[2])
-            _sv.extend(data[3])
-        if not _ts:
+            _ts = _np.r_[_ts, data[0]]
+            _vs = _np.r_[_vs, data[1]]
+            _st = _np.r_[_st, data[2]]
+            _sv = _np.r_[_sv, data[3]]
+        if not _ts.size:
             return
 
-        _tsf, _tsidx = _np.unique(_ts, return_index=True)
+        _, _tsidx = _np.unique(_ts, return_index=True)
         self._timestamp, self._value, self._status, self._severity = \
-            _np.array(_ts)[_tsidx], _np.array(_vs)[_tsidx], \
-            _np.array(_st)[_tsidx], _np.array(_sv)[_tsidx]
+            _ts[_tsidx], _vs[_tsidx], _st[_tsidx], _sv[_tsidx]
 
     def _get_partial_data(self, timestamp_start, timestamp_stop,
                           process_type, interval, index):
