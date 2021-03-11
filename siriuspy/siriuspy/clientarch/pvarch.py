@@ -261,7 +261,9 @@ class PVData:
             return
 
         _t0 = _time.time()
-        alldata = _np.unique(_np.r_[[_ts], [_vs], [_st], [_sv]], axis=1)
+        alldata0 = _np.r_[[_ts], [_vs], [_st], [_sv]]
+        alldata = _np.unique(alldata0, axis=1)
+        print(alldata0.shape, alldata.shape)
         self._timestamp, self._value, self._status, self._severity = \
             alldata[0, :], alldata[1, :], alldata[2, :], alldata[3, :]
         print(_time.time() - _t0, len(self._timestamp), len(set(self._timestamp)))
