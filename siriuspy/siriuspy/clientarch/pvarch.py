@@ -208,20 +208,6 @@ class PVData:
         if self.connector is None:
             self.connector = _ClientArchiver()
 
-    def update_orig(self, mean_sec=None):
-        """Update."""
-        self.connect()
-        if None in (self._timestamp_start, self._timestamp_stop):
-            print('Start and stop timestamps not defined!')
-            return
-        process_type = 'mean' if mean_sec is not None else ''
-        data = self.connector.getData(
-            self.pvname, self._timestamp_start, self._timestamp_stop,
-            process_type=process_type, interval=mean_sec)
-        if not data:
-            return
-        self._timestamp, self._value, self._status, self._severity = data
-
     def update(self, mean_sec=None):
         """Update."""
         self.connect()
@@ -248,7 +234,6 @@ class PVData:
                 else:
                     t_aux_end = self._timestamp_stop
             executor.shutdown(wait=True)
-        print('executer shutdown')
 
         _ts, _vs, _st, _sv = list(), list(), list(), list()
         for idx in range(index):
@@ -260,17 +245,13 @@ class PVData:
         if not _ts:
             return
 
-        _t0 = _time.time()
         _tsf, _tsidx = _np.unique(_ts, return_index=True)
         self._timestamp, self._value, self._status, self._severity = \
             _np.array(_ts)[_tsidx], _np.array(_vs)[_tsidx], \
             _np.array(_st)[_tsidx], _np.array(_sv)[_tsidx]
-        print(_time.time() - _t0, len(_ts), len(self._timestamp),
-              len(set(self._timestamp)), all(_tsf == _np.array(_ts)[_tsidx]))
 
     def _get_partial_data(self, timestamp_start, timestamp_stop,
                           process_type, interval, index):
-        print('get_partial', index, timestamp_start, timestamp_stop)
         self._aux_data[index] = self.connector.getData(
             self._pvname, timestamp_start, timestamp_stop,
             process_type=process_type, interval=interval)
