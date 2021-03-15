@@ -5,6 +5,7 @@ import time as _time
 import numpy as _np
 
 from ..sofb.csdev import SOFBFactory
+from ..sofb.utils import si_calculate_bump as _si_calculate_bump
 from .device import Device as _Device
 
 
@@ -79,9 +80,10 @@ class SOFB(_Device):
 
         propts = SOFB._propty_tmpl
         if not self.data.isring:
-            propts = [p for p in propts if not p.startswith(('MTurn', 'Slow'))]
+            propts = [p for p in propts if not p.startswith('MTurn')]
         if not self.data.acc == 'SI':
             propts = [p for p in propts if 'RF' not in p]
+            propts = [p for p in propts if not p.startswith('Slow')]
 
         # call base class constructor
         super().__init__(devname, properties=propts)
@@ -555,3 +557,9 @@ class SOFB(_Device):
         return self._wait(
             'MeasRespMat-Mon', self.data.MeasRespMatMon.Measuring,
             timeout=timeout, comp='ne')
+
+    @staticmethod
+    def si_calculate_bumps(orbx, orby, subsec, agx=0, agy=0, psx=0, psy=0):
+        """."""
+        return _si_calculate_bump(
+            orbx, orby, subsec, agx=agx, agy=agy, psx=psx, psy=psy)

@@ -81,9 +81,9 @@ class PRUController:
         self._udc, self._parms, self._psupplies = PRUController._init_udc(
             pru, self._psmodel.name, self._device_ids, freq)
 
-        # index of device in self._device_ids for wfmref update
-        self._wfm_update = False
-        self._wfm_update_dev_idx = 0  # cyclical updates!
+        # index of device in self._device_ids for wfmref/scope update
+        self._scope_update = False
+        self._scope_update_dev_idx = 0  # cyclical updates!
 
         # update time interval attribute
         self._scan_interval = self._get_scan_interval()
@@ -264,18 +264,18 @@ class PRUController:
 
     # --- wfmref and scope curves ---
 
-    def wfm_update_auto_enable(self):
+    def scope_update_auto_enable(self):
         """Enable wfmref and scope curves updates."""
-        self._wfm_update = True
+        self._scope_update = True
 
-    def wfm_update_auto_disable(self):
+    def scope_update_auto_disable(self):
         """Disable wfmref and scope curves updates."""
-        self._wfm_update = False
+        self._scope_update = False
 
     @property
-    def wfm_update_auto(self):
-        """Return state of wfm_update_auto."""
-        return self._wfm_update
+    def scope_update_auto(self):
+        """Return state of scope_update_auto."""
+        return self._scope_update
 
     def wfm_update(self, device_ids, interval=None):
         """Queue update wfm and scope curves."""
@@ -602,10 +602,10 @@ class PRUController:
         self._bsmp_update_variables()
 
         # update device wfm curves cyclically
-        if self._wfm_update:
-            self._wfm_update_dev_idx = \
-                (self._wfm_update_dev_idx + 1) % len(self._device_ids)
-            dev_id = self._device_ids[self._wfm_update_dev_idx]
+        if self._scope_update:
+            self._scope_update_dev_idx = \
+                (self._scope_update_dev_idx + 1) % len(self._device_ids)
+            dev_id = self._device_ids[self._scope_update_dev_idx]
             self._bsmp_update_wfm(dev_id)
 
         # print('{:<30s} : {:>9.3f} ms'.format(

@@ -218,7 +218,7 @@ _pvs_as_ti = [
 
     ['AS-RaMO:TI-EVG:InjBODelayRaw-SP', 0, 0],
     ['AS-RaMO:TI-EVG:InjBODelayType-Sel', 0, 0.0],
-    ['AS-RaMO:TI-EVG:InjBOMode-Sel', 0, 0.0],
+    # ['AS-RaMO:TI-EVG:InjBOMode-Sel', 0, 0.0],
 
     ['AS-RaMO:TI-EVG:InjSIDelayRaw-SP', 0, 0],
     ['AS-RaMO:TI-EVG:InjSIDelayType-Sel', 0, 0.0],
@@ -382,7 +382,7 @@ _pvs_as_ti = [
     ['BO-Glob:TI-Mags-Corrs:NrPulses-SP', 0, 0.0],
     ['BO-Glob:TI-Mags-Corrs:Polarity-Sel', 0, 0.0],
     ['BO-Glob:TI-Mags-Corrs:Src-Sel', 0, 0.0],
-    ['BO-Glob:TI-Mags-Corrs:State-Sel', 0, 0.0],
+    # ['BO-Glob:TI-Mags-Corrs:State-Sel', 0, 0.0],
     ['BO-Glob:TI-Mags-Corrs:DeltaDelay-SP', 30*[0.0, ], 0.0],
     ['BO-Glob:TI-Mags-Corrs:LowLvlLock-Sel', 0, 0.0],
 
@@ -391,7 +391,7 @@ _pvs_as_ti = [
     ['BO-Glob:TI-Mags-Fams:NrPulses-SP', 0, 0.0],
     ['BO-Glob:TI-Mags-Fams:Polarity-Sel', 0, 0.0],
     ['BO-Glob:TI-Mags-Fams:Src-Sel', 0, 0.0],
-    ['BO-Glob:TI-Mags-Fams:State-Sel', 0, 0.0],
+    # ['BO-Glob:TI-Mags-Fams:State-Sel', 0, 0.0],
     ['BO-Glob:TI-Mags-Fams:DeltaDelay-SP', 30*[0.0, ], 0.0],
     ['BO-Glob:TI-Mags-Fams:LowLvlLock-Sel', 0, 0.0],
 
@@ -991,26 +991,6 @@ _pvs_as_pu = [
     ['TS-04:PU-InjSeptF:Voltage-SP', 0.0, 0.0],  # [V]
     ['TS-01:PU-EjeSeptG:Voltage-SP', 0.0, 0.0],  # [V]
     ['TS-01:PU-EjeSeptF:Voltage-SP', 0.0, 0.1],  # [V]
-    ['TB-04:PU-InjSept:Pulse-Sel', 0, 0.0],
-    ['BO-01D:PU-InjKckr:Pulse-Sel', 0, 0.0],
-    ['BO-48D:PU-EjeKckr:Pulse-Sel', 0, 0.0],
-    ['SI-01SA:PU-InjDpKckr:Pulse-Sel', 0, 0.0],
-    ['SI-01SA:PU-InjNLKckr:Pulse-Sel', 0, 0.0],
-    ['TS-04:PU-InjSeptG-1:Pulse-Sel', 0, 0.0],
-    ['TS-04:PU-InjSeptG-2:Pulse-Sel', 0, 0.0],
-    ['TS-04:PU-InjSeptF:Pulse-Sel', 0, 0.0],
-    ['TS-01:PU-EjeSeptG:Pulse-Sel', 0, 0.0],
-    ['TS-01:PU-EjeSeptF:Pulse-Sel', 0, 0.1],
-    ['TB-04:PU-InjSept:PwrState-Sel', _OFF, 0.0],
-    ['BO-01D:PU-InjKckr:PwrState-Sel', _OFF, 0.0],
-    ['BO-48D:PU-EjeKckr:PwrState-Sel', _OFF, 0.0],
-    ['SI-01SA:PU-InjDpKckr:PwrState-Sel', _OFF, 0.0],
-    ['SI-01SA:PU-InjNLKckr:PwrState-Sel', _OFF, 0.0],
-    ['TS-04:PU-InjSeptG-1:PwrState-Sel', _OFF, 0.0],
-    ['TS-04:PU-InjSeptG-2:PwrState-Sel', _OFF, 0.0],
-    ['TS-04:PU-InjSeptF:PwrState-Sel', _OFF, 0.0],
-    ['TS-01:PU-EjeSeptG:PwrState-Sel', _OFF, 0.0],
-    ['TS-01:PU-EjeSeptF:PwrState-Sel', _OFF, 0.0],
     ]
 
 
@@ -1072,122 +1052,6 @@ _pvs_tb_ps = [
 
 
 _pvs_bo_ps = [
-    ['BO-Fam:PS-B-1:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-Fam:PS-B-2:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-Fam:PS-QD:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-Fam:PS-QF:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-02D:PS-QS:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-Fam:PS-SD:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-Fam:PS-SF:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-01U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-03U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-05U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-07U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-09U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-11U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-13U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-15U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-17U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-19U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-21U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-23U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-25U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-27U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-29U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-31U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-33U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-35U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-37U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-39U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-41U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-43U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-45U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-47U:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-49D:PS-CH:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-01U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-03U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-05U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-07U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-09U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-11U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-13U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-15U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-17U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-19U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-21U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-23U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-25U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-27U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-29U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-31U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-33U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-35U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-37U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-39U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-41U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-43U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-45U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-47U:PS-CV:OpMode-Sel', _SLOWREF, 0.0],
-    ['BO-49U:PS-CV:OpMode-Sel', _SLOWREF, 0.05],
-
-    ['BO-Fam:PS-B-1:Current-SP', 0.0, 0.0],  # [A]
-    ['BO-Fam:PS-B-2:Current-SP', 0.0, 0.0],  # [A]
-    ['BO-Fam:PS-QD:Current-SP', 0.0, 0.0],   # [A]
-    ['BO-Fam:PS-QF:Current-SP', 0.0, 0.0],   # [A]
-    ['BO-02D:PS-QS:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-Fam:PS-SD:Current-SP', 0.0, 0.0],   # [A]
-    ['BO-Fam:PS-SF:Current-SP', 0.0, 0.0],   # [A]
-    ['BO-01U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-03U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-05U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-07U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-09U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-11U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-13U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-15U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-17U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-19U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-21U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-23U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-25U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-27U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-29U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-31U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-33U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-35U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-37U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-39U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-41U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-43U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-45U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-47U:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-49D:PS-CH:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-01U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-03U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-05U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-07U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-09U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-11U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-13U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-15U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-17U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-19U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-21U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-23U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-25U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-27U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-29U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-31U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-33U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-35U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-37U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-39U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-41U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-43U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-45U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-47U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-    ['BO-49U:PS-CV:Current-SP', +0.0, 0.0],  # [A]
-
     ['BO-Fam:PS-B-1:Wfm-SP', _DEFAULT_WFM_OTHERS, 0.0],  # [A]
     ['BO-Fam:PS-B-2:Wfm-SP', _DEFAULT_WFM_OTHERS, 0.0],  # [A]
     ['BO-Fam:PS-QD:Wfm-SP', _DEFAULT_WFM_OTHERS, 0.0],  # [A]

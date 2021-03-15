@@ -4,6 +4,7 @@ import time as _time
 from datetime import datetime as _datetime
 import logging as _log
 from copy import deepcopy as _dcopy
+from threading import Thread as _Thread
 
 import numpy as _np
 from epics import PV as _PV
@@ -140,7 +141,7 @@ class _ASCurrInfoApp(_CurrInfoApp):
         std2 = float(meas[idxict2 + self.INDICES.STD]) * 1e9
         cnt2 = int(float(meas[idxict2 + self.INDICES.COUNT]))
 
-        eff = 100 * chg2/chg1
+        eff = max(100 * chg2/chg1, 110)
         effave = 100 * ave2/ave1
 
         self.run_callbacks(ict1 + ':Charge-Mon', chg1)
@@ -161,7 +162,7 @@ class _ASCurrInfoApp(_CurrInfoApp):
         self.run_callbacks(name + 'TranspEff-Mon', eff)
         self.run_callbacks(name + 'TranspEffAvg-Mon', effave)
 
-        
+
 class TSCurrInfoApp(_ASCurrInfoApp):
     """."""
 
@@ -371,6 +372,7 @@ class SICurrInfoApp(_CurrInfoApp):
 
         # initialize vars
         self._time0 = _time.time()
+        self._thread = None
         self._current_value = None
         self._current_13c4_value = None
         self._current_14c4_value = None
@@ -543,8 +545,19 @@ class SICurrInfoApp(_CurrInfoApp):
 
     def _callback_get_bo_curr3gev(self, value, timestamp, **kws):
         """Get BO Current3GeV-Mon and update InjEff PV."""
+        _ = value
         _ = kws
         _ = timestamp
+        self._thread = _Thread(target=self._update_injeff, daemon=True)
+        self._thread.start()
+
+    def _update_injeff(self):
+        # Sleep some time here to ensure SI DCCT will have been updated
+        _time.sleep(0.11)
+
+        # get booster current
+        bo_curr = self._bo_curr3gev_pv.value
+
         # choose current PV
         buffer = self._current_13c4_buffer \
             if self._dcct_mode == _Const.DCCT.DCCT13C4 \
@@ -558,12 +571,12 @@ class SICurrInfoApp(_CurrInfoApp):
             return
 
         # check if there is valid current in Booster
-        if value < self.CURR_THRESHOLD:
+        if bo_curr < self.CURR_THRESHOLD:
             return
 
         # calculate efficiency
         delta_curr = value_dq[-1] - _np.min(value_dq)
-        self._injeff = 100*(delta_curr/value) * self.HARMNUM_RATIO
+        self._injeff = 100*(delta_curr/bo_curr) * self.HARMNUM_RATIO
 
         # update pvs
         self.run_callbacks('InjEff-Mon', self._injeff)

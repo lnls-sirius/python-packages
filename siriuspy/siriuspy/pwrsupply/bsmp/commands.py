@@ -63,25 +63,11 @@ class PSBSMP(_BSMP):
             CONST.V_WFMREF1_IDX),
     }
 
-    _WFMREF_VAR_IDS = (
-        CONST.V_WFMREF_SELECTED,
-        CONST.V_WFMREF_SYNC_MODE,
-        CONST.V_WFMREF_GAIN,
-        CONST.V_WFMREF_OFFSET,
-        CONST.V_WFMREF0_START,
-        CONST.V_WFMREF0_END,
-        CONST.V_WFMREF0_IDX,
-        CONST.V_WFMREF1_START,
-        CONST.V_WFMREF1_END,
-        CONST.V_WFMREF1_IDX,
-    )
-
     def __init__(self, slave_address, entities, pru=None):
         """Init BSMP."""
         self.pru = pru
         super().__init__(self.pru, slave_address, entities)
         self._wfmref_check_entities_consistency()
-        self._wfmref_vars_group_id = None
 
     @staticmethod
     def parse_firmware_version(version):
@@ -90,8 +76,7 @@ class PSBSMP(_BSMP):
         version = ''.join([chr(ord(v)) for v in version])
         return version
 
-    def reset_groups_of_variables(self, varids_groups,
-                                  add_wfmref_group=False):
+    def reset_groups_of_variables(self, varids_groups):
         """Reset groups of variables."""
 
         # remove previous variables groups
@@ -106,15 +91,6 @@ class PSBSMP(_BSMP):
                 var_ids, timeout=PSBSMP._timeout_create_vars_groups)
             if ack != PSBSMP.CONST_BSMP.ACK_OK:
                 return ack, data
-
-        if not add_wfmref_group:
-            return ack, data
-
-        # add group for wfmref vars
-        ack, data = self.create_group_of_variables(
-            PSBSMP._WFMREF_VAR_IDS,
-            timeout=PSBSMP._timeout_create_vars_groups)
-        self._wfmref_vars_group_id = 1 + len(varids_groups)
 
         return ack, data
 

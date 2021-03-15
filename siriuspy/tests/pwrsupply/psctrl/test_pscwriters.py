@@ -1,7 +1,7 @@
 """Test fields module."""
 from unittest import TestCase
 
-from siriuspy.pwrsupply.psctrl.pscreaders import Setpoint
+from siriuspy.pwrsupply.psctrl.pscwriters import Setpoint
 
 
 class TestSetpointMatch(TestCase):

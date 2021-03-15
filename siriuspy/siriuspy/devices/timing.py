@@ -1,6 +1,6 @@
 """."""
 
-import time as _time
+import numpy as _np
 
 from .device import Device as _Device, ProptyDevice as _ProptyDevice
 
@@ -8,55 +8,111 @@ from .device import Device as _Device, ProptyDevice as _ProptyDevice
 class EVG(_Device):
     """."""
 
-    class DEVICES:
-        """Devices names."""
-
-        AS = 'AS-RaMO:TI-EVG'
-        ALL = (AS, )
+    DEVNAME = 'AS-RaMO:TI-EVG'
 
     _properties = (
-        'InjectionEvt-Sel',
-        'InjectionEvt-Sts')
+        'InjectionEvt-Sel', 'InjectionEvt-Sts', 'UpdateEvt-Cmd',
+        'ContinuousEvt-Sel', 'ContinuousEvt-Sts',
+        'RepeatBucketList-SP', 'RepeatBucketList-RB',
+        'BucketList-SP', 'BucketList-RB', 'BucketList-Mon',
+        'BucketListLen-Mon', 'TotalInjCount-Mon', 'InjCount-Mon',
+        )
 
-    def __init__(self, devname=None):
+    def __init__(self):
         """."""
-        if devname is None:
-            devname = EVG.DEVICES.AS
-
-        # check if device exists
-        if devname not in EVG.DEVICES.ALL:
-            raise NotImplementedError(devname)
-
-        # call base class constructor
-        super().__init__(devname, properties=EVG._properties)
+        super().__init__(EVG.DEVNAME, properties=EVG._properties)
 
     @property
-    def pulses(self):
+    def nrpulses(self):
+        """."""
+        return self['RepeatBucketList-RB']
+
+    @nrpulses.setter
+    def nrpulses(self, value):
+        """."""
+        self['RepeatBucketList-SP'] = bool(value)
+
+    @property
+    def bucketlist_len(self):
+        """."""
+        return self['BucketListLen-Mon']
+
+    @property
+    def bucketlist_mon(self):
+        """."""
+        return self['BucketList-Mon']
+
+    @property
+    def bucketlist(self):
+        """."""
+        return self['BucketList-RB']
+
+    @bucketlist.setter
+    def bucketlist(self, value):
+        """."""
+        self['BucketList-SP'] = _np.array(value, dtype=int)
+
+    @property
+    def continuous_state(self):
+        """."""
+        return self['ContinuousEvt-Sts']
+
+    @continuous_state.setter
+    def continuous_state(self, value):
+        """."""
+        self['ContinuousEvt-Sel'] = bool(value)
+
+    @property
+    def injection_state(self):
         """."""
         return self['InjectionEvt-Sts']
 
-    @pulses.setter
-    def pulses(self, value):
+    @injection_state.setter
+    def injection_state(self, value):
+        """."""
         self['InjectionEvt-Sel'] = bool(value)
 
-    def wait(self, timeout=10):
+    @property
+    def injection_count_total(self):
         """."""
-        interval = 0.1
-        ntrials = int(timeout / interval)
-        for _ in range(ntrials):
-            _time.sleep(interval)
-            if self.pulses == self['InjectionEvt-Sel']:
-                return
+        return self['TotalInjCount-Mon']
 
-    def cmd_turn_on_pulses(self, timeout=10):
+    @property
+    def injection_count(self):
         """."""
-        self.pulses = 1
-        self.wait(timeout=timeout)
+        return self['InjCount-Mon']
 
-    def cmd_turn_off_pulses(self, timeout=10):
+    def fill_bucketlist(self, stop, start=1, step=30):
         """."""
-        self.pulses = 0
-        self.wait(timeout=timeout)
+        self.bucketlist = _np.arange(start=start, stop=stop, step=step)
+
+    def wait_injection_finish(self, timeout=10):
+        """."""
+        return self._wait(propty='InjectionEvt-Sts', value=0, timeout=timeout)
+
+    def cmd_update_events(self):
+        """."""
+        self['UpdateEvt-Cmd'] = 1
+
+    def cmd_turn_on_injection(self, timeout=10):
+        """."""
+        self.injection_state = 1
+        self._wait(propty='InjectionEvt-Sel', value=1, timeout=timeout)
+
+    def cmd_turn_off_injection(self, timeout=10):
+        """."""
+        self.injection_state = 0
+        self._wait(propty='InjectionEvt-Sel', value=0, timeout=timeout)
+
+    def cmd_turn_on_continuous(self, timeout=10):
+        """."""
+        self.continuous_state = 1
+        self._wait(propty='ContinuousEvt-Sel', value=1, timeout=timeout)
+
+    def cmd_turn_off_continuous(self, timeout=10):
+        """."""
+        self.continuous_state = 0
+        self._wait(propty='ContinuousEvt-Sel', value=0, timeout=timeout)
 
 
 class Event(_ProptyDevice):
@@ -74,7 +130,7 @@ class Event(_ProptyDevice):
     def __init__(self, evtname):
         """."""
         super().__init__(
-            EVG.DEVICES.AS, evtname, properties=Event._properties)
+            EVG.DEVNAME, evtname, properties=Event._properties)
 
     @property
     def mode(self):

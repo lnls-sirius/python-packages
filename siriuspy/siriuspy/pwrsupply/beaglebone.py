@@ -9,6 +9,9 @@
 #     block serial comm. before it. This is evident in SlowRefSync mode, where
 #     reference values may change considerably between two setpoints.
 #     (see identical note in PRUController)
+#
+# 02. Now that SOFB controls correctors power supplies directly, the
+#     'priority_pvs' mechanism for updating SOFBCurrent-* PVs may be dropped.
 
 import time as _time
 

@@ -18,7 +18,7 @@ from .pructrl.pru import PRU as _PRU
 from .pructrl.prucontroller import PRUController as _PRUController
 
 from .psctrl.pscreaders import Constant as _Constant
-from .psctrl.pscreaders import Setpoint as _Setpoint
+from .psctrl.pscwriters import Setpoint as _Setpoint
 from .psctrl.psmodel import PSModelFactory as _PSModelFactory
 
 
@@ -212,7 +212,7 @@ class BBBFactory:
                 for devname, devid in devices:
                     pvname = devname + ':' + field
                     dbase[pvname] = _deepcopy(database[field])
-                    readers[pvname] = model.field(
+                    readers[pvname] = model.reader(
                         devid, field, pru_controller)
         return readers, writers
 
@@ -243,14 +243,14 @@ class BBBFactory:
         #         pvname = devname + ':' + field
         #         ids.append(devid)
         #         sps.append(setpoints[pvname])
-        #     function = model.function(
+        #     writer = model.writer(
         #         ids, field, pru_controller, _Setpoints(sps))
-        #     return {device[0] + ':' + field: function
+        #     return {device[0] + ':' + field: writer
         #             for device in devices}
         writers = dict()
         for devname, devid in devices:
             setpoint = setpoints[devname + ':' + field]
-            writers[devname + ':' + field] = model.function(
+            writers[devname + ':' + field] = model.writer(
                 [devid], field, pru_controller, setpoint)
         return writers
 

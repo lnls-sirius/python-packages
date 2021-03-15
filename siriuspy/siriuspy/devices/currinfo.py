@@ -46,19 +46,19 @@ class CurrInfoLinear(_Devices):
     def __init__(self, devname):
         """."""
         # check if device exists
-        if devname not in CurrInfo.DEVICES.ALL:
+        if devname not in CurrInfoLinear.DEVICES.ALL:
             raise NotImplementedError(devname)
 
         if devname == CurrInfoLinear.DEVICES.LI:
-            transp = CurrInfoTranspEff(CurrInfo.DEVICES.LI)
+            transp = CurrInfoTranspEff(CurrInfoLinear.DEVICES.LI)
             ict1 = ICT(ICT.DEVICES.LI_1)
             ict2 = ICT(ICT.DEVICES.LI_2)
         elif devname == CurrInfoLinear.DEVICES.TB:
-            transp = CurrInfoTranspEff(CurrInfo.DEVICES.TB)
+            transp = CurrInfoTranspEff(CurrInfoLinear.DEVICES.TB)
             ict1 = ICT(ICT.DEVICES.TB_02)
             ict2 = ICT(ICT.DEVICES.TB_04)
         elif devname == CurrInfoLinear.DEVICES.TS:
-            transp = CurrInfoTranspEff(CurrInfo.DEVICES.TS)
+            transp = CurrInfoTranspEff(CurrInfoLinear.DEVICES.TS)
             ict1 = ICT(ICT.DEVICES.TS_01)
             ict2 = ICT(ICT.DEVICES.TS_04)
 

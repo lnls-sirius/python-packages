@@ -31,9 +31,13 @@ class _PSModel:
         'CycleAmpl-RB': _c.V_SIGGEN_AMPLITUDE,
         'CycleOffset-RB': _c.V_SIGGEN_OFFSET,
         'CycleAuxParam-RB': _c.V_SIGGEN_AUX_PARAM,
+        # Scope
+        'ScopeSrcAddr-RB': _c.V_SCOPE_SRC_DATA,
+        'ScopeFreq-RB': _c.V_SCOPE_FREQUENCY,
+        'ScopeDuration-RB': _c.V_SCOPE_DURATION,
         }
-    _e2f = {
-        # Epics to BSMP variable with pre-processing
+    _e2r = {
+        # Epics to BSMP variable but with pre/post-processing
         'PwrState-Sts': (_readers.PwrState, _c.V_PS_STATUS),
         'OpMode-Sts': (_readers.OpMode, _c.V_PS_STATUS),
         'CtrlMode-Mon': (_readers.CtrlMode, _c.V_PS_STATUS),
@@ -45,7 +49,7 @@ class _PSModel:
         'PRUCtrlQueueSize-Mon': 'queue_length',
         }
     _e2o = {
-        # Epics to field object;
+        # Epics to reader object;
         'TimestampUpdate-Mon': _readers.TimestampUpdate,
         'Wfm-RB': _readers.WfmRBCurve,
         'WfmRef-Mon': _readers.WfmRefMonCurve,
@@ -134,45 +138,45 @@ class _PSModel:
         """PRU Controller parameters."""
         return self._e()
 
-    def field(self, device_id, epics_field, pru_controller):
-        """Return field."""
-        # common field
-        e2f = self._fields_common
-        field = e2f(device_id, epics_field, pru_controller)
-        if field:
-            return field
-        # especific field (bsmp variable)
-        e2f = self._fields_psmodel_specific_bsmp_variables
-        field = e2f(device_id, epics_field, pru_controller)
-        if field:
-            return field
-        # specific field (PRUController property)
-        e2f = self._fields_psmodel_specific_pruc_properties
-        field = e2f(device_id, epics_field, pru_controller)
-        return field
+    def reader(self, device_id, epics_field, pru_controller):
+        """Return reader."""
+        # common reader
+        e2f = self._readers_common
+        reader = e2f(device_id, epics_field, pru_controller)
+        if reader:
+            return reader
+        # especific reader (bsmp variable)
+        e2f = self._readers_psmodel_specific_bsmp_variables
+        reader = e2f(device_id, epics_field, pru_controller)
+        if reader:
+            return reader
+        # specific reader (PRUController property)
+        e2f = self._readers_psmodel_specific_pruc_properties
+        reader = e2f(device_id, epics_field, pru_controller)
+        return reader
 
     @staticmethod
-    def function(device_ids, epics_field, pru_controller, setpoints):
-        """Return function."""
-        function = _PSModel._function_common_sp(
+    def writer(device_ids, epics_field, pru_controller, setpoints):
+        """Return writer."""
+        writer = _PSModel._writer_common_sp(
             device_ids, epics_field, pru_controller, setpoints)
-        if function:
-            return function
+        if writer:
+            return writer
 
-        function = _PSModel._function_common_cmd(
+        writer = _PSModel._writer_common_cmd(
             device_ids, epics_field, pru_controller, setpoints)
-        if function:
-            return function
+        if writer:
+            return writer
 
-        function = _PSModel._function_cfgsiggen(
+        writer = _PSModel._writer_cfgsiggen(
             device_ids, epics_field, pru_controller, setpoints)
-        if function:
-            return function
+        if writer:
+            return writer
 
-        function = _PSModel._function_wfm(
+        writer = _PSModel._writer_wfm(
             device_ids, epics_field, pru_controller, setpoints)
-        if function:
-            return function
+        if writer:
+            return writer
 
         return _writers.BSMPFunctionNull()
 
@@ -183,25 +187,25 @@ class _PSModel:
 
     # --- private methods ---
 
-    def _fields_common(self, device_id, epics_field, pru_controller):
+    def _readers_common(self, device_id, epics_field, pru_controller):
         if epics_field in self._e2v:
             var_id = self._e2v[epics_field]
             return _readers.Variable(pru_controller, device_id, var_id)
         if epics_field in self._e2p:
             param_id = self._e2p[epics_field]
             return _readers.ConstParameter(pru_controller, device_id, param_id)
-        if epics_field in self._e2f:
-            field, var_id = self._e2f[epics_field]
-            return field(_readers.Variable(pru_controller, device_id, var_id))
+        if epics_field in self._e2r:
+            reader, var_id = self._e2r[epics_field]
+            return reader(_readers.Variable(pru_controller, device_id, var_id))
         if epics_field in self._e2c:
             attr = self._e2c[epics_field]
             return _readers.PRUCProperty(pru_controller, attr)
         if epics_field in self._e2o:
-            field = self._e2o[epics_field]
-            return field(pru_controller, device_id)
+            reader = self._e2o[epics_field]
+            return reader(pru_controller, device_id)
         return None
 
-    def _fields_psmodel_specific_bsmp_variables(
+    def _readers_psmodel_specific_bsmp_variables(
             self, device_id, epics_field, pru_controller):
         # Specific fields
         if epics_field in self._bsmp_variables:
@@ -209,31 +213,37 @@ class _PSModel:
             return _readers.Variable(pru_controller, device_id, var_id)
         return None
 
-    def _fields_psmodel_specific_pruc_properties(
+    def _readers_psmodel_specific_pruc_properties(
             self, _, epics_field, pru_controller):
         if epics_field in self._pruc_properties:
             attr = self._pruc_properties[epics_field]
             return _readers.PRUCProperty(pru_controller, attr)
 
     @staticmethod
-    def _function_common_sp(
+    def _writer_common_sp(
             device_ids, epics_field, pru_controller, setpoints):
         _c = _const_psbsmp.ConstPSBSMP
         if epics_field == 'PwrState-Sel':
             return _writers.PSPwrState(device_ids, pru_controller, setpoints)
-        if epics_field == 'OpMode-Sel':
+        elif epics_field == 'OpMode-Sel':
             bsmpfunc = _writers.BSMPFunction(
                 device_ids, pru_controller, _c.F_SELECT_OP_MODE)
             return _writers.PSOpMode(
                 device_ids, bsmpfunc, setpoints)
-        if epics_field == 'CtrlLoop-Sel':
+        elif epics_field == 'CtrlLoop-Sel':
             return _writers.CtrlLoop(device_ids, pru_controller, setpoints)
-        if epics_field == 'Current-SP':
+        elif epics_field == 'Current-SP':
             return _writers.Current(device_ids, pru_controller, setpoints)
+        elif epics_field == 'ScopeFreq-SP':
+            return _writers.ScopeFreq(device_ids, pru_controller, setpoints)
+        elif epics_field == 'ScopeDuration-SP':
+            return _writers.ScopeDuration(device_ids, pru_controller, setpoints)
+        elif epics_field == 'ScopeSrcAddr-SP':
+            return _writers.ScopeSrcAddr(device_ids, pru_controller, setpoints)
         return None
 
     @staticmethod
-    def _function_common_cmd(
+    def _writer_common_cmd(
             device_ids, epics_field, pru_controller, setpoints):
         _c = _const_psbsmp.ConstPSBSMP
         if epics_field == 'Reset-Cmd':
@@ -247,7 +257,7 @@ class _PSModel:
         return None
 
     @staticmethod
-    def _function_cfgsiggen(
+    def _writer_cfgsiggen(
             device_ids, epics_field, pru_controller, setpoints):
         p2i = {
             'CycleType-Sel': 0,
@@ -268,7 +278,7 @@ class _PSModel:
         return None
 
     @staticmethod
-    def _function_wfm(
+    def _writer_wfm(
             device_ids, epics_field, pru_controller, setpoints):
         if epics_field == 'Wfm-SP':
             return _writers.WfmSP(
@@ -313,8 +323,8 @@ class PSModelFBP(_PSModel):
         'SOFBCurrent-Mon': 'sofb_current_mon',
     }
 
-    def function(self, device_ids, epics_field, pru_controller, setpoints):
-        """Return function."""
+    def writer(self, device_ids, epics_field, pru_controller, setpoints):
+        """Return writer."""
         if epics_field == 'SOFBCurrent-SP':
             return _writers.SOFBCurrent(
                 device_ids, pru_controller, setpoints)
@@ -322,7 +332,7 @@ class PSModelFBP(_PSModel):
             return _writers.SOFBMode(pru_controller, setpoints)
         if epics_field == 'SOFBUpdate-Cmd':
             return _writers.SOFBUpdate(pru_controller, setpoints)
-        return super().function(
+        return super().writer(
             device_ids, epics_field, pru_controller, setpoints)
 
 
@@ -770,8 +780,8 @@ class PSModelFBP_DCLink(_PSModel):
         'VoltageDig-Mon': _c.V_DIG_POT_TAP,
         }
 
-    def function(self, device_ids, epics_field, pru_controller, setpoints):
-        """Return function."""
+    def writer(self, device_ids, epics_field, pru_controller, setpoints):
+        """Return writer."""
         _c = PSModelFBP_DCLink._c
         if epics_field == 'PwrState-Sel':
             return _writers.PSPwrStateFBP_DCLink(
@@ -841,8 +851,8 @@ class PSModelFAC_2S_ACDC(_PSModel):
         'AlarmsIIBModCmd-Mon': _c.V_IIB_ALARMS_CMD,
         }
 
-    def function(self, device_ids, epics_field, pru_controller, setpoints):
-        """Return function."""
+    def writer(self, device_ids, epics_field, pru_controller, setpoints):
+        """Return writer."""
         _c = PSModelFAC_2S_ACDC._c
         if epics_field == 'PwrState-Sel':
             return _writers.PSPwrState(device_ids, pru_controller, setpoints)

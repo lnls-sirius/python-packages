@@ -268,8 +268,7 @@ class PSDevState:
     def reset_variables_groups(self, groups):
         """."""
         # reset groups of variables for all bsmp devices
-        ack, _ = self._psbsmp.reset_groups_of_variables(
-            groups[3:], add_wfmref_group=True)
+        ack, _ = self._psbsmp.reset_groups_of_variables(groups[3:])
         if ack != self.psbsmp.CONST_BSMP.ACK_OK:
             ValueError('Could not reset groups of variables!')
         return True

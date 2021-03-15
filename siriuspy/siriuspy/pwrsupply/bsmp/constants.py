@@ -20,16 +20,10 @@ __version__ = 'FRWM - V1.36 V0.41u - 09/04/2020'
 class ConstPSBSMP:
     """Namespace for organizing power supply BSMP constants."""
 
-    # --- implemented protocol version ---
-    # version = __bsmp_version__
-
     # --- group of BSMP variables
     G_ALL = _const_bsmp.ID_STD_GROUP_ALL
     G_READONLY = _const_bsmp.ID_STD_GROUP_READONLY
     G_WRITE = _const_bsmp.ID_STD_GROUP_WRITE
-    G_ALLRELEVANT = 3
-    G_SCAN = 4
-    G_SOFB = 5
 
     # --- types ---
     T_STATUS = 0
@@ -263,6 +257,9 @@ class ConstPSBSMP:
 
 class ConstFBP(ConstPSBSMP):
     """Namespace for organizing power supply FBP BSMP constants."""
+
+    # --- group of BSMP variables
+    G_SOFB = 3
 
     # --- FSB variables ---
     V_PS_SOFT_INTERLOCKS = 31  # BSMP doc says ID numb. should be continous!
