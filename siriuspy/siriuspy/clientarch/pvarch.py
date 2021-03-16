@@ -118,7 +118,7 @@ class PVDetails:
 class PVData:
     """Archive PV Data."""
 
-    _MQUERY_BIN_INTVL = _timedelta(seconds=12*60*60)
+    THREADED_QUERY_BIN_INTERVAL = _timedelta(seconds=12*60*60)  # 12h
 
     def __init__(self, pvname, connector=None):
         """."""
@@ -137,6 +137,31 @@ class PVData:
         return self._pvname
 
     @property
+    def request_url(self):
+        """Request url."""
+        self.connect()
+        url = self.connector.getData(
+            self.pvname,
+            self._timestamp_start.get_iso8601(),
+            self._timestamp_stop.get_iso8601(),
+            get_request_url=True)
+        return url
+
+    @property
+    def is_archived(self):
+        """Is archived."""
+        self.connect()
+        req = self.connector.getPVDetails(self.pvname)
+        if not req.ok:
+            return False
+        return True
+
+    def connect(self):
+        """Connect."""
+        if self.connector is None:
+            self._connector = _ClientArchiver()
+
+    @property
     def connector(self):
         """Connector."""
         return self._connector
@@ -149,7 +174,7 @@ class PVData:
     @property
     def timestamp_start(self):
         """Timestamp start."""
-        return self._timestamp_start
+        return self._timestamp_start.get_timestamp()
 
     @timestamp_start.setter
     def timestamp_start(self, new_timestamp):
@@ -158,7 +183,7 @@ class PVData:
     @property
     def timestamp_stop(self):
         """Timestamp stop."""
-        return self._timestamp_stop
+        return self._timestamp_stop.get_timestamp()
 
     @timestamp_stop.setter
     def timestamp_stop(self, new_timestamp):
@@ -184,29 +209,6 @@ class PVData:
         """Severity data."""
         return self._severity
 
-    @property
-    def request_url(self):
-        """Request url."""
-        self.connect()
-        url = self.connector.getData(
-            self.pvname, self.timestamp_start,
-            self.timestamp_stop, get_request_url=True)
-        return url
-
-    @property
-    def is_archived(self):
-        """Is archived."""
-        self.connect()
-        req = self.connector.getPVDetails(self.pvname)
-        if not req.ok:
-            return False
-        return True
-
-    def connect(self):
-        """Connect."""
-        if self.connector is None:
-            self.connector = _ClientArchiver()
-
     def update(self, mean_sec=None):
         """Update."""
         self.connect()
@@ -216,22 +218,25 @@ class PVData:
         process_type = 'mean' if mean_sec is not None else ''
 
         self._aux_data = dict()
-        bin_interval = PVData._MQUERY_BIN_INTVL
-        t_aux_init = self._timestamp_start
-        t_aux_end = self._timestamp_start + bin_interval
+        interval = PVData.THREADED_QUERY_BIN_INTERVAL
+        t_start = self._timestamp_start
+        t_stop = t_start + interval
+        if t_start + interval > self._timestamp_stop:
+            t_stop = self._timestamp_stop
         index = 0
         with ThreadPoolExecutor(max_workers=100) as executor:
-            while t_aux_end < self._timestamp_stop:
+            while t_stop <= self._timestamp_stop:
                 executor.submit(
                     self._get_partial_data,
-                    t_aux_init.get_iso8601(), t_aux_end.get_iso8601(),
+                    t_start.get_iso8601(), t_stop.get_iso8601(),
                     process_type, mean_sec, index)
                 index += 1
-                t_aux_init += bin_interval
-                if t_aux_end + bin_interval < self._timestamp_stop:
-                    t_aux_end += bin_interval
-                else:
-                    t_aux_end = self._timestamp_stop
+                if t_stop == self._timestamp_stop:
+                    break
+                t_start += interval
+                t_stop = t_stop + interval
+                if t_stop + interval > self._timestamp_stop:
+                    t_stop = self._timestamp_stop
             executor.shutdown(wait=True)
 
         _ts, _vs, _st, _sv = [], [], [], []
