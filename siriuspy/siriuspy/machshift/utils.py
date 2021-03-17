@@ -16,6 +16,7 @@ from .. import clientweb as _web
 from ..namesys import SiriusPVName as _SiriusPVName
 from ..clientarch import ClientArchiver as _CltArch, Time as _Time, \
     PVData as _PVData, PVDetails as _PVDetails
+from .csdev import Const
 
 
 class MacScheduleData:
@@ -50,7 +51,7 @@ class MacScheduleData:
         return MacScheduleData._user_operation_count[year]
 
     @staticmethod
-    def is_user_operation_predefined(
+    def is_user_shift_programmed(
             timestamp=None, datetime=None, year=None,
             month=None, day=None, hour=None, minute=None):
         """Return whether a day is a predefined user operation."""
@@ -70,7 +71,8 @@ class MacScheduleData:
             datetime = [_datetime(year, month, day, hour, minute), ]
             timestamp = [dt.timestamp() for dt in datetime]
         else:
-            raise Exception('Enter timestamp, datetime or datetime items data.')
+            raise Exception(
+                'Enter timestamp, datetime or datetime items data.')
 
         year_init = datetime[0].year
         year_end = datetime[-1].year
@@ -151,22 +153,55 @@ class MacScheduleData:
 class MacReport:
     """Machine reports.
 
-    Based on archiver appliance data and machine schedule data.
+    Based on archiver data and machine schedule data.
 
     Reports available:
-     - Stored electron beam interval
-     - Stored electron beam mean current
-     - User shift interval programmed
-     - User shift interval implemented
-     - User shift mean current
-     - Failures count
-     - Failures interval
-     - Mean time to recover
-     - Mean time between failures
-     - Beam availability
+    - ebeam_total_interval
+        Time interval in which there was stored beam, for any
+        current value above a threshold (_THOLD_STOREDBEAM)
+    - ebeam_total_average_current
+        Average current considering the entire interval in which
+        there was any current above a threshold (_THOLD_STOREDBEAM)
+    - ebeam_total_stddev_current
+        Current standard deviation considering the entire interval in which
+        there was any current above a threshold (_THOLD_STOREDBEAM)
+    - ebeam_total_max_current
+        Maximum current considering the entire interval in which
+        there was any current above a threshold (_THOLD_STOREDBEAM)
+    - inj_shift_interval
+        Time interval in injection shift
+    - inj_shift_count
+        Count of injections occurred
+    - inj_shift_mean_interval
+        Mean interval in injection shift (inj_shift_interval/inj_shift_count)
+    - user_shift_progmd_interval
+        Time interval programmed to be user shift.
+    - user_shift_impltd_interval
+        Time interval implemented as programmed user shift.
+    - user_shift_extra_interval
+        Extra user shift time interval.
+    - user_shift_total_interval
+        Total user shift time interval (implemented + extra).
+    - user_shift_average_current
+        Average current in the total user shift time interval.
+    - user_shift_stddev_current
+        Current standard deviation in the total user shift time interval.
+    - user_shift_max_current
+        Maximum current in the total user shift time interval.
+    - failures_count
+        Count of failures occurred in user shift.
+    - failures_interval
+        Sum of failures duration.
+    - mean_time_to_recover
+        Mean time took to recover from failures.
+    - mean_time_between_failures
+        Mean time between failure occurrences.
+    - beam_availability
+        Ratio between time implemented and time programmed as user shift.
     """
 
-    _THRESHOLD_STOREDBEAM = 0.005  # [mA]
+    _THOLD_STOREDBEAM = 0.005  # [mA]
+    _THOLD_FACTOR_USERSSBEAM = 20  # [%]
     _AVG_TIME = 1  # [s]
 
     def __init__(self, connector=None, logger=None):
@@ -186,6 +221,8 @@ class MacReport:
         self._pvnames = [
             'SI-Glob:AP-CurrInfo:Current-Mon',
             'AS-Glob:AP-MachShift:Mode-Sts',
+            'LI-01:EG-TriggerPS:enablereal',
+            'LI-01:EG-PulsePS:singleselstatus',
         ]
         self._pvnames = [_SiriusPVName(pvn) for pvn in self._pvnames]
 
@@ -196,10 +233,10 @@ class MacReport:
         self._timestamp_start = None
         self._timestamp_stop = None
         self._ebeam_total_interval = None
-        self._ebeam_total_mean_current = None
+        self._ebeam_total_average_current = None
         self._user_shift_progmd_interval = None
         self._user_shift_impltd_interval = None
-        self._user_shift_mean_current = None
+        self._user_shift_average_current = None
         self._failures_count = None
         self._failures_interval = None
         self._mean_time_to_recover = None
@@ -227,9 +264,7 @@ class MacReport:
 
     @timestamp_start.setter
     def timestamp_start(self, new_timestamp):
-        if not self._timestamp_start or \
-                new_timestamp != self._timestamp_start.get_timestamp():
-            self._timestamp_start = _Time(timestamp=new_timestamp)
+        self._timestamp_start = _Time(timestamp=new_timestamp)
 
     @property
     def timestamp_stop(self):
@@ -238,9 +273,7 @@ class MacReport:
 
     @timestamp_stop.setter
     def timestamp_stop(self, new_timestamp):
-        if not self._timestamp_stop or \
-                new_timestamp != self._timestamp_stop.get_timestamp():
-            self._timestamp_stop = _Time(timestamp=new_timestamp)
+        self._timestamp_stop = _Time(timestamp=new_timestamp)
 
     @property
     def ebeam_total_interval(self):
@@ -248,9 +281,34 @@ class MacReport:
         return self._ebeam_total_interval
 
     @property
-    def ebeam_total_mean_current(self):
-        """Stored electron beam mean current."""
-        return self._ebeam_total_mean_current
+    def ebeam_total_average_current(self):
+        """Stored electron beam average current."""
+        return self._ebeam_total_average_current
+
+    @property
+    def ebeam_total_stddev_current(self):
+        """Stored electron beam current standard deviation."""
+        return self._ebeam_total_stddev_current
+
+    @property
+    def ebeam_total_max_current(self):
+        """Stored electron beam maximum current."""
+        return self._ebeam_total_max_current
+
+    @property
+    def inj_shift_interval(self):
+        """Injection shift interval."""
+        return self._inj_shift_interval
+
+    @property
+    def inj_shift_count(self):
+        """Injection shift count."""
+        return self._inj_shift_count
+
+    @property
+    def inj_shift_mean_interval(self):
+        """Injection shift mean interval."""
+        return self._inj_shift_mean_interval
 
     @property
     def user_shift_progmd_interval(self):
@@ -263,9 +321,29 @@ class MacReport:
         return self._user_shift_impltd_interval
 
     @property
-    def user_shift_mean_current(self):
-        """User shift mean current."""
-        return self._user_shift_mean_current
+    def user_shift_extra_interval(self):
+        """User shift interval extra."""
+        return self._user_shift_extra_interval
+
+    @property
+    def user_shift_total_interval(self):
+        """User shift interval total (implemented + extra)."""
+        return self._user_shift_total_interval
+
+    @property
+    def user_shift_average_current(self):
+        """User shift average current."""
+        return self._user_shift_average_current
+
+    @property
+    def user_shift_stddev_current(self):
+        """User shift current standard deviation."""
+        return self._user_shift_stddev_current
+
+    @property
+    def user_shift_max_current(self):
+        """User shift maximum current."""
+        return self._user_shift_max_current
 
     @property
     def failures_count(self):
@@ -301,7 +379,7 @@ class MacReport:
             pvdata = self._pvdata[pvname]
             pvdata.timestamp_start = self._timestamp_start.get_timestamp()
             pvdata.timestamp_stop = self._timestamp_stop.get_timestamp()
-            intvl = None if 'MachShift' in pvname else avg_intvl
+            intvl = None if 'Current' not in pvname else avg_intvl
             pvdata.update(intvl)
             self._update_log(
                 'Query for {0} in archiver took {1}s'.format(
@@ -324,72 +402,120 @@ class MacReport:
 
     def _compute_metrics(self):
         self._raw_data = dict()
-        self._raw_data['ShiftData'] = dict()
-        self._raw_data['Failures'] = dict()
 
-        # get current data
+        # current data
         curr_data = self._pvdata['SI-Glob:AP-CurrInfo:Current-Mon']
         self._curr_values = _np.array(curr_data.value)
-        self._is_stored = self._curr_values > MacReport._THRESHOLD_STOREDBEAM
         self._curr_times = _np.array(curr_data.timestamp)
-        self._raw_data['ShiftData']['Current'] = self._curr_values
-        self._raw_data['ShiftData']['Timestamp'] = self._curr_times
+        self._raw_data['Timestamp'] = self._curr_times
+        self._raw_data['Current'] = self._curr_values
 
-        # get implemented shift data in current timestamps
+        # implemented shift data in current timestamps
         ishift_data = self._pvdata['AS-Glob:AP-MachShift:Mode-Sts']
-        ishift_values = _np.array([1*(not v) for v in ishift_data.value])
         ishift_times = _np.array(ishift_data.timestamp)
-        ishift_fun = _interp1d(
-            ishift_times, ishift_values, 'previous', fill_value='extrapolate')
-        self._ishift_values = ishift_fun(self._curr_times)
-        self._raw_data['ShiftData']['ImpltdShift'] = self._ishift_values
 
-        # get desired shift data in current timestamps
+        inj_shift_values = _np.array(
+            [1*(v == Const.MachShift.Injection) for v in ishift_data.value])
+        inj_shift_fun = _interp1d(
+            ishift_times, inj_shift_values,
+            'previous', fill_value='extrapolate')
+        self._inj_shift_values = inj_shift_fun(self._curr_times)
+        self._raw_data['InjShift'] = self._inj_shift_values
+
+        user_shift_values = _np.array(
+            [1*(v == Const.MachShift.Users) for v in ishift_data.value])
+        user_shift_fun = _interp1d(
+            ishift_times, user_shift_values,
+            'previous', fill_value='extrapolate')
+        self._user_shift_total_values = user_shift_fun(self._curr_times)
+        self._raw_data['UserShiftTotal'] = self._user_shift_total_values
+
+        # desired shift data in current timestamps
         _t0 = _time.time()
-        self._pshift_values = MacScheduleData.is_user_operation_predefined(
-            timestamp=self._curr_times)
+        self._user_shift_progmd_values = \
+            MacScheduleData.is_user_shift_programmed(
+                timestamp=self._curr_times)
         self._update_log(
             'Query for machine schedule data took {0}s'.format(
                 _time.time()-_t0))
-        self._raw_data['ShiftData']['ProgmdShift'] = self._pshift_values
+        self._raw_data['UserShiftProgmd'] = self._user_shift_progmd_values
+
+        # is stored data
+        self._is_stored_total = self._curr_values > MacReport._THOLD_STOREDBEAM
+        self._is_stored_users = self._curr_values > MacReport._THOLD_USERSSBEAM
 
         # calculate time vectors and failures
         dtimes = _np.diff(self._curr_times)
         dtimes = _np.insert(dtimes, 0, 0)
-        dtimes_total_stored = dtimes*self._is_stored
-        dtimes_users_progmd = dtimes*self._pshift_values
+        dtimes_total_stored = dtimes*self._is_stored_total
+        dtimes_users_progmd = dtimes*self._user_shift_progmd_values
+        dtimes_injection = dtimes*self._inj_shift_values
 
-        self._raw_data['Failures']['Wrong Shift Mode'] = \
-            1 * ((self._pshift_values-self._ishift_values) > 0)
-        self._raw_data['Failures']['No EBeam on User Shift'] = \
-            _np.logical_not(self._is_stored)*dtimes_users_progmd
+        self._raw_data['Failures'] = dict()
+        self._raw_data['Failures']['WrongShift'] = \
+            1 * ((self._user_shift_progmd_values -
+                  self._user_shift_total_values) > 0)
+        self._raw_data['Failures']['NoEBeam'] = \
+            _np.logical_not(self._is_stored_users)*dtimes_users_progmd
 
-        self._failures = 1 * _np.logical_or(
-            self._raw_data['Failures']['Wrong Shift Mode'],
-            self._raw_data['Failures']['No EBeam on User Shift'],
-        )
+        self._failures = 1 * _np.logical_or.reduce(
+            [value for value in self._raw_data['Failures'].values()])
         dtimes_failures = dtimes*self._failures
         dtimes_users_impltd = dtimes_users_progmd*_np.logical_not(
             self._failures)
+        dtimes_users_total = dtimes*self._user_shift_total_values * \
+            self._is_stored_users
+        dtimes_users_extra = dtimes_users_total*_np.logical_not(
+            self._user_shift_progmd_values)
 
         # calculate metrics
-        self._failures_interval = _np.sum(dtimes_failures)
-
-        self._failures_count = _np.sum(_np.diff(self._failures) > 0)
-
+        # # total stored beam metrics
         self._ebeam_total_interval = _np.sum(dtimes_total_stored)
 
-        self._ebeam_total_mean_current = \
+        self._ebeam_total_average_current = \
             _np.sum(self._curr_values*dtimes_total_stored) / \
             self._ebeam_total_interval
 
+        aux = (self._curr_values - self._ebeam_total_average_current)
+        self._ebeam_total_stddev_current = _np.sqrt(
+            _np.sum(aux*aux*dtimes_total_stored) /
+            self._ebeam_total_interval)
+
+        self._ebeam_total_max_current = _np.max(self._curr_values)
+
+        # # injection shift metrics
+        self._inj_shift_interval = _np.sum(dtimes_injection)
+
+        self._inj_shift_count = _np.sum(_np.diff(dtimes_injection) > 0)
+
+        self._inj_shift_mean_interval = \
+            self._inj_shift_interval / self._inj_shift_count
+
+        # # users shift metrics
         self._user_shift_progmd_interval = _np.sum(dtimes_users_progmd)
 
         self._user_shift_impltd_interval = _np.sum(dtimes_users_impltd)
 
-        self._user_shift_mean_current = \
-            _np.sum(self._curr_values*dtimes_users_impltd) / \
-            self._user_shift_impltd_interval
+        self._user_shift_extra_interval = _np.sum(dtimes_users_extra)
+
+        self._user_shift_total_interval = _np.sum(dtimes_users_total)
+
+        self._user_shift_average_current = \
+            _np.sum(self._curr_values*dtimes_users_total) / \
+            self._user_shift_total_interval
+
+        aux = (self._curr_values - self._user_shift_average_current)
+        self._user_shift_stddev_current = _np.sqrt(
+            _np.sum(aux*aux*dtimes_users_total) /
+            self._user_shift_total_interval)
+
+        self._user_shift_max_current = _np.max(
+            self._curr_values*dtimes_users_total)
+
+        # # failure metrics
+        self._failures_interval = _np.sum(dtimes_failures)
+
+        self._failures_count = _np.sum(_np.diff(self._failures) > 0)
 
         self._mean_time_to_recover = \
             self._failures_interval / self._failures_count
