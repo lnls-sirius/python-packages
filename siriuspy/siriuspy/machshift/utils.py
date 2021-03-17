@@ -26,7 +26,8 @@ class MacScheduleData:
 
     _mac_schedule_data_plain = dict()
     _mac_schedule_data_numeric = dict()
-    _user_operation_count = dict()
+    _mac_schedule_data_inicurr = dict()
+    _user_shift_count = dict()
 
     @staticmethod
     def get_mac_schedule_data(year, formating='plain'):
@@ -45,34 +46,18 @@ class MacScheduleData:
         return mac_schedule
 
     @staticmethod
-    def get_users_operation_count(year):
-        """Get users operation count for year."""
+    def get_users_shift_count(year):
+        """Get users shift count for year."""
         MacScheduleData._reload_mac_schedule_data(year)
-        return MacScheduleData._user_operation_count[year]
+        return MacScheduleData._user_shift_count[year]
 
     @staticmethod
     def is_user_shift_programmed(
             timestamp=None, datetime=None, year=None,
             month=None, day=None, hour=None, minute=None):
-        """Return whether a day is a predefined user operation."""
-        ret_bool = False
-        if timestamp is not None:
-            if not isinstance(timestamp, (list, tuple, _np.ndarray)):
-                timestamp = [timestamp, ]
-                ret_bool = True
-            datetime = [_datetime.fromtimestamp(ts) for ts in timestamp]
-        elif datetime is not None:
-            if not isinstance(datetime, (list, tuple, _np.ndarray)):
-                datetime = [datetime, ]
-                ret_bool = True
-            timestamp = [dt.timestamp() for dt in datetime]
-        elif year is not None:
-            ret_bool = True
-            datetime = [_datetime(year, month, day, hour, minute), ]
-            timestamp = [dt.timestamp() for dt in datetime]
-        else:
-            raise Exception(
-                'Enter timestamp, datetime or datetime items data.')
+        """Return whether a day is a predefined user shift."""
+        timestamp, datetime, ret_uni = MacScheduleData._handle_timestamp_data(
+            timestamp, datetime, year, month, day, hour, minute)
 
         year_init = datetime[0].year
         year_end = datetime[-1].year
@@ -86,7 +71,29 @@ class MacScheduleData:
 
         fun = _interp1d(times, tags, 'previous', fill_value='extrapolate')
         ret_val = fun(timestamp)
-        return bool([ret_val][0]) if ret_bool else ret_val
+        return bool(ret_val[0]) if ret_uni else ret_val
+
+    @staticmethod
+    def get_initial_current_programmed(
+            timestamp=None, datetime=None, year=None,
+            month=None, day=None, hour=None, minute=None):
+        """Return initial current for shift."""
+        timestamp, datetime, ret_uni = MacScheduleData._handle_timestamp_data(
+            timestamp, datetime, year, month, day, hour, minute)
+
+        year_init = datetime[0].year
+        year_end = datetime[-1].year
+        times, currs = list(), list()
+        for y2l in _np.arange(year_init, year_end+1):
+            MacScheduleData._reload_mac_schedule_data(y2l)
+            data = MacScheduleData._mac_schedule_data_inicurr[y2l]
+            ytim, ycur = list(zip(*data))
+            times.extend(ytim)
+            currs.extend(ycur)
+
+        fun = _interp1d(times, currs, 'previous', fill_value='extrapolate')
+        ret_val = fun(timestamp)
+        return ret_val[0] if ret_uni else ret_val
 
     @staticmethod
     def plot_mac_schedule(year):
@@ -123,20 +130,22 @@ class MacScheduleData:
                 str(year) + ' from web server')
 
         numeric_data = list()
+        inicurr_data = list()
         userop_count = 0
         for datum in data:
-            if len(datum) < 2:
+            if len(datum) < 3:
                 raise Exception(
                     'there is a date ({0}) with problem in {1} '
                     'machine schedule'.format(datum, year))
 
-            month, day = int(datum[0]), int(datum[1])
-            if len(datum) == 2:
+            month, day, inicurr = int(datum[0]), int(datum[1]), float(datum[2])
+            if len(datum) == 3:
                 timestamp = _datetime(year, month, day, 0, 0).timestamp()
                 numeric_data.append((timestamp, 0))
+                inicurr_data.append((timestamp, inicurr))
             else:
                 userop_count += 1
-                for tag in datum[2:]:
+                for tag in datum[3:]:
                     hour, minute, flag = _re.findall(
                         MacScheduleData._TAG_FORMAT, tag)[0]
                     flag_bit = 0 if flag == 'E' else 1
@@ -144,10 +153,36 @@ class MacScheduleData:
                     timestamp = _datetime(
                         year, month, day, hour, minute).timestamp()
                     numeric_data.append((timestamp, flag_bit))
+                    inicurr_data.append((timestamp, inicurr))
 
         MacScheduleData._mac_schedule_data_plain[year] = data
         MacScheduleData._mac_schedule_data_numeric[year] = numeric_data
-        MacScheduleData._user_operation_count[year] = userop_count
+        MacScheduleData._mac_schedule_data_inicurr[year] = inicurr_data
+        MacScheduleData._user_shift_count[year] = userop_count
+
+    @staticmethod
+    def _handle_timestamp_data(
+            timestamp=None, datetime=None, year=None,
+            month=None, day=None, hour=None, minute=None):
+        ret_uni = False
+        if timestamp is not None:
+            if not isinstance(timestamp, (list, tuple, _np.ndarray)):
+                timestamp = [timestamp, ]
+                ret_uni = True
+            datetime = [_datetime.fromtimestamp(ts) for ts in timestamp]
+        elif datetime is not None:
+            if not isinstance(datetime, (list, tuple, _np.ndarray)):
+                datetime = [datetime, ]
+                ret_uni = True
+            timestamp = [dt.timestamp() for dt in datetime]
+        elif year is not None:
+            ret_uni = True
+            datetime = [_datetime(year, month, day, hour, minute), ]
+            timestamp = [dt.timestamp() for dt in datetime]
+        else:
+            raise Exception(
+                'Enter timestamp, datetime or datetime items data.')
+        return timestamp, datetime, ret_uni
 
 
 class MacReport:
