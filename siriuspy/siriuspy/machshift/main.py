@@ -17,7 +17,7 @@ class App(_Callback):
         super().__init__()
         self._pvs_database = _get_database()
 
-        self._progmd_users = _MacSched.is_user_operation_predefined(
+        self._progmd_users = _MacSched.is_user_shift_programmed(
             datetime=_datetime.now())
         self._mode = _Const.MachShift.Commissioning
 
@@ -40,7 +40,7 @@ class App(_Callback):
         """Read from IOC database."""
         value = None
         if 'ProgmdUsersShift' in reason:
-            new_progmd_users = _MacSched.is_user_operation_predefined(
+            new_progmd_users = _MacSched.is_user_shift_programmed(
                 datetime=_datetime.now())
             if new_progmd_users != self._progmd_users:
                 self._progmd_users = new_progmd_users
