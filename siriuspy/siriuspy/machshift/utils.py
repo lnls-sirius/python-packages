@@ -278,7 +278,7 @@ class MacReport:
     """
 
     _THOLD_STOREDBEAM = 0.005  # [mA]
-    _THOLD_FACTOR_USERSSBEAM = 20  # [%]
+    _THOLD_FACTOR_USERSSBEAM = 0.2  # 20%
     _AVG_TIME = 60  # [s]
 
     def __init__(self, connector=None, logger=None):
@@ -298,8 +298,8 @@ class MacReport:
         self._pvnames = [
             'SI-Glob:AP-CurrInfo:Current-Mon',
             'AS-Glob:AP-MachShift:Mode-Sts',
-            'LI-01:EG-TriggerPS:enablereal',
-            'LI-01:EG-PulsePS:singleselstatus',
+            # 'LI-01:EG-TriggerPS:enablereal',
+            # 'LI-01:EG-PulsePS:singleselstatus',
         ]
         self._pvnames = [_SiriusPVName(pvn) for pvn in self._pvnames]
 
@@ -554,6 +554,15 @@ class MacReport:
         self._raw_data['UserShiftProgmd'] = self._user_shift_progmd_values
         self._raw_data['UserShiftInitCurr'] = self._user_shift_inicurr_values
 
+        # # single/multi bunch mode data
+        # egtrig_data = self._pvdata['LI-01:EG-PulsePS:singleselstatus']
+        # egtrig_values = _np.array(egtrig_data.value)
+        # egtrig_times = _np.array(egtrig_data.timestamp)
+
+        # egmode_data = self._pvdata['LI-01:EG-TriggerPS:enablereal']
+        # egmode_values = _np.array(egmode_data.value)
+        # egmode_times = _np.array(egmode_data.timestamp)
+
         # is stored data
         self._is_stored_total = self._curr_values > MacReport._THOLD_STOREDBEAM
         self._is_stored_users = self._curr_values >= \
@@ -563,13 +572,18 @@ class MacReport:
         self._user_shift_act_values = \
             self._user_shift_values * self._is_stored_users
 
-        shift_beg_idcs = _np.where(
-            _np.diff(self._user_shift_progmd_values) > 0)[0]
-        shift_end_idcs = _np.where(
-            _np.diff(self._user_shift_progmd_values) < 0)[0]
-        shift_sts_values = [_np.mean(
-            self._user_shift_act_values[shift_beg_idcs[i]:shift_end_idcs[i]]
-            for i in shift_beg_idcs.size)]
+        self._shift_transit = _np.diff(self._user_shift_progmd_values)
+        shift_beg_idcs = _np.where(self._shift_transit == 1)[0]
+        shift_end_idcs = _np.where(self._shift_transit == -1)[0]
+        if shift_beg_idcs[0] > shift_end_idcs[0]:
+            shift_end_idcs = shift_end_idcs[1:]
+        if shift_beg_idcs.size > shift_end_idcs.size:
+            shift_end_idcs = _np.r_[
+                shift_end_idcs, self._user_shift_progmd_values.size-1]
+        shift_sts_values = [
+            _np.mean(self._user_shift_act_values[
+                shift_beg_idcs[i]:shift_end_idcs[i]])
+            for i in range(shift_beg_idcs.size)]
         self._user_shift_canceled_count = _np.sum(
             _np.logical_not(shift_sts_values))
 
@@ -613,7 +627,7 @@ class MacReport:
         # # injection shift metrics
         self._inj_shift_interval = _np.sum(dtimes_injection)
 
-        self._inj_shift_count = _np.sum(_np.diff(dtimes_injection) > 0)
+        self._inj_shift_count = _np.sum(_np.diff(self._inj_shift_values) > 0)
 
         self._inj_shift_mean_interval = \
             self._inj_shift_interval / self._inj_shift_count
@@ -637,7 +651,7 @@ class MacReport:
             self._user_shift_total_interval)
 
         self._user_shift_max_current = _np.max(
-            self._curr_values*dtimes_users_total)
+            self._curr_values*self._user_shift_act_values)
 
         # # failure metrics
         self._failures_interval = _np.sum(dtimes_failures)
