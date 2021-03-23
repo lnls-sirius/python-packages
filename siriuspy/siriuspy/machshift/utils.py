@@ -587,10 +587,10 @@ class MacReport:
         dtimes_injection = dtimes*self._inj_shift_values
 
         self._raw_data['Failures'] = dict()
-        self._raw_data['Failures']['WrongShift'] = \
-            1 * ((self._user_shift_progmd_values-self._user_shift_values) > 0)
         self._raw_data['Failures']['NoEBeam'] = \
             _np.logical_not(self._is_stored_users)*dtimes_users_progmd
+        self._raw_data['Failures']['WrongShift'] = \
+            1 * ((self._user_shift_progmd_values-self._user_shift_values) > 0)
 
         self._failures = 1 * _np.logical_or.reduce(
             [value for value in self._raw_data['Failures'].values()])
@@ -605,14 +605,18 @@ class MacReport:
         # # total stored beam metrics
         self._ebeam_total_interval = _np.sum(dtimes_total_stored)
 
-        self._ebeam_total_average_current = \
-            _np.sum(self._curr_values*dtimes_total_stored) / \
-            self._ebeam_total_interval
+        if not self._ebeam_total_interval:
+            self._ebeam_total_average_current = 0.0
+            self._ebeam_total_stddev_current = 0.0
+        else:
+            self._ebeam_total_average_current = \
+                _np.sum(self._curr_values*dtimes_total_stored) / \
+                self._ebeam_total_interval
 
-        aux = (self._curr_values - self._ebeam_total_average_current)
-        self._ebeam_total_stddev_current = _np.sqrt(
-            _np.sum(aux*aux*dtimes_total_stored) /
-            self._ebeam_total_interval)
+            aux = (self._curr_values - self._ebeam_total_average_current)
+            self._ebeam_total_stddev_current = _np.sqrt(
+                _np.sum(aux*aux*dtimes_total_stored) /
+                self._ebeam_total_interval)
 
         self._ebeam_total_max_current = _np.max(self._curr_values)
 
@@ -621,7 +625,7 @@ class MacReport:
 
         self._inj_shift_count = _np.sum(_np.diff(self._inj_shift_values) > 0)
 
-        self._inj_shift_mean_interval = \
+        self._inj_shift_mean_interval = 0.0 if self._inj_shift_count == 0 else\
             self._inj_shift_interval / self._inj_shift_count
 
         # # users shift metrics
@@ -633,14 +637,18 @@ class MacReport:
 
         self._user_shift_total_interval = _np.sum(dtimes_users_total)
 
-        self._user_shift_average_current = \
-            _np.sum(self._curr_values*dtimes_users_total) / \
-            self._user_shift_total_interval
+        if not self._user_shift_total_interval:
+            self._user_shift_average_current = 0.0
+            self._user_shift_stddev_current = 0.0
+        else:
+            self._user_shift_average_current = \
+                _np.sum(self._curr_values*dtimes_users_total) / \
+                self._user_shift_total_interval
 
-        aux = (self._curr_values - self._user_shift_average_current)
-        self._user_shift_stddev_current = _np.sqrt(
-            _np.sum(aux*aux*dtimes_users_total) /
-            self._user_shift_total_interval)
+            aux = (self._curr_values - self._user_shift_average_current)
+            self._user_shift_stddev_current = _np.sqrt(
+                _np.sum(aux*aux*dtimes_users_total) /
+                self._user_shift_total_interval)
 
         self._user_shift_max_current = _np.max(
             self._curr_values*self._user_shift_act_values)
@@ -650,16 +658,19 @@ class MacReport:
 
         self._failures_count = _np.sum(_np.diff(self._failures) > 0)
 
-        self._beam_loss_count = _np.sum(
-            _np.diff(self._raw_data['Failures']['NoEBeam']) > 0)
+        beam_loss_values = _np.logical_not(
+            self._raw_data['Failures']['WrongShift']) * \
+            self._raw_data['Failures']['NoEBeam']
+        self._beam_loss_count = _np.sum(_np.diff(beam_loss_values) > 0)
 
-        self._mean_time_to_recover = \
+        self._mean_time_to_recover = 0.0 if not self._failures_count else \
             self._failures_interval/self._failures_count
 
-        self._mean_time_between_failures = \
-            self._user_shift_progmd_interval/self._failures_count
+        self._mean_time_between_failures = _np.inf if not self._failures_count\
+            else self._user_shift_progmd_interval/self._failures_count
 
         self._beam_availability = \
+            0.0 if not self._user_shift_progmd_interval else \
             self._user_shift_impltd_interval/self._user_shift_progmd_interval
 
     def __getitem__(self, pvname):
