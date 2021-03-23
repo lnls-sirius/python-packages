@@ -102,9 +102,10 @@ class MacScheduleData:
         new_datetimes = [_datetime.fromtimestamp(ts) for ts in new_timestamp]
         new_tags = fun(new_timestamp)
 
-        _plt.plot_date(new_datetimes, new_tags, '-', label='')
+        fig = _plt.figure()
+        _plt.plot_date(new_datetimes, new_tags, '-')
         _plt.title('Machine Schedule - ' + str(year))
-        _plt.show()
+        return fig
 
     # --- private methods ---
 
@@ -489,6 +490,60 @@ class MacReport:
     def raw_data(self):
         """Shift data and failures details."""
         return self._raw_data
+
+    def plot_raw_data(self):
+        """Plot raw data for period timestamp_start to timestamp_stop."""
+        datetimes = [_datetime.fromtimestamp(t)
+                     for t in self._raw_data['Timestamp']]
+
+        fig, axs = _plt.subplots(7, 1, sharex=True)
+        fig.set_size_inches(8, 8)
+        axs[0].set_title('Raw data')
+
+        axs[0].plot_date(
+            datetimes, self._raw_data['Current'], '-',
+            color='blue', label='Current')
+        axs[0].legend(loc='upper left')
+        axs[0].grid()
+
+        axs[1].plot_date(
+            datetimes, self._raw_data['UserShiftInitCurr'], '-',
+            color='blue', label='User Shifts - Initial Current')
+        axs[1].legend(loc='upper left')
+        axs[1].grid()
+
+        axs[2].plot_date(
+            datetimes, self._raw_data['InjShift'], '-',
+            color='lightsalmon', label='Injection Shifts')
+        axs[2].legend(loc='upper left')
+        axs[2].grid()
+
+        axs[3].plot_date(
+            datetimes, self._raw_data['UserShiftProgmd'], '-',
+            color='gold', label='User Shifts - Programmed')
+        axs[3].legend(loc='upper left')
+        axs[3].grid()
+
+        axs[4].plot_date(
+            datetimes, self._raw_data['UserShiftTotal'], '-',
+            color='gold', label='User Shifts - Total')
+        axs[4].legend(loc='upper left')
+        axs[4].grid()
+
+        axs[5].plot_date(
+            datetimes, self._raw_data['Failures']['NoEBeam'], '-',
+            color='red', label='Failures - NoEBeam')
+        axs[5].legend(loc='upper left')
+        axs[5].grid()
+
+        axs[6].plot_date(
+            datetimes, self._raw_data['Failures']['WrongShift'], '-',
+            color='red', label='Failures - WrongShift')
+        axs[6].legend(loc='upper left')
+        axs[6].grid()
+
+        fig.tight_layout()
+        return fig
 
     # ----- auxiliary methods -----
 
