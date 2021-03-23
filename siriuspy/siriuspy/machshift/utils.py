@@ -222,20 +222,21 @@ class MacReport:
     Reports available:
     - ebeam_total_interval
         Time interval in which there was stored beam, for any
-        current value above a threshold (_THOLD_STOREDBEAM)
+        current value above a threshold (THOLD_STOREDBEAM)
     - ebeam_total_average_current
         Average current considering the entire interval in which
-        there was any current above a threshold (_THOLD_STOREDBEAM)
+        there was any current above a threshold (THOLD_STOREDBEAM)
     - ebeam_total_stddev_current
         Current standard deviation considering the entire interval in which
-        there was any current above a threshold (_THOLD_STOREDBEAM)
+        there was any current above a threshold (THOLD_STOREDBEAM)
     - ebeam_total_max_current
         Maximum current considering the entire interval in which
-        there was any current above a threshold (_THOLD_STOREDBEAM)
+        there was any current above a threshold (THOLD_STOREDBEAM)
     - user_shift_progmd_interval
         Time interval programmed to be user shift.
     - user_shift_impltd_interval
-        Time interval implemented as programmed user shift.
+        Time interval implemented as programmed user shift, considering
+        right shift and current above initial current*THOLD_FACTOR_USERSSBEAM.
     - user_shift_extra_interval
         Extra user shift time interval.
     - user_shift_total_interval
@@ -270,9 +271,9 @@ class MacReport:
         Ratio between time implemented and time programmed as user shift.
     """
 
-    _THOLD_STOREDBEAM = 0.005  # [mA]
-    _THOLD_FACTOR_USERSSBEAM = 0.2  # 20%
-    _AVG_TIME = 60  # [s]
+    THOLD_STOREDBEAM = 0.005  # [mA]
+    THOLD_FACTOR_USERSSBEAM = 0.2  # 20%
+    AVG_TIME = 60  # [s]
 
     def __init__(self, connector=None, logger=None):
         """Initialize object."""
@@ -473,7 +474,7 @@ class MacReport:
     def update(self, avg_intvl=None):
         """Update."""
         if avg_intvl is None:
-            avg_intvl = MacReport._AVG_TIME
+            avg_intvl = MacReport.AVG_TIME
         for pvname in self._pvnames:
             _t0 = _time.time()
             pvdata = self._pvdata[pvname]
@@ -611,9 +612,9 @@ class MacReport:
         # egmode_times = _np.array(egmode_data.timestamp)
 
         # is stored data
-        self._is_stored_total = self._curr_values > MacReport._THOLD_STOREDBEAM
+        self._is_stored_total = self._curr_values > MacReport.THOLD_STOREDBEAM
         self._is_stored_users = self._curr_values >= \
-            self._user_shift_inicurr_values*MacReport._THOLD_FACTOR_USERSSBEAM
+            self._user_shift_inicurr_values*MacReport.THOLD_FACTOR_USERSSBEAM
 
         # canceled shifts
         self._user_shift_act_values = \
