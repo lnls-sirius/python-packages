@@ -34,6 +34,7 @@ class ETypes(_csdev.ETypes):
     ORB_ACQ_CHAN = ('Monit1', 'FOFB', 'TbT', 'ADC', 'ADCSwp')
     MEAS_RMAT_CMD = ('Start', 'Stop', 'Reset')
     MEAS_RMAT_MON = ('Idle', 'Measuring', 'Completed', 'Aborted')
+    DRIVE_TYPE = ('Sine', 'Square', 'Impulse')
     TLINES = ('TB', 'TS')
     RINGS = ('BO', 'SI')
     ACCELERATORS = TLINES + RINGS
@@ -60,6 +61,7 @@ class ConstTLines(_csdev.Const):
     ORBIT_CONVERSION_UNIT = 1/1000  # from nm to um
     MAX_MT_ORBS = 4000
     MAX_RINGSZ = 5
+    MAX_DRIVE_DATA = 3 * 5000
     MIN_SING_VAL = 0.2
     TIKHONOV_REG_CONST = 0
     TINY_KICK = 1e-3  # [urad]
@@ -118,6 +120,8 @@ class ConstSI(ConstRings):
     CorrSync = _csdev.Const.register('CorrSync', _et.SI_CORR_SYNC)
     CorrPSSOFBEnbl = _csdev.Const.register('CorrPSSOFBEnbl', _et.DSBLD_ENBLD)
     CorrPSSOFBWait = _csdev.Const.register('CorrPSSOFBWait', _et.OFF_ON)
+    DriveType = _csdev.Const.register('DriveType', _et.DRIVE_TYPE)
+    DriveState = _csdev.Const.register('DriveState', _et.OPEN_CLOSED)
 
     RF_GEN_NAME = 'RF-Gen'
     CORR_DEF_DELAY = 35  # [ms]
@@ -836,6 +840,59 @@ class SOFBSI(SOFBRings, ConstSI):
                 'type': 'float', 'value': 0, 'prec': 2, 'unit': 'Hz'},
             'DeltaKickRF-RB': {
                 'type': 'float', 'value': 0, 'prec': 2, 'unit': 'Hz'},
+            'DriveFreqDivisor-SP': {
+                'type': 'int', 'value': 12, 'unit': 'Div',
+                'lolim': 0, 'hilim': 1000},
+            'DriveFreqDivisor-RB': {
+                'type': 'int', 'value': 12, 'unit': 'Div',
+                'lolim': 0, 'hilim': 1000},
+            'DriveFrequency-Mon': {
+                'type': 'float', 'value': self.BPMsFreq/12, 'prec': 3,
+                'unit': 'Hz', 'lolim': 0, 'hilim': 1000},
+            'DriveNrCycles-SP': {
+                'type': 'int', 'value': 10, 'unit': 'number',
+                'lolim': 0, 'hilim': 1000},
+            'DriveNrCycles-RB': {
+                'type': 'int', 'value': 10, 'unit': 'number',
+                'lolim': 0, 'hilim': 1000},
+            'DriveDuration-Mon': {
+                'type': 'float', 'value': 12/self.BPMsFreq*10, 'prec': 1,
+                'unit': 's', 'lolim': 0, 'hilim': 1000},
+            'DriveAmplitude-SP': {
+                'type': 'float', 'value': 5, 'prec': 2, 'unit': 'urad or Hz',
+                'lolim': -100, 'hilim': 100},
+            'DriveAmplitude-RB': {
+                'type': 'float', 'value': 5, 'prec': 2, 'unit': 'urad or Hz',
+                'lolim': -100, 'hilim': 100},
+            'DrivePhase-SP': {
+                'type': 'float', 'value': 0, 'prec': 3, 'unit': 'deg',
+                'lolim': -360, 'hilim': 360},
+            'DrivePhase-RB': {
+                'type': 'float', 'value': 0, 'prec': 3, 'unit': 'deg',
+                'lolim': -360, 'hilim': 360},
+            'DriveCorrIndex-SP': {
+                'type': 'int', 'value': 0, 'unit': 'number',
+                'lolim': -self.nr_corrs, 'hilim': self.nr_corrs},
+            'DriveCorrIndex-RB': {
+                'type': 'int', 'value': 0, 'unit': 'number',
+                'lolim': -self.nr_corrs, 'hilim': self.nr_corrs},
+            'DriveBPMIndex-SP': {
+                'type': 'int', 'value': 0, 'unit': 'number',
+                'lolim': -self.nr_bpms*2, 'hilim': self.nr_bpms*2},
+            'DriveBPMIndex-RB': {
+                'type': 'int', 'value': 0, 'unit': 'number',
+                'lolim': -self.nr_bpms*2, 'hilim': self.nr_bpms*2},
+            'DriveType-Sel': {
+                'type': 'enum', 'enums': self.DriveType._fields, 'value': 0},
+            'DriveType-Sts': {
+                'type': 'enum', 'enums': self.DriveType._fields, 'value': 0},
+            'DriveState-Sel': {
+                'type': 'enum', 'enums': self.DriveState._fields, 'value': 0},
+            'DriveState-Sts': {
+                'type': 'enum', 'enums': self.DriveState._fields, 'value': 0},
+            'DriveData-Mon': {
+                'type': 'float', 'unit': '(s, urad, um)',
+                'count': self.MAX_DRIVE_DATA, 'value': self.MAX_DRIVE_DATA*[0]}
             }
         dbase = super().get_sofb_database(prefix=prefix)
         dbase.update(self._add_prefix(db_ring, prefix))
