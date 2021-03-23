@@ -53,51 +53,42 @@ class MacScheduleData:
         """Get users shift count for a period."""
         begin, end = MacScheduleData._handle_interval_data(begin, end)
         _, tags = MacScheduleData._get_numeric_data_for_interval(
-            begin, end, data='macsched_byshift')
-        return _np.sum(tags)
+            begin, end, dtype='macsched_byshift')
+        return _np.sum(tags) if begin != end else 0
 
     @staticmethod
     def get_users_shift_day_count(begin, end):
         """Get users shift day count for a period."""
         begin, end = MacScheduleData._handle_interval_data(begin, end)
         _, tags = MacScheduleData._get_numeric_data_for_interval(
-            begin, end, data='macsched_byday')
-        return _np.sum(tags)
+            begin, end, dtype='macsched_byday')
+        return _np.sum(tags) if begin != end else 0
 
     @staticmethod
     def is_user_shift_programmed(
             timestamp=None, datetime=None,
             year=None, month=None, day=None, hour=0, minute=0):
         """Return whether a day is a predefined user shift."""
-        timestamp, datetime = MacScheduleData._handle_timestamp_data(
+        timestamp, datetime, ret_uni = MacScheduleData._handle_timestamp_data(
             timestamp, datetime, year, month, day, hour, minute)
-        if isinstance(timestamp, float):
-            begin = _datetime(datetime.year, 1, 1, 0, 0)
-            end = _datetime(datetime.year, 12, 31, 23, 59)
-        else:
-            begin, end = datetime[0], datetime[-1]
         times, tags = MacScheduleData._get_numeric_data_for_interval(
-            begin, end, data='macsched_byshift')
+            datetime[0], datetime[-1], dtype='macsched_byshift')
         fun = _interp1d(times, tags, 'previous', fill_value='extrapolate')
         val = fun(timestamp)
-        return bool(val) if isinstance(timestamp, float) else val
+        return bool(val) if ret_uni else val
 
     @staticmethod
     def get_initial_current_programmed(
             timestamp=None, datetime=None,
             year=None, month=None, day=None, hour=0, minute=0):
         """Return initial current for shift."""
-        timestamp, datetime = MacScheduleData._handle_timestamp_data(
+        timestamp, datetime, ret_uni = MacScheduleData._handle_timestamp_data(
             timestamp, datetime, year, month, day, hour, minute)
-        if isinstance(timestamp, float):
-            begin = _datetime(datetime.year, 1, 1, 0, 0)
-            end = _datetime(datetime.year, 12, 31, 23, 59)
-        else:
-            begin, end = datetime[0], datetime[-1]
         times, currs = MacScheduleData._get_numeric_data_for_interval(
-            begin, end, data='initial_current')
+            datetime[0], datetime[-1], dtype='initial_current')
         fun = _interp1d(times, currs, 'previous', fill_value='extrapolate')
-        return fun(timestamp)
+        val = fun(timestamp)
+        return val[0] if ret_uni else val
 
     @staticmethod
     def plot_mac_schedule(year):
@@ -113,7 +104,6 @@ class MacScheduleData:
 
         _plt.plot_date(new_datetimes, new_tags, '-', label='')
         _plt.title('Machine Schedule - ' + str(year))
-        _plt.legend()
         _plt.show()
 
     # --- private methods ---
@@ -128,9 +118,9 @@ class MacScheduleData:
         try:
             data, _ = _util.read_text_data(_web.mac_schedule_read(year))
         except Exception:
-            raise Exception(
-                'could not read machine schedule data for year ' +
-                str(year) + ' from web server')
+            print('No data provided for year ' + str(year) + '. '
+                  'Getting template data.')
+            data, _ = _util.read_text_data(_web.mac_schedule_read('template'))
 
         databyshift = list()
         databyday = list()
@@ -187,9 +177,7 @@ class MacScheduleData:
         else:
             raise Exception(
                 'Enter timestamp, datetime or datetime items data.')
-        if ret_uni or len(timestamp) == 1:
-            return timestamp[0], datetime[0]
-        return timestamp, datetime
+        return timestamp, datetime, ret_uni
 
     @staticmethod
     def _handle_interval_data(begin, end):
@@ -202,23 +190,27 @@ class MacScheduleData:
         return begin, end
 
     @staticmethod
-    def _get_numeric_data_for_interval(begin, end, data='macsched_byshift'):
+    def _get_numeric_data_for_interval(begin, end, dtype='macsched_byshift'):
         times, tags = list(), list()
         for y2l in _np.arange(begin.year, end.year+1):
             MacScheduleData._reload_mac_schedule_data(y2l)
-            if data == 'macsched_byshift':
+            if dtype == 'macsched_byshift':
                 data = MacScheduleData._mac_schedule_ndata_byshift[y2l]
-            elif data == 'macsched_byday':
+            elif dtype == 'macsched_byday':
                 data = MacScheduleData._mac_schedule_ndata_byday[y2l]
-            elif data == 'initial_current':
+            elif dtype == 'initial_current':
                 data = MacScheduleData._mac_schedule_ndata_inicurr[y2l]
             ytim, ytag = list(zip(*data))
             times.extend(ytim)
             tags.extend(ytag)
         times, tags = _np.array(times), _np.array(tags)
-        idcs = _np.where(_np.logical_and(
-            times >= begin.timestamp(), times <= end.timestamp()))[0]
-        return times[idcs], tags[idcs]
+        if begin != end:
+            idcs = _np.where(_np.logical_and(
+                times >= begin.timestamp(), times <= end.timestamp()))[0]
+            if idcs[0] != 0:
+                idcs = _np.r_[idcs[0]-1, idcs]
+            return times[idcs], tags[idcs]
+        return times, tags
 
 
 class MacReport:
