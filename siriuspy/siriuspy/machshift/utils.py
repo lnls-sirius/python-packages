@@ -273,7 +273,7 @@ class MacReport:
 
     THOLD_STOREDBEAM = 0.005  # [mA]
     THOLD_FACTOR_USERSSBEAM = 0.2  # 20%
-    AVG_TIME = 60  # [s]
+    QUERY_AVG_TIME = 60  # [s]
 
     def __init__(self, connector=None, logger=None):
         """Initialize object."""
@@ -364,7 +364,7 @@ class MacReport:
     @property
     def ebeam_total_interval(self):
         """Stored electron beam interval."""
-        return self._ebeam_total_interval
+        return self._ebeam_total_interval/60/60
 
     @property
     def ebeam_total_average_current(self):
@@ -384,32 +384,22 @@ class MacReport:
     @property
     def user_shift_progmd_interval(self):
         """User shift interval programmed."""
-        return self._user_shift_progmd_interval
+        return self._user_shift_progmd_interval/60/60
 
     @property
     def user_shift_impltd_interval(self):
         """User shift interval implemented."""
-        return self._user_shift_impltd_interval
+        return self._user_shift_impltd_interval/60/60
 
     @property
     def user_shift_extra_interval(self):
         """User shift interval extra."""
-        return self._user_shift_extra_interval
-
-    @property
-    def user_shift_progmd_count(self):
-        """User shift programmed count."""
-        return self._user_shift_progmd_count
-
-    @property
-    def user_shift_canceled_count(self):
-        """User shift canceled count."""
-        return self._user_shift_canceled_count
+        return self._user_shift_extra_interval/60/60
 
     @property
     def user_shift_total_interval(self):
         """User shift interval total (implemented + extra)."""
-        return self._user_shift_total_interval
+        return self._user_shift_total_interval/60/60
 
     @property
     def user_shift_average_current(self):
@@ -427,9 +417,19 @@ class MacReport:
         return self._user_shift_max_current
 
     @property
+    def user_shift_progmd_count(self):
+        """User shift programmed count."""
+        return self._user_shift_progmd_count
+
+    @property
+    def user_shift_canceled_count(self):
+        """User shift canceled count."""
+        return self._user_shift_canceled_count
+
+    @property
     def inj_shift_interval(self):
         """Injection shift interval."""
-        return self._inj_shift_interval
+        return self._inj_shift_interval/60/60
 
     @property
     def inj_shift_count(self):
@@ -439,12 +439,12 @@ class MacReport:
     @property
     def inj_shift_mean_interval(self):
         """Injection shift mean interval."""
-        return self._inj_shift_mean_interval
+        return self._inj_shift_mean_interval/60/60
 
     @property
     def failures_interval(self):
         """Failures interval."""
-        return self._failures_interval
+        return self._failures_interval/60/60
 
     @property
     def failures_count(self):
@@ -459,12 +459,12 @@ class MacReport:
     @property
     def mean_time_to_recover(self):
         """Mean time to recover."""
-        return self._mean_time_to_recover
+        return self._mean_time_to_recover/60/60
 
     @property
     def mean_time_between_failures(self):
         """Mean time between failures."""
-        return self._mean_time_between_failures
+        return self._mean_time_between_failures/60/60
 
     @property
     def beam_availability(self):
@@ -474,7 +474,7 @@ class MacReport:
     def update(self, avg_intvl=None):
         """Update."""
         if avg_intvl is None:
-            avg_intvl = MacReport.AVG_TIME
+            avg_intvl = MacReport.QUERY_AVG_TIME
         for pvname in self._pvnames:
             _t0 = _time.time()
             pvdata = self._pvdata[pvname]
