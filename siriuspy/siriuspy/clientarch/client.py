@@ -47,9 +47,8 @@ class ClientArchiver:
         url = self._create_url(method='login')
         loop = asyncio.get_event_loop()
         self.session, authenticated = loop.run_until_complete(
-            handle_login(
-                url, headers=headers, payload=payload, ssl=False,
-                timeout=self.timeout))
+            self.handle_login(
+                url, headers=headers, payload=payload, ssl=False))
         if authenticated:
             print('Reminder: close connection after using this '
                   'session by calling close method!')
@@ -61,7 +60,7 @@ class ClientArchiver:
         """Close login session."""
         if self.session:
             loop = asyncio.get_event_loop()
-            resp = loop.run_until_complete(close_session(self.session))
+            resp = loop.run_until_complete(self.close_session())
             self.session = None
             return resp
         return None
@@ -202,9 +201,8 @@ class ClientArchiver:
 
     def _make_request(self, url, need_login=False, return_json=False):
         loop = asyncio.get_event_loop()
-        response = loop.run_until_complete(handle_request(
-            url, session=self.session, return_json=return_json,
-            need_login=need_login, timeout=self.timeout))
+        response = loop.run_until_complete(self.handle_request(
+            url, return_json=return_json, need_login=need_login))
         return response
 
     def _create_url(self, method, **kwargs):
@@ -220,52 +218,48 @@ class ClientArchiver:
             url += '&'.join(['{}={}'.format(k, v) for k, v in kwargs.items()])
         return url
 
+    # async methods
 
-# async methods
-
-async def handle_request(
-        url, session=None, return_json=False, need_login=False,
-        timeout=_TIMEOUT):
-    """Return request response."""
-    if session is not None:
-        try:
-            resp = await session.get(url)
-            if return_json:
-                resp = await resp.json()
-        except asyncio.TimeoutError as err_msg:
-            raise ConnectionError(err_msg)
-    elif need_login:
-        raise AuthenticationError('You need to login first.')
-    else:
-        async with ClientSession() as sess:
+    async def handle_request(
+            self, url, return_json=False, need_login=False):
+        """Return request response."""
+        if self.session is not None:
             try:
-                if isinstance(url, list):
-                    resp = await asyncio.gather(
-                        *[sess.get(u, ssl=False, timeout=timeout)
-                          for u in url])
-                    if return_json:
-                        resp = await asyncio.gather(
-                            *[r.json() for r in resp])
-                else:
-                    resp = await sess.get(
-                        url, ssl=False, timeout=timeout)
-                    if return_json:
-                        resp = await resp.json()
+                resp = await self.session.get(url)
+                if return_json:
+                    resp = await resp.json()
             except asyncio.TimeoutError as err_msg:
                 raise ConnectionError(err_msg)
-    return resp
+        elif need_login:
+            raise AuthenticationError('You need to login first.')
+        else:
+            async with ClientSession() as sess:
+                try:
+                    if isinstance(url, list):
+                        resp = await asyncio.gather(
+                            *[sess.get(u, ssl=False, timeout=self.timeout)
+                              for u in url])
+                        if return_json:
+                            resp = await asyncio.gather(
+                                *[r.json() for r in resp])
+                    else:
+                        resp = await sess.get(
+                            url, ssl=False, timeout=self.timeout)
+                        if return_json:
+                            resp = await resp.json()
+                except asyncio.TimeoutError as err_msg:
+                    raise ConnectionError(err_msg)
+        return resp
 
+    async def handle_login(self, url, headers, payload, ssl):
+        """Handle login."""
+        session = ClientSession()
+        async with session.post(
+                url, headers=headers, data=payload, ssl=ssl,
+                timeout=self.timeout) as response:
+            authenticated = b"authenticated" in response.content
+        return session, authenticated
 
-async def handle_login(url, headers, payload, ssl, timeout):
-    """Handle login."""
-    session = ClientSession()
-    async with session.post(
-            url, headers=headers, data=payload, ssl=ssl,
-            timeout=timeout) as response:
-        authenticated = b"authenticated" in response.content
-    return session, authenticated
-
-
-async def close_session(session):
-    """Close session."""
-    return await session.close()
+    async def close_session(self):
+        """Close session."""
+        return await self.session.close()
