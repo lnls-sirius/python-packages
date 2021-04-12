@@ -217,44 +217,24 @@ class PVData:
             return
         process_type = 'mean' if mean_sec is not None else ''
 
-        self._aux_data = dict()
         interval = PVData.THREADED_QUERY_BIN_INTERVAL
-        t_start = self._timestamp_start
-        t_stop = t_start + interval
-        if t_start + interval > self._timestamp_stop:
-            t_stop = self._timestamp_stop
-        index = 0
-        with ThreadPoolExecutor(max_workers=100) as executor:
-            while t_stop <= self._timestamp_stop:
-                executor.submit(
-                    self._get_partial_data,
-                    t_start.get_iso8601(), t_stop.get_iso8601(),
-                    process_type, mean_sec, index)
-                index += 1
-                if t_stop == self._timestamp_stop:
-                    break
+        if self._timestamp_start + interval >= self._timestamp_stop:
+            timestamp_start = self._timestamp_start.get_iso8601()
+            timestamp_stop = self._timestamp_stop.get_iso8601()
+        else:
+            t_start = self._timestamp_start
+            t_stop = t_start + interval
+            timestamp_start = [t_start.get_iso8601(), ]
+            timestamp_stop = [t_stop.get_iso8601(), ]
+            while t_stop < self._timestamp_stop:
                 t_start += interval
                 t_stop = t_stop + interval
                 if t_stop + interval > self._timestamp_stop:
                     t_stop = self._timestamp_stop
-            executor.shutdown(wait=True)
+                timestamp_start.append(t_start.get_iso8601())
+                timestamp_stop.append(t_stop.get_iso8601())
 
-        _ts, _vs, _st, _sv = [], [], [], []
-        for idx in range(index):
-            data = self._aux_data[idx]
-            _ts = _np.r_[_ts, data[0]]
-            _vs = _np.r_[_vs, data[1]]
-            _st = _np.r_[_st, data[2]]
-            _sv = _np.r_[_sv, data[3]]
-        if not _ts.size:
-            return
-
-        _, _tsidx = _np.unique(_ts, return_index=True)
         self._timestamp, self._value, self._status, self._severity = \
-            _ts[_tsidx], _vs[_tsidx], _st[_tsidx], _sv[_tsidx]
-
-    def _get_partial_data(self, timestamp_start, timestamp_stop,
-                          process_type, interval, index):
-        self._aux_data[index] = self.connector.getData(
-            self._pvname, timestamp_start, timestamp_stop,
-            process_type=process_type, interval=interval)
+            self.connector.getData(
+                self._pvname, timestamp_start, timestamp_stop,
+                process_type=process_type, interval=mean_sec)

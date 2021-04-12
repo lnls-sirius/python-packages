@@ -5,8 +5,10 @@ See https://slacmshankar.github.io/epicsarchiver_docs/userguide.html
 """
 
 from urllib import parse as _parse
-import requests
+import asyncio
+from aiohttp import ClientSession
 import urllib3 as _urllib3
+import numpy as _np
 
 from .. import envars as _envars
 
@@ -39,31 +41,46 @@ class ClientArchiver:
         raise NotImplementedError
 
     def login(self, username, password):
-        """."""
+        """Open login session."""
         headers = {"User-Agent": "Mozilla/5.0"}
         payload = {"username": username, "password": password}
         url = self._create_url(method='login')
-        self.session = requests.Session()
-        response = self.session.post(
-            url, headers=headers, data=payload, verify=False)
-        return b"authenticated" in response.content
+        loop = asyncio.get_event_loop()
+        self.session, authenticated = loop.run_until_complete(
+            handle_login(
+                url, headers=headers, payload=payload, ssl=False,
+                timeout=self.timeout))
+        if authenticated:
+            print('Reminder: close connection after using this '
+                  'session by calling close method!')
+        else:
+            self.close()
+        return authenticated
+
+    def close(self):
+        """Close login session."""
+        if self.session:
+            loop = asyncio.get_event_loop()
+            resp = loop.run_until_complete(close_session(self.session))
+            self.session = None
+            return resp
+        return None
 
     def getPVsInfo(self, pvnames):
         """."""
         if isinstance(pvnames, (list, tuple)):
             pvnames = ','.join(pvnames)
         url = self._create_url(method='getPVStatus', pv=pvnames)
-        req = self._make_request(url)
-        if not req.ok:
-            return None
-        return req.json()
+        resp = self._make_request(url, return_json=True)
+        return None if not resp else resp
 
     def getAllPVs(self, pvnames):
         """."""
         if isinstance(pvnames, (list, tuple)):
             pvnames = ','.join(pvnames)
         url = self._create_url(method='getAllPVs', pv=pvnames, limit='-1')
-        return self._make_request(url).json()
+        resp = self._make_request(url, return_json=True)
+        return None if not resp else resp
 
     def deletePVs(self, pvnames):
         """."""
@@ -77,7 +94,8 @@ class ClientArchiver:
     def getPausedPVsReport(self):
         """."""
         url = self._create_url(method='getPausedPVsReport')
-        return self._make_request(url).json()
+        resp = self._make_request(url, return_json=True)
+        return None if not resp else resp
 
     def pausePVs(self, pvnames):
         """."""
@@ -90,7 +108,7 @@ class ClientArchiver:
     def renamePV(self, oldname, newname):
         """."""
         url = self._create_url(method='renamePV', pv=oldname, newname=newname)
-        self._make_request(url, need_login=True)
+        return self._make_request(url, need_login=True)
 
     def resumePVs(self, pvnames):
         """."""
@@ -120,8 +138,6 @@ class ClientArchiver:
         stddev -- number of standard deviations.
                   argument used in processing 'ignoreflyers' and 'flyers'.
         """
-        tstart = _parse.quote(timestamp_start)
-        tstop = _parse.quote(timestamp_stop)
         if process_type:
             process_str = process_type
             if interval is not None:
@@ -129,19 +145,50 @@ class ClientArchiver:
                 if 'flyers' in process_type and stddev is not None:
                     process_str += '_' + str(int(stddev))
             pvname = process_str + '(' + pvname + ')'
-        url = self._create_url(
-            method='getData.json', pv=pvname, **{'from': tstart, 'to': tstop})
-        if get_request_url:
-            return url
-        req = self._make_request(url)
-        if not req.ok:
-            return None
-        ans = req.json()
-        data = ans[0]['data']
-        value = [v['val'] for v in data]
-        timestamp = [v['secs'] + v['nanos']/1.0e9 for v in data]
-        status = [v['status'] for v in data]
-        severity = [v['severity'] for v in data]
+
+        if isinstance(timestamp_start, str):
+            timestamp_start = [timestamp_start, ]
+        if isinstance(timestamp_stop, str):
+            timestamp_stop = [timestamp_stop, ]
+
+        if isinstance(timestamp_start, (list, tuple)) and \
+                isinstance(timestamp_stop, (list, tuple)):
+            if get_request_url:
+                tstart = _parse.quote(timestamp_start[0])
+                tstop = _parse.quote(timestamp_stop[-1])
+                url = self._create_url(
+                    method='getData.json', pv=pvname,
+                    **{'from': tstart[0], 'to': tstop[-1]})
+                return url
+
+            urls = []
+            for tstart, tstop in zip(timestamp_start, timestamp_stop):
+                urls.append(self._create_url(
+                    method='getData.json', pv=pvname,
+                    **{'from': _parse.quote(tstart),
+                       'to': _parse.quote(tstop)}))
+
+            resps = self._make_request(urls, return_json=True)
+            if any([not resp for resp in resps]):
+                return None
+
+            _ts, _vs, _st, _sv = [], [], [], []
+            for resp in resps:
+                data = resp[0]['data']
+                _ts = _np.r_[_ts, [v['secs'] + v['nanos']/1.0e9 for v in data]]
+                _vs = _np.r_[_vs, [v['val'] for v in data]]
+                _st = _np.r_[_st, [v['status'] for v in data]]
+                _sv = _np.r_[_sv, [v['severity'] for v in data]]
+            if not _ts.size:
+                return None
+            _, _tsidx = _np.unique(_ts, return_index=True)
+            timestamp, value, status, severity = \
+                _ts[_tsidx], _vs[_tsidx], _st[_tsidx], _sv[_tsidx]
+        else:
+            raise TypeError(
+                "'timestampstart' and 'timestamp_stop' arguments must be "
+                "timestamp strings or iterable.")
+
         return timestamp, value, status, severity
 
     def getPVDetails(self, pvname, get_request_url=False):
@@ -150,26 +197,15 @@ class ClientArchiver:
             method='getPVDetails', pv=pvname)
         if get_request_url:
             return url
-        req = self._make_request(url)
-        if not req.ok:
-            return None
-        data = req.json()
-        return data
+        resp = self._make_request(url)
+        return None if not resp else resp
 
-    def _make_request(self, url, need_login=False):
-        if self.session is not None:
-            try:
-                req = self.session.get(url, timeout=self.timeout)
-            except requests.exceptions.ConnectTimeout as err_msg:
-                raise ConnectionError(err_msg)
-        elif need_login:
-            raise AuthenticationError('You need to login first.')
-        else:
-            try:
-                req = requests.get(url, verify=False, timeout=self.timeout)
-            except requests.exceptions.ConnectTimeout as err_msg:
-                raise ConnectionError(err_msg)
-        return req
+    def _make_request(self, url, need_login=False, return_json=False):
+        loop = asyncio.get_event_loop()
+        response = loop.run_until_complete(handle_request(
+            url, session=self.session, return_json=return_json,
+            need_login=need_login, timeout=self.timeout))
+        return response
 
     def _create_url(self, method, **kwargs):
         """."""
@@ -183,3 +219,53 @@ class ClientArchiver:
             url += '?'
             url += '&'.join(['{}={}'.format(k, v) for k, v in kwargs.items()])
         return url
+
+
+# async methods
+
+async def handle_request(
+        url, session=None, return_json=False, need_login=False,
+        timeout=_TIMEOUT):
+    """Return request response."""
+    if session is not None:
+        try:
+            resp = await session.get(url)
+            if return_json:
+                resp = await resp.json()
+        except asyncio.TimeoutError as err_msg:
+            raise ConnectionError(err_msg)
+    elif need_login:
+        raise AuthenticationError('You need to login first.')
+    else:
+        async with ClientSession() as sess:
+            try:
+                if isinstance(url, list):
+                    resp = await asyncio.gather(
+                        *[sess.get(u, ssl=False, timeout=timeout)
+                          for u in url])
+                    if return_json:
+                        resp = await asyncio.gather(
+                            *[r.json() for r in resp])
+                else:
+                    resp = await sess.get(
+                        url, ssl=False, timeout=timeout)
+                    if return_json:
+                        resp = await resp.json()
+            except asyncio.TimeoutError as err_msg:
+                raise ConnectionError(err_msg)
+    return resp
+
+
+async def handle_login(url, headers, payload, ssl, timeout):
+    """Handle login."""
+    session = ClientSession()
+    async with session.post(
+            url, headers=headers, data=payload, ssl=ssl,
+            timeout=timeout) as response:
+        authenticated = b"authenticated" in response.content
+    return session, authenticated
+
+
+async def close_session(session):
+    """Close session."""
+    return await session.close()
