@@ -261,7 +261,7 @@ class MacReport:
         Total failure duration.
     - failures_count
         Count of failures occurred.
-    - beam_loss_count
+    - beam_dump_count
         Count of beam losses occurred.
     - mean_time_to_recover
         Mean time took to recover from failures.
@@ -321,7 +321,7 @@ class MacReport:
         self._inj_shift_mean_interval = None
         self._failures_interval = None
         self._failures_count = None
-        self._beam_loss_count = None
+        self._beam_dump_count = None
         self._mean_time_to_recover = None
         self._mean_time_between_failures = None
         self._beam_availability = None
@@ -452,9 +452,9 @@ class MacReport:
         return self._failures_count
 
     @property
-    def beam_loss_count(self):
+    def beam_dump_count(self):
         """Beam loss count."""
-        return self._beam_loss_count
+        return self._beam_dump_count
 
     @property
     def mean_time_to_recover(self):
@@ -714,10 +714,10 @@ class MacReport:
 
         self._failures_count = _np.sum(_np.diff(self._failures) > 0)
 
-        beam_loss_values = _np.logical_not(
+        beam_dump_values = _np.logical_not(
             self._raw_data['Failures']['WrongShift']) * \
             self._raw_data['Failures']['NoEBeam']
-        self._beam_loss_count = _np.sum(_np.diff(beam_loss_values) > 0)
+        self._beam_dump_count = _np.sum(_np.diff(beam_dump_values) > 0)
 
         self._mean_time_to_recover = 0.0 if not self._failures_count else \
             self._failures_interval/self._failures_count
