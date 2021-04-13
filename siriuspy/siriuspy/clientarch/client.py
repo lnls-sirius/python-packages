@@ -4,10 +4,12 @@
 See https://slacmshankar.github.io/epicsarchiver_docs/userguide.html
 """
 
-from urllib import parse as _parse
-import asyncio
-from aiohttp import ClientSession
+import asyncio as _asyncio
+import urllib as _urllib
+import ssl as _ssl
 import urllib3 as _urllib3
+from aiohttp import ClientSession as _ClientSession
+
 import numpy as _np
 
 from .. import envars as _envars
@@ -37,15 +39,20 @@ class ClientArchiver:
     @property
     def connected(self):
         """Connected."""
-        # TODO: choose minimal request command in order to check connection.
-        raise NotImplementedError
+        try:
+            status = _urllib.request.urlopen(
+                self._url, timeout=self.timeout,
+                context=_ssl.SSLContext()).status
+            return status == 200
+        except _urllib.error.URLError:
+            return False
 
     def login(self, username, password):
         """Open login session."""
         headers = {"User-Agent": "Mozilla/5.0"}
         payload = {"username": username, "password": password}
         url = self._create_url(method='login')
-        loop = asyncio.get_event_loop()
+        loop = _asyncio.get_event_loop()
         self.session, authenticated = loop.run_until_complete(
             self._create_session(
                 url, headers=headers, payload=payload, ssl=False))
@@ -59,7 +66,7 @@ class ClientArchiver:
     def logout(self):
         """Close login session."""
         if self.session:
-            loop = asyncio.get_event_loop()
+            loop = _asyncio.get_event_loop()
             resp = loop.run_until_complete(self._close_session())
             self.session = None
             return resp
@@ -153,8 +160,8 @@ class ClientArchiver:
         if isinstance(timestamp_start, (list, tuple)) and \
                 isinstance(timestamp_stop, (list, tuple)):
             if get_request_url:
-                tstart = _parse.quote(timestamp_start[0])
-                tstop = _parse.quote(timestamp_stop[-1])
+                tstart = _urllib.parse.quote(timestamp_start[0])
+                tstop = _urllib.parse.quote(timestamp_stop[-1])
                 url = self._create_url(
                     method='getData.json', pv=pvname,
                     **{'from': tstart[0], 'to': tstop[-1]})
@@ -164,8 +171,8 @@ class ClientArchiver:
             for tstart, tstop in zip(timestamp_start, timestamp_stop):
                 urls.append(self._create_url(
                     method='getData.json', pv=pvname,
-                    **{'from': _parse.quote(tstart),
-                       'to': _parse.quote(tstop)}))
+                    **{'from': _urllib.parse.quote(tstart),
+                       'to': _urllib.parse.quote(tstop)}))
 
             resps = self._make_request(urls, return_json=True)
             if any([not resp for resp in resps]):
@@ -203,7 +210,7 @@ class ClientArchiver:
 
     def _make_request(self, url, need_login=False, return_json=False):
         """Make request."""
-        loop = asyncio.get_event_loop()
+        loop = _asyncio.get_event_loop()
         response = loop.run_until_complete(self._handle_request(
             url, return_json=return_json, need_login=need_login))
         return response
@@ -232,7 +239,7 @@ class ClientArchiver:
         elif need_login:
             raise AuthenticationError('You need to login first.')
         else:
-            async with ClientSession() as sess:
+            async with _ClientSession() as sess:
                 response = await self._get_request_response(
                     url, sess, return_json)
         return response
@@ -241,24 +248,24 @@ class ClientArchiver:
         """Get request response."""
         try:
             if isinstance(url, list):
-                response = await asyncio.gather(
+                response = await _asyncio.gather(
                     *[session.get(u, ssl=False, timeout=self.timeout)
                       for u in url])
                 if return_json:
-                    response = await asyncio.gather(
+                    response = await _asyncio.gather(
                         *[r.json() for r in response])
             else:
                 response = await session.get(
                     url, ssl=False, timeout=self.timeout)
                 if return_json:
                     response = await response.json()
-        except asyncio.TimeoutError as err_msg:
+        except _asyncio.TimeoutError as err_msg:
             raise ConnectionError(err_msg)
         return response
 
     async def _create_session(self, url, headers, payload, ssl):
         """Create session and handle login."""
-        session = ClientSession()
+        session = _ClientSession()
         async with session.post(
                 url, headers=headers, data=payload, ssl=ssl,
                 timeout=self.timeout) as response:
