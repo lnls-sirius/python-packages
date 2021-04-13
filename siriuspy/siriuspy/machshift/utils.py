@@ -583,7 +583,6 @@ class MacReport:
             ishift_times, user_shift_values,
             'previous', fill_value='extrapolate')
         self._user_shift_values = user_shift_fun(self._curr_times)
-        self._raw_data['UserShiftTotal'] = self._user_shift_values
 
         # desired shift data
         _t0 = _time.time()
@@ -616,10 +615,12 @@ class MacReport:
         self._is_stored_users = self._curr_values >= \
             self._user_shift_inicurr_values*MacReport.THOLD_FACTOR_USERSSBEAM
 
-        # canceled shifts
+        # user total shift
         self._user_shift_act_values = \
             self._user_shift_values * self._is_stored_users
+        self._raw_data['UserShiftTotal'] = self._user_shift_act_values
 
+        # canceled shifts
         self._shift_transit = _np.diff(self._user_shift_progmd_values)
         shift_beg_idcs = _np.where(self._shift_transit == 1)[0]
         shift_end_idcs = _np.where(self._shift_transit == -1)[0]
