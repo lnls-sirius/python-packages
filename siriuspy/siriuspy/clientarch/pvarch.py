@@ -1,8 +1,6 @@
 """PV Arch Module."""
 
 from datetime import timedelta as _timedelta
-from concurrent.futures import ThreadPoolExecutor
-import numpy as _np
 
 from .client import ClientArchiver as _ClientArchiver
 from .time import Time as _Time
