@@ -211,7 +211,7 @@ class PVData:
         """Update."""
         self.connect()
         if None in (self.timestamp_start, self.timestamp_stop):
-            print('Start and stop timestamps not defined!')
+            print('Start and stop timestamps not defined! Aborting.')
             return
         process_type = 'mean' if mean_sec is not None else ''
 

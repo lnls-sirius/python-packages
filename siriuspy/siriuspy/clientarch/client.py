@@ -27,7 +27,7 @@ class ClientArchiver:
     ENDPOINT = '/mgmt/bpl'
 
     def __init__(self, server_url=None):
-        """."""
+        """Initialize."""
         self.session = None
         self.timeout = _TIMEOUT
         self._url = server_url or self.SERVER_URL
@@ -36,7 +36,7 @@ class ClientArchiver:
 
     @property
     def connected(self):
-        """."""
+        """Connected."""
         # TODO: choose minimal request command in order to check connection.
         raise NotImplementedError
 
@@ -51,12 +51,12 @@ class ClientArchiver:
                 url, headers=headers, payload=payload, ssl=False))
         if authenticated:
             print('Reminder: close connection after using this '
-                  'session by calling close method!')
+                  'session by calling logout method!')
         else:
-            self.close()
+            self.logout()
         return authenticated
 
-    def close(self):
+    def logout(self):
         """Close login session."""
         if self.session:
             loop = asyncio.get_event_loop()
@@ -66,7 +66,7 @@ class ClientArchiver:
         return None
 
     def getPVsInfo(self, pvnames):
-        """."""
+        """Get PVs Info."""
         if isinstance(pvnames, (list, tuple)):
             pvnames = ','.join(pvnames)
         url = self._create_url(method='getPVStatus', pv=pvnames)
@@ -74,7 +74,7 @@ class ClientArchiver:
         return None if not resp else resp
 
     def getAllPVs(self, pvnames):
-        """."""
+        """Get All PVs."""
         if isinstance(pvnames, (list, tuple)):
             pvnames = ','.join(pvnames)
         url = self._create_url(method='getAllPVs', pv=pvnames, limit='-1')
@@ -82,7 +82,7 @@ class ClientArchiver:
         return None if not resp else resp
 
     def deletePVs(self, pvnames):
-        """."""
+        """Delete PVs."""
         if not isinstance(pvnames, (list, tuple)):
             pvnames = (pvnames, )
         for pvname in pvnames:
@@ -91,13 +91,13 @@ class ClientArchiver:
             self._make_request(url, need_login=True)
 
     def getPausedPVsReport(self):
-        """."""
+        """Get Paused PVs Report."""
         url = self._create_url(method='getPausedPVsReport')
         resp = self._make_request(url, return_json=True)
         return None if not resp else resp
 
     def pausePVs(self, pvnames):
-        """."""
+        """Pause PVs."""
         if not isinstance(pvnames, (list, tuple)):
             pvnames = (pvnames, )
         for pvname in pvnames:
@@ -105,12 +105,12 @@ class ClientArchiver:
             self._make_request(url, need_login=True)
 
     def renamePV(self, oldname, newname):
-        """."""
+        """Rename PVs."""
         url = self._create_url(method='renamePV', pv=oldname, newname=newname)
         return self._make_request(url, need_login=True)
 
     def resumePVs(self, pvnames):
-        """."""
+        """Resume PVs."""
         if not isinstance(pvnames, (list, tuple)):
             pvnames = (pvnames, )
         for pvname in pvnames:
@@ -191,7 +191,7 @@ class ClientArchiver:
         return timestamp, value, status, severity
 
     def getPVDetails(self, pvname, get_request_url=False):
-        """."""
+        """Get PV Details."""
         url = self._create_url(
             method='getPVDetails', pv=pvname)
         if get_request_url:
@@ -202,13 +202,14 @@ class ClientArchiver:
     # ---------- auxiliary methods ----------
 
     def _make_request(self, url, need_login=False, return_json=False):
+        """Make request."""
         loop = asyncio.get_event_loop()
         response = loop.run_until_complete(self._handle_request(
             url, return_json=return_json, need_login=need_login))
         return response
 
     def _create_url(self, method, **kwargs):
-        """."""
+        """Create URL."""
         url = self._url
         if method.startswith('getData.json'):
             url += '/retrieval/data'
@@ -224,42 +225,45 @@ class ClientArchiver:
 
     async def _handle_request(
             self, url, return_json=False, need_login=False):
-        """Return request response."""
+        """Handle response."""
         if self.session is not None:
-            try:
-                resp = await self.session.get(url)
-                if return_json:
-                    resp = await resp.json()
-            except asyncio.TimeoutError as err_msg:
-                raise ConnectionError(err_msg)
+            response = await self._get_request_response(
+                url, self.session, return_json)
         elif need_login:
             raise AuthenticationError('You need to login first.')
         else:
             async with ClientSession() as sess:
-                try:
-                    if isinstance(url, list):
-                        resp = await asyncio.gather(
-                            *[sess.get(u, ssl=False, timeout=self.timeout)
-                              for u in url])
-                        if return_json:
-                            resp = await asyncio.gather(
-                                *[r.json() for r in resp])
-                    else:
-                        resp = await sess.get(
-                            url, ssl=False, timeout=self.timeout)
-                        if return_json:
-                            resp = await resp.json()
-                except asyncio.TimeoutError as err_msg:
-                    raise ConnectionError(err_msg)
-        return resp
+                response = await self._get_request_response(
+                    url, sess, return_json)
+        return response
+
+    async def _get_request_response(self, url, session, return_json):
+        """Get request response."""
+        try:
+            if isinstance(url, list):
+                response = await asyncio.gather(
+                    *[session.get(u, ssl=False, timeout=self.timeout)
+                      for u in url])
+                if return_json:
+                    response = await asyncio.gather(
+                        *[r.json() for r in response])
+            else:
+                response = await session.get(
+                    url, ssl=False, timeout=self.timeout)
+                if return_json:
+                    response = await response.json()
+        except asyncio.TimeoutError as err_msg:
+            raise ConnectionError(err_msg)
+        return response
 
     async def _create_session(self, url, headers, payload, ssl):
-        """Handle login."""
+        """Create session and handle login."""
         session = ClientSession()
         async with session.post(
                 url, headers=headers, data=payload, ssl=ssl,
                 timeout=self.timeout) as response:
-            authenticated = b"authenticated" in response.content
+            content = await response.content.read()
+            authenticated = b"authenticated" in content
         return session, authenticated
 
     async def _close_session(self):
