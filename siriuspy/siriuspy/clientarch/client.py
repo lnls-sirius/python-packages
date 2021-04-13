@@ -47,7 +47,7 @@ class ClientArchiver:
         url = self._create_url(method='login')
         loop = asyncio.get_event_loop()
         self.session, authenticated = loop.run_until_complete(
-            self.handle_login(
+            self._create_session(
                 url, headers=headers, payload=payload, ssl=False))
         if authenticated:
             print('Reminder: close connection after using this '
@@ -60,7 +60,7 @@ class ClientArchiver:
         """Close login session."""
         if self.session:
             loop = asyncio.get_event_loop()
-            resp = loop.run_until_complete(self.close_session())
+            resp = loop.run_until_complete(self._close_session())
             self.session = None
             return resp
         return None
@@ -199,9 +199,11 @@ class ClientArchiver:
         resp = self._make_request(url)
         return None if not resp else resp
 
+    # ---------- auxiliary methods ----------
+
     def _make_request(self, url, need_login=False, return_json=False):
         loop = asyncio.get_event_loop()
-        response = loop.run_until_complete(self.handle_request(
+        response = loop.run_until_complete(self._handle_request(
             url, return_json=return_json, need_login=need_login))
         return response
 
@@ -218,9 +220,9 @@ class ClientArchiver:
             url += '&'.join(['{}={}'.format(k, v) for k, v in kwargs.items()])
         return url
 
-    # async methods
+    # ---------- async methods ----------
 
-    async def handle_request(
+    async def _handle_request(
             self, url, return_json=False, need_login=False):
         """Return request response."""
         if self.session is not None:
@@ -251,7 +253,7 @@ class ClientArchiver:
                     raise ConnectionError(err_msg)
         return resp
 
-    async def handle_login(self, url, headers, payload, ssl):
+    async def _create_session(self, url, headers, payload, ssl):
         """Handle login."""
         session = ClientSession()
         async with session.post(
@@ -260,6 +262,6 @@ class ClientArchiver:
             authenticated = b"authenticated" in response.content
         return session, authenticated
 
-    async def close_session(self):
+    async def _close_session(self):
         """Close session."""
         return await self.session.close()
