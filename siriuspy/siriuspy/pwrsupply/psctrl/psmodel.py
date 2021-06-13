@@ -317,7 +317,7 @@ class PSModelFBP(_PSModel):
     }
 
     _pruc_properties = {
-        'SOFBMode-Sts': 'sofb_mode',
+        'StandByMode-Sts': 'standby_mode',
         'SOFBCurrent-RB': 'sofb_current_rb',
         'SOFBCurrentRef-Mon': 'sofb_current_refmon',
         'SOFBCurrent-Mon': 'sofb_current_mon',
@@ -328,8 +328,8 @@ class PSModelFBP(_PSModel):
         if epics_field == 'SOFBCurrent-SP':
             return _writers.SOFBCurrent(
                 device_ids, pru_controller, setpoints)
-        if epics_field == 'SOFBMode-Sel':
-            return _writers.SOFBMode(pru_controller, setpoints)
+        if epics_field == 'StandByMode-Sel':
+            return _writers.StandByMode(pru_controller, setpoints)
         if epics_field == 'SOFBUpdate-Cmd':
             return _writers.SOFBUpdate(pru_controller, setpoints)
         return super().writer(

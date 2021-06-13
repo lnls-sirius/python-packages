@@ -90,7 +90,7 @@ class ConstTLines(_csdev.Const):
     Rings = _csdev.Const.register('Rings', _et.RINGS, (2, 3))
     Accelerators = _csdev.Const.register('Accelerators', _et.ACCELERATORS)
 
-    SOFBMode = _csdev.Const.register('SOFBMode', _et.ORB_MODE_TLINES)
+    StandByMode = _csdev.Const.register('StandByMode', _et.ORB_MODE_TLINES)
     SyncWithInj = _csdev.Const.register('SyncWithInj', _et.OFF_ON)
     ApplyDelta = _csdev.Const.register('ApplyDelta', _et.APPLY_CORR_TLINES)
     ApplyDeltaMon = _csdev.Const.register(
@@ -106,7 +106,7 @@ class ConstTLines(_csdev.Const):
 class ConstRings(ConstTLines):
     """Const class defining rings orbitcorr constants."""
 
-    SOFBMode = _csdev.Const.register('SOFBMode', _et.ORB_MODE_RINGS)
+    StandByMode = _csdev.Const.register('StandByMode', _et.ORB_MODE_RINGS)
     StsLblsCorr = _csdev.Const.register('StsLblsCorr', _et.STS_LBLS_CORR_RINGS)
     MTurnAcquire = _csdev.Const.register('MTurnAcquire', _et.MTURN_ACQUIRE)
 
@@ -114,7 +114,7 @@ class ConstRings(ConstTLines):
 class ConstSI(ConstRings):
     """Const class defining rings orbitcorr constants."""
 
-    SOFBMode = _csdev.Const.register('SOFBMode', _et.ORB_MODE_SI)
+    StandByMode = _csdev.Const.register('StandByMode', _et.ORB_MODE_SI)
     ApplyDelta = _csdev.Const.register('ApplyDelta', _et.APPLY_CORR_SI)
     StsLblsCorr = _csdev.Const.register('StsLblsCorr', _et.STS_LBLS_CORR_SI)
     CorrSync = _csdev.Const.register('CorrSync', _et.SI_CORR_SYNC)
@@ -418,12 +418,12 @@ class SOFBTLines(ConstTLines):
         dbase.update({
             'SOFBMode-Sel': {
                 'type': 'enum', 'unit': 'Change orbit acquisition mode.',
-                'value': self.SOFBMode.Offline,
-                'enums': self.SOFBMode._fields},
+                'value': self.StandByMode.Offline,
+                'enums': self.StandByMode._fields},
             'SOFBMode-Sts': {
                 'type': 'enum', 'unit': 'Change orbit acquisition mode.',
-                'value': self.SOFBMode.Offline,
-                'enums': self.SOFBMode._fields},
+                'value': self.StandByMode.Offline,
+                'enums': self.StandByMode._fields},
             'SyncWithInjection-Sel': {
                 'type': 'enum', 'unit': 'Sync orbit acq. with injection',
                 'value': self.SyncWithInj.Off,

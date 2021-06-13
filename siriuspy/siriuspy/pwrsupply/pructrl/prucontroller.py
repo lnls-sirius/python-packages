@@ -57,7 +57,7 @@ class PRUController:
         t0_ = _time.time()
 
         # init sofb mode to false
-        self._sofb_mode = False
+        self._standby_mode = False
 
         # index of device in self._device_ids for next update in SOFB mode
         self._sofb_update_dev_idx = 0  # cyclical updates!
@@ -242,11 +242,11 @@ class PRUController:
         -------
         status : bool
             True is operation was queued or False, if operation was rejected
-            because of the SOFBMode state.
+            because of the StandByMode state.
 
         """
-        # if in SOFBMode on, do not accept exec functions
-        if self._sofb_mode:
+        # if in StandByMode on, do not accept exec functions
+        if self._standby_mode:
             return False
 
         # prepare arguments
@@ -287,8 +287,8 @@ class PRUController:
 
     def wfmref_write(self, device_ids, data):
         """Write wfm curves."""
-        # if in SOFBMode on, do not accept exec functions
-        if self._sofb_mode:
+        # if in StandByMode on, do not accept exec functions
+        if self._standby_mode:
             return False
 
         # prepare arguments
@@ -329,17 +329,17 @@ class PRUController:
 
     # --- SOFBCurrent parameters ---
 
-    def sofb_mode_set(self, state):
+    def standby_mode_set(self, state):
         """Change SOFB mode: True or False."""
-        self._sofb_mode = state
+        self._standby_mode = state
         if state:
             while self._queue:  # wait until queue is empty
                 pass
 
     @property
-    def sofb_mode(self):
+    def standby_mode(self):
         """Return SOFB mode."""
-        return self._sofb_mode
+        return self._standby_mode
 
     def sofb_current_set(self, value):
         """."""
@@ -369,8 +369,8 @@ class PRUController:
 
     def sofb_update_variables_state(self):
         """Update variables state mirror."""
-        # do sofb update only if in SOFBMode On
-        if not self._sofb_mode:
+        # do sofb update only if in StandByMode On
+        if not self._standby_mode:
             return
 
         # wait until queue is empty
@@ -507,7 +507,7 @@ class PRUController:
             # run scan method once
             if self.scanning and \
                self._scan_interval != 0 and \
-               not self._sofb_mode:
+               not self._standby_mode:
                 self.bsmp_scan()
 
             # update scan interval

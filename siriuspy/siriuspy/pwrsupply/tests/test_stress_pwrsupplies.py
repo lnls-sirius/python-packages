@@ -37,30 +37,30 @@ class PVGroup:
 class Cmd:
     def __init__(self, devs):
         self.devs = devs
-        self.sofbmode_sp = PVGroup(devs, 'SOFBMode-Sel')
-        self.sofbmode_rb = PVGroup(devs, 'SOFBMode-Sts')
+        self.standbymode_sp = PVGroup(devs, 'StandByMode-Sel')
+        self.standbymode_rb = PVGroup(devs, 'StandByMode-Sts')
         self.opmode_sp = PVGroup(devs, 'OpMode-Sel')
         self.opmode_rb = PVGroup(devs, 'OpMode-Sts')
 
 
 def wait_for_connection(cmd):
-    cmd.sofbmode_sp.wait_for_connection()
-    cmd.sofbmode_rb.wait_for_connection()
+    cmd.standbymode_sp.wait_for_connection()
+    cmd.standbymode_rb.wait_for_connection()
     cmd.opmode_sp.wait_for_connection()
     cmd.opmode_rb.wait_for_connection()
 
 
 def connected(cmd):
     conn = True
-    conn &= cmd.sofbmode_sp.connected
-    conn &= cmd.sofbmode_rb.connected
+    conn &= cmd.standbymode_sp.connected
+    conn &= cmd.standbymode_rb.connected
     conn &= cmd.opmode_sp.connected
     conn &= cmd.opmode_rb.connected
     return conn
 
 
 def is_stressed(cmd):
-    values = cmd.sofbmode_rb.value
+    values = cmd.standbymode_rb.value
     for i in range(len(values)):
         if values[i] != 0:
             print(cmd.devs[i])
@@ -85,7 +85,7 @@ def try_to_stress(pssofb, cmd, nr_iters=100, rate=25.14):
 
     pssofb.bsmp_sofb_current_set(curr)
     time.sleep(0.1)
-    cmd.sofbmode_sp.value = 1
+    cmd.standbymode_sp.value = 1
     time.sleep(1)
 
     for i in range(nr_iters):
@@ -96,7 +96,7 @@ def try_to_stress(pssofb, cmd, nr_iters=100, rate=25.14):
         time.sleep(1/rate)
 
     time.sleep(1)
-    cmd.sofbmode_sp.value = 0
+    cmd.standbymode_sp.value = 0
     cmd.opmode_sp.value = 0
     time.sleep(1)
     return is_stressed(cmd)
@@ -141,7 +141,7 @@ wait_for_connection(cmd)
 time.sleep(2)
 # print(connected(cmd))
 
-# cmd.sofbmode_sp.value = 0
+# cmd.standbymode_sp.value = 0
 # cmd.opmode_sp.value = 0
 
 print(is_stressed(cmd))

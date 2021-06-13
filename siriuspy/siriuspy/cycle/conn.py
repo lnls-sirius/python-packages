@@ -594,7 +594,7 @@ class PSCyclerFBP(PSCycler):
         'Current-SP', 'Current-RB', 'CurrentRef-Mon',
         'PwrState-Sel', 'PwrState-Sts',
         'OpMode-Sel', 'OpMode-Sts',
-        'SOFBMode-Sel', 'SOFBMode-Sts',
+        'StandByMode-Sel', 'StandByMode-Sts',
         'CycleType-Sel', 'CycleType-Sts',
         'CycleFreq-SP', 'CycleFreq-RB',
         'CycleAmpl-SP', 'CycleAmpl-RB',
@@ -608,19 +608,19 @@ class PSCyclerFBP(PSCycler):
         'SyncPulse-Cmd'
     ]
 
-    def set_sofbmode(self, state):
-        """Set SOFBMode."""
+    def set_standbymode(self, state):
+        """Set StandByMode."""
         state = _PSConst.OffOn.On if state == 'on' else _PSConst.OffOn.Off
-        return _pv_conn_put(self['SOFBMode-Sel'], state)
+        return _pv_conn_put(self['StandByMode-Sel'], state)
 
-    def check_sofbmode(self, state, wait=1):
-        """Check if SOFBMode."""
+    def check_standbymode(self, state, wait=1):
+        """Check if StandByMode."""
         state = _PSConst.OffOn.On if state == 'on' else _PSConst.OffOn.Off
-        return _pv_timed_get(self['SOFBMode-Sts'], state, wait=wait)
+        return _pv_timed_get(self['StandByMode-Sts'], state, wait=wait)
 
     def prepare(self, mode):
         """Config power supply to cycling mode."""
-        if not self.check_sofbmode('off', wait=1):
+        if not self.check_standbymode('off', wait=1):
             return False
 
         if not self.check_opmode_slowref(wait=1):

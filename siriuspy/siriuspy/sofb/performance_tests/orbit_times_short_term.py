@@ -33,7 +33,7 @@ orbit = EpicsOrbit('SI')
 orbit.set_orbit_acq_rate(30)
 time.sleep(15)
 print('setting SlowOrb mode...')
-orbit.set_orbit_mode(orbit._csorb.SOFBMode.SlowOrb)
+orbit.set_orbit_mode(orbit._csorb.StandByMode.SlowOrb)
 time.sleep(5)
 
 print('starting acquisition')

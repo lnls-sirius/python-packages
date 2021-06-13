@@ -381,11 +381,11 @@ class SOFBCurrent(Function):
             self.pru_controller.sofb_current_set(value)
 
 
-class SOFBMode(Function):
+class StandByMode(Function):
     """."""
 
     def __init__(self, pru_controller, setpoints=None):
-        """Create command to set SOFBMode."""
+        """Create command to set StandByMode."""
         self.pru_controller = pru_controller
         self.setpoints = setpoints
 
@@ -393,14 +393,14 @@ class SOFBMode(Function):
         """Execute command."""
         if not self.setpoints or \
                 (self.setpoints and self.setpoints.apply(value)):
-            self.pru_controller.sofb_mode_set(value)
+            self.pru_controller.standby_mode_set(value)
 
 
 class SOFBUpdate(Function):
     """."""
 
     def __init__(self, pru_controller, setpoints=None):
-        """Create command to set SOFBMode."""
+        """Create command to set StandByMode."""
         self.pru_controller = pru_controller
         self.setpoints = setpoints
 

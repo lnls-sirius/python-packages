@@ -236,8 +236,8 @@ class CycleController:
         return 3
 
     @property
-    def prepare_ps_sofbmode_size(self):
-        """Prepare PS SOFBMode task size."""
+    def prepare_ps_standbymode_size(self):
+        """Prepare PS StandByMode task size."""
         prepare_ps_size = 2*(len(self.psnames)+1)
         if 'SI' in self._sections:
             prepare_ps_size += 2*len(self.trimnames)
@@ -314,8 +314,8 @@ class CycleController:
         return 10
 
     @property
-    def prepare_ps_sofbmode_max_duration(self):
-        """Prepare PS SOFBMode task maximum duration."""
+    def prepare_ps_standbymode_max_duration(self):
+        """Prepare PS StandByMode task maximum duration."""
         prepare_ps_max_duration = 5 + TIMEOUT_CHECK
         if 'SI' in self._sections:
             prepare_ps_max_duration += TIMEOUT_CHECK
@@ -665,30 +665,30 @@ class CycleController:
                 all_ok = False
         return all_ok
 
-    def set_pwrsupplies_sofbmode(self, psnames):
-        """Set power supplies SOFBMode."""
+    def set_pwrsupplies_standbymode(self, psnames):
+        """Set power supplies StandByMode."""
         if self._only_linac:
             return True
         psnames = {ps for ps in psnames
                    if _PSSearch.conv_psname_2_psmodel(ps) == 'FBP'}
 
-        self._update_log('Turning off power supplies SOFBMode...')
+        self._update_log('Turning off power supplies StandByMode...')
         for idx, psname in enumerate(psnames):
             cycler = self._get_cycler(psname)
-            cycler.set_sofbmode('off')
+            cycler.set_standbymode('off')
             if idx % 5 == 4 or idx == len(psnames)-1:
                 self._update_log(
-                    'Sent SOFBMode preparation to {0}/{1}'.format(
+                    'Sent StandByMode preparation to {0}/{1}'.format(
                         str(idx+1), str(len(psnames))))
 
-    def check_pwrsupplies_sofbmode(self, psnames, timeout=TIMEOUT_CHECK):
-        """Check power supplies SOFBMode."""
+    def check_pwrsupplies_standbymode(self, psnames, timeout=TIMEOUT_CHECK):
+        """Check power supplies StandByMode."""
         if self._only_linac:
             return True
         psnames = {ps for ps in psnames
                    if _PSSearch.conv_psname_2_psmodel(ps) == 'FBP'}
 
-        self._update_log('Checking power supplies SOFBMode...')
+        self._update_log('Checking power supplies StandByMode...')
         self._checks_result = {psn: False for psn in psnames}
         time = _time.time()
         while _time.time() - time < timeout:
@@ -696,12 +696,12 @@ class CycleController:
                 if self._checks_result[psname]:
                     continue
                 cycler = self._get_cycler(psname)
-                if cycler.check_sofbmode('off', 0.05):
+                if cycler.check_standbymode('off', 0.05):
                     self._checks_result[psname] = True
                     checked = sum(self._checks_result.values())
                     if checked % 5 == 0 or idx == len(psnames)-1:
                         self._update_log(
-                            'Successfully checked SOFBMode preparation for ' +
+                            'Successfully checked StandByMode preparation for ' +
                             '{0}/{1}'.format(str(checked), str(len(psnames))))
                 if _time.time() - time > timeout:
                     break
@@ -713,7 +713,7 @@ class CycleController:
         for psname, sts in self._checks_result.items():
             if sts:
                 continue
-            self._update_log(psname+' is in SOFBMode.', error=True)
+            self._update_log(psname+' is in StandByMode.', error=True)
             status &= False
         return status
 
@@ -826,8 +826,8 @@ class CycleController:
             return
         self._update_log('Timing preparation finished!')
 
-    def prepare_pwrsupplies_sofbmode(self):
-        """Prepare SOFBMode."""
+    def prepare_pwrsupplies_standbymode(self):
+        """Prepare StandByMode."""
         psnames = self.psnames
         timeout = TIMEOUT_CHECK
         if 'SI' in self._sections:
@@ -837,12 +837,12 @@ class CycleController:
             psnames.extend(aux_ps)
             timeout += TIMEOUT_CHECK
 
-        self.set_pwrsupplies_sofbmode(psnames)
-        if not self.check_pwrsupplies_sofbmode(psnames, timeout):
+        self.set_pwrsupplies_standbymode(psnames)
+        if not self.check_pwrsupplies_standbymode(psnames, timeout):
             self._update_log(
-                'There are power supplies in SOFBMode.', error=True)
+                'There are power supplies in StandByMode.', error=True)
             return
-        self._update_log('Power supplies SOFBMode preparation finished!')
+        self._update_log('Power supplies StandByMode preparation finished!')
 
     def prepare_pwrsupplies_opmode_slowref(self):
         """Prepare OpMode to slowref."""

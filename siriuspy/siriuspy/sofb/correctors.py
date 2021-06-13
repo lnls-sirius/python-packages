@@ -68,17 +68,17 @@ class Corrector(_BaseTimingConfig):
         """."""
 
     @property
-    def sofbmode_ok(self):
-        """SOFBMode ok status."""
+    def standbymode_ok(self):
+        """StandByMode ok status."""
         return self.connected
 
     @property
-    def sofbmode(self):
-        """SOFBMode."""
+    def standbymode(self):
+        """StandByMode."""
         return 0
 
-    @sofbmode.setter
-    def sofbmode(self, val):
+    @standbymode.setter
+    def standbymode(self, val):
         """."""
 
     @property
@@ -189,15 +189,15 @@ class CHCV(Corrector):
         self._config_ok_vals = {
             'OpMode': _PSConst.OpMode.SlowRef,
             'PwrState': _PSConst.PwrStateSel.On,
-            'SOFBMode': _PSConst.DsblEnbl.Dsbl}
+            'StandByMode': _PSConst.DsblEnbl.Dsbl}
         self._config_pvs_sp = {
             'OpMode': _PV(LL_PREF+self._name+':OpMode-Sel', **opt),
             'PwrState': _PV(LL_PREF+self._name+':PwrState-Sel', **opt),
-            'SOFBMode': _PV(LL_PREF+self._name+':SOFBMode-Sel', **opt)}
+            'StandByMode': _PV(LL_PREF+self._name+':StandByMode-Sel', **opt)}
         self._config_pvs_rb = {
             'OpMode': _PV(LL_PREF+self._name+':OpMode-Sts', **opt),
             'PwrState': _PV(LL_PREF+self._name+':PwrState-Sts', **opt),
-            'SOFBMode': _PV(LL_PREF+self._name+':SOFBMode-Sts', **opt)}
+            'StandByMode': _PV(LL_PREF+self._name+':StandByMode-Sts', **opt)}
 
     @property
     def opmode_ok(self):
@@ -229,27 +229,27 @@ class CHCV(Corrector):
             pvobj.put(val, wait=False)
 
     @property
-    def sofbmode_ok(self):
+    def standbymode_ok(self):
         """Opmode ok status."""
-        isok = self.sofbmode == self._config_ok_vals['SOFBMode']
+        isok = self.standbymode == self._config_ok_vals['StandByMode']
         if not isok:
-            msg = 'SOFBMode not Ok {0:s}'.format(self.name)
+            msg = 'StandByMode not Ok {0:s}'.format(self.name)
             _log.warning(msg)
         return isok
 
     @property
-    def sofbmode(self):
-        """SOFBMode."""
-        pvobj = self._config_pvs_rb['SOFBMode']
+    def standbymode(self):
+        """StandByMode."""
+        pvobj = self._config_pvs_rb['StandByMode']
         if not pvobj.connected:
             return None
         return pvobj.value
 
-    @sofbmode.setter
-    def sofbmode(self, val):
+    @standbymode.setter
+    def standbymode(self, val):
         """."""
-        pvobj = self._config_pvs_sp['SOFBMode']
-        self._config_ok_vals['SOFBMode'] = val
+        pvobj = self._config_pvs_sp['StandByMode']
+        self._config_ok_vals['StandByMode'] = val
         if pvobj.connected:
             pvobj.put(val, wait=False)
 
@@ -272,12 +272,12 @@ class CHCV(Corrector):
         """Configure method."""
         if not self.connected:
             return False
-        val = self._config_ok_vals['SOFBMode']
-        self.sofbmode = 0
+        val = self._config_ok_vals['StandByMode']
+        self.standbymode = 0
         for k, pvo in self._config_pvs_sp.items():
-            if k in self._config_ok_vals and k != 'SOFBMode':
+            if k in self._config_ok_vals and k != 'StandByMode':
                 pvo.put(self._config_ok_vals[k], wait=False)
-        self.sofbmode = val
+        self.standbymode = val
         return True
 
 
@@ -736,7 +736,7 @@ class EpicsCorrectors(BaseCorrectors):
                 self._update_log(msg)
                 _log.error(msg[5:])
                 continue
-            corr.sofbmode = val
+            corr.standbymode = val
 
         self.run_callbacks('CorrPSSOFBEnbl-Sts', val)
         return True
@@ -791,7 +791,7 @@ class EpicsCorrectors(BaseCorrectors):
         if self.acc != 'BO':
             opmode_ok = all(corr.opmode_ok for corr in chcvs)
         if self.acc == 'SI':
-            opmode_ok &= all(corr.sofbmode_ok for corr in chcvs)
+            opmode_ok &= all(corr.standbymode_ok for corr in chcvs)
         status = _util.update_bit(status, bit_pos=1, bit_val=not opmode_ok)
         status = _util.update_bit(
             status, bit_pos=2,

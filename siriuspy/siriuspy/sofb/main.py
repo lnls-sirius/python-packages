@@ -191,7 +191,7 @@ class SOFB(_BaseClass):
 
     def apply_corr(self, code):
         """Apply calculated kicks on the correctors."""
-        if self.orbit.mode == self._csorb.SOFBMode.Offline:
+        if self.orbit.mode == self._csorb.StandByMode.Offline:
             msg = 'ERR: Offline, cannot apply kicks.'
             self._update_log(msg)
             _log.error(msg[5:])
@@ -520,7 +520,7 @@ class SOFB(_BaseClass):
         return True
 
     def _start_meas_respmat(self):
-        if self.orbit.mode == self._csorb.SOFBMode.Offline:
+        if self.orbit.mode == self._csorb.StandByMode.Offline:
             msg = 'ERR: Cannot Meas Respmat in Offline Mode'
             self._update_log(msg)
             _log.error(msg[5:])

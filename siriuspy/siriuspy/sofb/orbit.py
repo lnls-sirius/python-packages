@@ -85,7 +85,7 @@ class EpicsOrbit(BaseOrbit):
         """Initialize the instance."""
         super().__init__(acc, prefix=prefix, callback=callback)
 
-        self._mode = self._csorb.SOFBMode.Offline
+        self._mode = self._csorb.StandByMode.Offline
         self._sync_with_inj = False
         self._sloworb_timeout = 0
         self.ref_orbs = {
@@ -237,19 +237,19 @@ class EpicsOrbit(BaseOrbit):
         """Check is mode or self._mode is in SlowOrb mode."""
         if mode is None:
             mode = self._mode
-        return self.acc == 'SI' and mode == self._csorb.SOFBMode.SlowOrb
+        return self.acc == 'SI' and mode == self._csorb.StandByMode.SlowOrb
 
     def is_multiturn(self, mode=None):
         """Check is mode or self._mode is in MultiTurn mode."""
         if mode is None:
             mode = self._mode
-        return self.isring and mode == self._csorb.SOFBMode.MultiTurn
+        return self.isring and mode == self._csorb.StandByMode.MultiTurn
 
     def is_singlepass(self, mode=None):
         """Check is mode or self._mode is in SinglePass mode."""
         if mode is None:
             mode = self._mode
-        return mode == self._csorb.SOFBMode.SinglePass
+        return mode == self._csorb.StandByMode.SinglePass
 
     def is_trigmode(self, mode=None):
         """Check is mode or self._mode is in any of the Triggered modes."""
@@ -298,7 +298,7 @@ class EpicsOrbit(BaseOrbit):
         nrb = self._ring_extension * self._csorb.nr_bpms
         refx = self.ref_orbs['X'][:nrb]
         refy = self.ref_orbs['Y'][:nrb]
-        if self._mode == self._csorb.SOFBMode.Offline:
+        if self._mode == self._csorb.StandByMode.Offline:
             orbx = self.offline_orbit['X'][:nrb]
             orby = self.offline_orbit['Y'][:nrb]
             return _np.hstack([orbx-refx, orby-refy])
@@ -586,7 +586,7 @@ class EpicsOrbit(BaseOrbit):
         Thread(
             target=self._prepare_mode,
             kwargs={'oldmode': omode, }, daemon=True).start()
-        self.run_callbacks('SOFBMode-Sts', value)
+        self.run_callbacks('StandByMode-Sts', value)
         return True
 
     def set_sync_with_injection(self, boo):
@@ -1097,7 +1097,7 @@ class EpicsOrbit(BaseOrbit):
         status = _util.update_bit(status, bit_pos=0, bit_val=not tim_conn)
         status = _util.update_bit(status, bit_pos=1, bit_val=not tim_conf)
 
-        if self._mode == self._csorb.SOFBMode.Offline:
+        if self._mode == self._csorb.StandByMode.Offline:
             bpm_conn = True
             bpm_stt = True
         else:
