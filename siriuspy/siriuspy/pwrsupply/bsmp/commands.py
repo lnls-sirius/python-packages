@@ -17,6 +17,7 @@ from . import entities as _etity_psbsmp
 # version of the BSMP implementation of power supplies that is compatible
 # with the current implemenation of this module.
 
+
 class PSBSMP(_BSMP):
     """Power supply BSMP.
 
@@ -76,14 +77,14 @@ class PSBSMP(_BSMP):
 
         # remove previous variables groups
         ack, data = self.remove_all_groups_of_variables(
-            timeout=PSBSMP._timeout_remove_vars_groups)
+            timeout=self._timeout_remove_vars_groups)
         if ack != PSBSMP.CONST_BSMP.ACK_OK:
             return ack, data
 
         # create variables groups
         for var_ids in varids_groups:
             ack, data = self.create_group_of_variables(
-                var_ids, timeout=PSBSMP._timeout_create_vars_groups)
+                var_ids, timeout=self._timeout_create_vars_groups)
             if ack != PSBSMP.CONST_BSMP.ACK_OK:
                 return ack, data
 
@@ -116,20 +117,20 @@ class PSBSMP(_BSMP):
         # introduces necessary sleeps
         # TODO: check with ELP if these numbers can be optimized further!
         if func_id == PSBSMP.CONST.F_RESET_UDC:
-            _time.sleep(PSBSMP._sleep_reset_udc)
+            _time.sleep(self._sleep_reset_udc)
         elif func_id == PSBSMP.CONST.F_DISABLE_SCOPE:
             # NOTE: sleep is implemented in UDC class,
             # for optimization purpose!
-            # _time.sleep(PSBSMP._sleep_disable_scope)
+            # _time.sleep(self._sleep_disable_scope)
             pass
         elif func_id == PSBSMP.CONST.F_SELECT_OP_MODE:
-            # _time.sleep(PSBSMP._sleep_select_op_mode)
+            # _time.sleep(self._sleep_select_op_mode)
             pass
         elif func_id in (PSBSMP.CONST.F_TURN_ON,
                          PSBSMP.CONST.F_TURN_OFF,
                          PSBSMP.CONST.F_OPEN_LOOP,
                          PSBSMP.CONST.F_CLOSE_LOOP):
-            _time.sleep(PSBSMP._sleep_turn_onoff)
+            _time.sleep(self._sleep_turn_onoff)
 
         if read_flag:
             return response
@@ -235,7 +236,7 @@ class PSBSMP(_BSMP):
         """Return wfmref curve ID currently in use by DSP."""
         _, curve_id = self.read_variable(
             var_id=PSBSMP.CONST.V_WFMREF_SELECTED,
-            timeout=PSBSMP._timeout_read_variable)
+            timeout=self._timeout_read_variable)
         return curve_id
 
     @wfmref_select.setter
@@ -244,7 +245,7 @@ class PSBSMP(_BSMP):
         ack, data = self.execute_function(
             func_id=PSBSMP.CONST.F_SELECT_WFMREF,
             input_val=curve_id,
-            timeout=PSBSMP._timeout_execute_function)
+            timeout=self._timeout_execute_function)
         return ack, data
 
     def wfmref_size(self, curve_id=None):
@@ -318,14 +319,14 @@ class PSBSMP(_BSMP):
         """Enable scope update."""
         ack, data = self.execute_function(
             func_id=PSBSMP.CONST.F_ENABLE_SCOPE,
-            timeout=PSBSMP._timeout_execute_function)
+            timeout=self._timeout_execute_function)
         return ack, data
 
     def scope_disable(self):
         """Disable scope update."""
         ack, data = self.execute_function(
             func_id=PSBSMP.CONST.F_DISABLE_SCOPE,
-            timeout=PSBSMP._timeout_execute_function)
+            timeout=self._timeout_execute_function)
         return ack, data
 
     # --- curve methods ---
@@ -383,7 +384,7 @@ class PSBSMP(_BSMP):
         # get current curve id
         _, curve_id = self.read_variable(
             var_id=PSBSMP.CONST.V_WFMREF_SELECTED,
-            timeout=PSBSMP._timeout_read_variable)
+            timeout=self._timeout_read_variable)
 
         # select the other buffer and send curve blocks
         if curve_id == PSBSMP.CURVE_ID_WFMREF_DATA1:
@@ -417,7 +418,7 @@ class PSBSMP(_BSMP):
             ack, data = self.request_curve_block(
                 curve_id=curve_id,
                 block=block,
-                timeout=PSBSMP._timeout_request_curve_block,
+                timeout=self._timeout_request_curve_block,
                 print_error=False)
             # print(sum(data))
             # print((hex(ack), sum(data)))
@@ -468,7 +469,7 @@ class PSBSMP(_BSMP):
                 curve_id=curve_id,
                 block=block,
                 value=data,
-                timeout=PSBSMP._timeout_curve_block)
+                timeout=self._timeout_curve_block)
             # print((hex(ack), data))
             if ack != self.CONST_BSMP.ACK_OK:
                 print(('BSMP response not OK in '
@@ -486,7 +487,7 @@ class PSBSMP(_BSMP):
         values = [None] * len(var_ids)
         for i, var_id in enumerate(var_ids):
             _, values[i] = self.read_variable(
-                var_id=var_id, timeout=PSBSMP._timeout_read_variable)
+                var_id=var_id, timeout=self._timeout_read_variable)
         return values
 
     def _curve_get_implementable_size(self, curve_id, curve_size):

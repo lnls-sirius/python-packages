@@ -38,7 +38,7 @@ CMD_BINARY_OPERATION_IN_A_VARIABLE: int = 0x24
 CMD_BINARY_OPERATION_IN_A_GROUP: int = 0x26
 CMD_WRITE_AND_READ_VARIABLES: int = 0x28
 
-# --- Group of Variables Manipulation Commnads ---
+# --- Group of Variables Manipulation Commands ---
 CMD_CREATE_GROUP_OF_VARIABLES: int = 0x30
 CMD_REMOVE_ALL_GROUPS_OF_VARIABLES: int = 0x32
 

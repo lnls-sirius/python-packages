@@ -6,7 +6,6 @@ Documentation:
 
 https://wiki-sirius.lnls.br/mediawiki/index.php/Machine:Power_Supplies
 """
-
 from ...bsmp import constants as _const_bsmp
 
 # version of the BSMP implementation of power supplies that is compatible
