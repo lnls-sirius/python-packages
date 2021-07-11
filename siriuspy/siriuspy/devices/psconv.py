@@ -18,9 +18,12 @@ class PSProperty(_DevicesSync):
         'SI-Fam:PS-B1B2-2': ('SI-Fam:PS-B1B2-1', 'SI-Fam:PS-B1B2-2'),
         }
 
-    def __init__(self, devname, propty, auto_mon=False):
+    def __init__(self, devname, propty, auto_mon=False, refactor=1.0):
         """."""
         devname = _SiriusPVName(devname)
+
+        # value refactor for specializations
+        self._refactor = refactor
 
         # get devnames
         devnames = PSProperty._get_devnames(devname)
@@ -37,11 +40,13 @@ class PSProperty(_DevicesSync):
     @property
     def value(self):
         """Return property value."""
-        return self.value_get(self.property_sync)
+        value = self._refactor * self.value_get(self.property_sync)
+        return value
 
     @value.setter
     def value(self, current):
         """Set property value."""
+        current /= self._refactor
         self.value_set(self.property_sync, current)
 
     @property
@@ -78,6 +83,20 @@ class StrengthConv(_Devices):
 
     # TODO: Test changing default value of auto_mon to see if conversion
     # IOCs are improved.
+
+    _special_conv_refactors = {
+        # LI
+        'LI-01:PS-Spect': 1.0,
+        'LI-Fam:PS-QF1': 1.0, 'LI-Fam:PS-QF2': 1.0, 'LI-01:PS-QF3': 1.0,
+        'LI-01:PS-QD1': 1.0, 'LI-01:PS-QD2': 1.0,
+        'LI-01:PS-CV-1': 1.0, 'LI-01:PS-CH-1': 1.0,
+        'LI-01:PS-CV-2': 1.0, 'LI-01:PS-CH-2': 1.0,
+        'LI-01:PS-CV-3': 1.0, 'LI-01:PS-CH-3': 1.0,
+        'LI-01:PS-CV-4': 1.0, 'LI-01:PS-CH-4': 1.0,
+        'LI-01:PS-CV-5': 1.0, 'LI-01:PS-CH-5': 1.0,
+        'LI-01:PS-CV-6': 1.0, 'LI-01:PS-CH-6': 1.0,
+        'LI-01:PS-CV-7': 1.0, 'LI-01:PS-CH-7': 1.0,
+    }
 
     def __init__(self, devname, proptype, auto_mon=False):
         """."""
@@ -252,7 +271,8 @@ class StrengthConv(_Devices):
     @staticmethod
     def _get_dev_others(devname, proptype, auto_mon):
         if devname.startswith('LI'):
-            return PSProperty('TB-Fam:PS-B', 'Energy' + proptype, auto_mon)
+            refactor = StrengthConv._special_conv_refactors.get(devname, 1.0)
+            return PSProperty('TB-Fam:PS-B', 'Energy' + proptype, auto_mon, refactor=refactor)
         if devname.startswith('TB'):
             # all TB ps other than dipoles need dipole connectors
             return PSProperty('TB-Fam:PS-B', 'Energy' + proptype, auto_mon)
