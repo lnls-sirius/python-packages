@@ -227,6 +227,9 @@ class BeagleBone:
         curr4 = dbase['Current-SP']['lolo']
         curr5 = dbase['Current-SP']['hihi']
         currs = (curr0, curr1, curr2, curr3, curr4, curr5)
+        if None in currs:
+            self._streconnected[psname] = False
+            return
         strengths = streconv.conv_current_2_strength(currents=currs)
         if strengths is None or None in strengths:
             self._streconnected[psname] = False
