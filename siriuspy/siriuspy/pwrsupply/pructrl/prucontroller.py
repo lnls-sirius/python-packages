@@ -753,17 +753,20 @@ class PRUController:
 
     def _bsmp_init_wfm(self):
 
-        for psupply in self._psupplies.values():
+        for bsmpid, psupply in self._psupplies.items():
 
-            # update
-            psupply.update_wfm(interval=0.0)
+            try:
+                # update
+                psupply.update_wfm(interval=0.0)
 
-            # raise ValueError('!!! Debug stop !!!')
+                # raise ValueError('!!! Debug stop !!!')
 
-            # registers RB using psupply object
-            psupply.wfmref_rb = psupply.wfmref
+                # registers RB using psupply object
+                psupply.wfmref_rb = psupply.wfmref
 
-            # raise ValueError('!!! Debug stop !!!')
+                # raise ValueError('!!! Debug stop !!!')
+            except _SerialError as err:
+                print('Power supply id:{} not responding <init_wfm>: {}!'.format(bsmpid, err))
 
         # raise ValueError('!!! Debug stop !!!')
 
