@@ -126,7 +126,10 @@ class PSDevState:
 
     def get_variable(self, var_id):
         """."""
-        return self._variables[var_id]
+        if var_id not in self._variable:
+            return 0
+        else:
+            return self._variables[var_id]
 
     def get_parameter(self, eid):
         """."""
