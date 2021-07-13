@@ -575,15 +575,21 @@ class PRUController:
 
         # reset group of bsmp variables for all devices
         t0_ = _time.time()
-        for psupply in self._psupplies.values():
-            psupply.reset_variables_groups(groups)
+        for bsmpid, psupply in self._psupplies.items():
+            try:
+                psupply.reset_variables_groups(groups)
+            except _SerialError as err:
+                print('Power supply id:{} not responding <reset_variables_groups>: {}', bsmpid, err)
         dt_ = _time.time() - t0_
         print(fmt.format('bsmp_init_devices', 'reset groups', 1e3*dt_))
 
         # update psupply groups
         t0_ = _time.time()
-        for psupply in self._psupplies.values():
-            psupply.update_groups(interval=0.0)
+        for bsmpid, psupply in self._psupplies.items():
+            try:
+                psupply.update_groups(interval=0.0)
+            except _SerialError as err:
+                print('Power supply id:{} not responding <update_groups>: {}', bsmpid, err)
         dt_ = _time.time() - t0_
         print(fmt.format('bsmp_init_devices', 'update groups', 1e3*dt_))
 
