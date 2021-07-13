@@ -83,7 +83,7 @@ class PSDevState:
     @property
     def wfmref_index(self):
         """Return current index into DSP selected curve."""
-        if self._psbsmp.CONST.V_WFMREF_SELECTED not in curve_id:
+        if self._psbsmp.CONST.V_WFMREF_SELECTED not in self._variables:
             return None
         curve_id = \
             self._variables[self._psbsmp.CONST.V_WFMREF_SELECTED]
