@@ -775,18 +775,28 @@ class PRUController:
     def _bsmp_init_variable_values(self):
 
         # init psupplies variables
-        for psupply in self._psupplies.values():
-            psupply.update_variables(interval=0.0)
+        for bsmpid, psupply in self._psupplies.items():
+            try:
+                psupply.update_variables(interval=0.0)
+            except _SerialError as err:
+                print('Power supply id:{} not responding <init_variable_values>: {}!'.format(bsmpid, err))
+
 
     def _bsmp_init_parameter_values(self):
 
         # init psupplies variables
-        for psupply in self._psupplies.values():
-            psupply.update_parameters(interval=0.0)
+        for bsmpid, psupply in self._psupplies.items():
+            try:
+                psupply.update_parameters(interval=0.0)
+            except _SerialError as err:
+                print('Power supply id:{} not responding <init_parameter_values>: {}!'.format(bsmpid, err))   
 
     def _bsmp_init_sofb_values(self):
 
-        self._udc.sofb_update()
+        try:
+            self._udc.sofb_update()
+        except _SerialError as err:
+            print('One or more devices not responding to <init_sofb_values>')
 
     @staticmethod
     def _dict2list_vargroups(groups_dict):
