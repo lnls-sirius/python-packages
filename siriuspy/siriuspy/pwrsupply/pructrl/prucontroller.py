@@ -579,7 +579,7 @@ class PRUController:
             try:
                 psupply.reset_variables_groups(groups)
             except _SerialError as err:
-                print('Power supply id:{} not responding <reset_variables_groups>: {}', bsmpid, err)
+                print('Power supply id:{} not responding <reset_variables_groups>: {}!'.format(bsmpid, err))
         dt_ = _time.time() - t0_
         print(fmt.format('bsmp_init_devices', 'reset groups', 1e3*dt_))
 
@@ -589,13 +589,16 @@ class PRUController:
             try:
                 psupply.update_groups(interval=0.0)
             except _SerialError as err:
-                print('Power supply id:{} not responding <update_groups>: {}', bsmpid, err)
+                print('Power supply id:{} not responding <update_groups>: {}!'.format(bsmpid, err))
         dt_ = _time.time() - t0_
         print(fmt.format('bsmp_init_devices', 'update groups', 1e3*dt_))
 
         # disable DSP from writting to bufsample (uses first device)
         t0_ = _time.time()
-        self._udc.bufsample_disable()
+        try:
+            self._udc.bufsample_disable()
+        except _SerialError as err:
+            print('Unable to disable scope for one or more devices: {}!'.format(err))
         dt_ = _time.time() - t0_
         print(fmt.format('bsmp_init_devices', 'bufsample_disable', 1e3*dt_))
 
